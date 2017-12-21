@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>作品规格列表</title>
+		
+		<script type="text/javascript">
+		
+			function selectInfo() {
+		  		$("#designerSaleCommentForm").submit();
+		  }
+			function selectReset(){
+	    		$("#id").val("");
+	    		$("#orderNO").val("");
+	    	}
+		</script>
+		<style type="text/css">
+			.dginputstyle{width:100px;height:22px}
+		</style>
+	
+	</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：设计师管理> 设计师作品信息>作品规格</div>
+      <form id="designerSaleCommentForm" action="/diys/Bo/designer/designerSaleCommentList" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      
+      <div class="table-show-content">
+      <div class="table-search">
+			评论ID:<input type="text" class="dginputstyle" id="id" name="id" value="${id!''}"/>
+			订单ID:<input type="text" class="dginputstyle" id="orderNO" name="orderNO" value="${orderNO!''}"/>
+			<div style="display: inline;float: right">
+				<input type="button" id="btn" value="查找"  class="btn-submit" onclick="selectInfo()"/>
+				<input type="button" id="btn2" value="重置"  class="btn-submit" onclick="selectReset()"/>
+			</div>
+ 			
+        </div>
+        <table class="table-show"> 
+          <tbody>
+            <tr  class="list_title">
+            
+              <th width="5%">评论ID</th>
+              <th width="10%">所属订单号:</th>
+              <th width="5%">设计符合等级</th>
+              <th width="5%">服务质量等级</th>
+              <th width="5%">价格合理等级</th>
+              <th width="5%" >发图速度等级</th>
+              <th width="5%" >总体满意度</th>
+              <th width="5%" >是否匿名评价</th>
+              <th width="15%" >评价内容</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.orderNO)!''}
+						</td>
+						<td >
+							${(entity.conformityLevel)!''}
+						</td>
+						<td >
+							${(entity.serviceLevel)!''}
+						</td>
+						<td >
+							${(entity.priceLevel)!''}
+						</td>
+						<td>
+							${(entity.sendLevel)!''}
+						</td>
+						<td>
+							${(entity.totalLevel)!''}
+						</td>
+						<td>
+							<#if "${entity.anonymous!''}" == "0" >正常</#if>
+							<#if "${entity.anonymous!''}" == "1" >匿名</#if>
+						</td>
+						<td>
+							${(entity.commentText)!''}
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+        <#include "/bo/page.html">
+      </form>
+    </div>
+        <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

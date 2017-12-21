@@ -1,0 +1,76 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#laberAddForm').validate({	 
+			 rules:{
+		          laberTotal:{
+		              required:true
+		          },
+	              laberSmall:{
+		             required:true
+	              }
+	          },
+	          messages:{
+	                laberTotal:{
+		                required:"主标签不能为空"
+	                },
+	                laberSmall:{
+		               required:"小标签不能为空"
+		            }
+	            }
+			});	
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：素材管理 > 配置标签</div>
+      <form action="/diys/Bo/laber/configure_save" method="post" id="laberAddForm">
+            <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	    		<td align="right">主标签 </td>
+	     		<td>
+	     		<input class="input-style" type="text" value="${(entity.laberTotal)!''}" id="laberTotal" name="laberTotal"/> 
+		     	</td> 
+	     	</tr>
+	     	<tr>
+	     	<td align="right">类型</td>
+		     		<td>
+		     			<select id="type" name="type" class="inputtext">
+	              		<option  value="">请选择类型</option>
+   						<option 
+   							<#if "1"=="${(entity.type)!''}">selected="selected"</#if> value="1">贴图
+   						</option>
+   						<option 
+   							<#if "2"=="${(entity.type)!''}">selected="selected"</#if> value="2">颜文字
+   						</option>
+   						<option 
+   							<#if "3"=="${(entity.type)!''}">selected="selected"</#if> value="3">表情
+   						</option>
+   						<option 
+   							<#if "4"=="${(entity.type)!''}">selected="selected"</#if> value="4">个人
+   						</option>
+           			</select>
+		     		</td>
+	     	</tr>
+	     	<tr>
+		     		<td align="right">排序值</td>
+		     		<td>
+		     			<input class="input-style" type="text" value="${(entity.sort)!'0'}" id="sort" name="sort"/> 
+		     		</td>
+	     		</tr>
+	     		<tr>
+	     		<td align="right">小标签</td>
+	     		<td>
+	     		<input class="input-style" type="text" value="${(entity.laberSmall)!''}" id="laberSmall" name="laberSmall"/> 
+	     		</td>
+	     		</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

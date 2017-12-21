@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<decorators defaultdir="/jsproot/template/decorators">
+   <excludes>
+	  <pattern>/Bo/login*</pattern>
+	  <pattern>/Bo/*/*edit*</pattern>
+	  <pattern>/Bo/user/pushMsg*</pattern>
+	  <pattern>/Bo/edit*</pattern>
+	  <pattern>/wap*</pattern>
+   </excludes>
+  
+
+   <decorator name="bo" page="bo.dec">
+   	  <pattern>/Bo*</pattern>
+   </decorator>
+</decorators>
+ 

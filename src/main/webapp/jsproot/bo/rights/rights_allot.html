@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>权限分配页面</title>
+<script type="text/javascript" >
+ $(function() {
+     $("#checkAll").click(function() {
+          $('input[name="subBox"]').attr("checked",this.checked);
+      });
+      var $subBox = $("input[name='subBox']");
+      $subBox.click(function(){
+          $("#checkAll").attr("checked",$subBox.length == $("input[name='subBox']:checked").length ? true : false);
+      });
+  });
+	$(document).ready(function() {
+	$('#div').hide();
+	$('#submitPri').click(function() {
+		var i = 0;
+		var j=0;
+		var arr = new Array();
+		var m = document.getElementsByName('subBox');
+		var id = $('#id').val();
+		for ( var i = 0; i < m.length; i++) {
+			if (m[i].checked == true) {
+				arr[j] = $.trim(m[i].value);
+				j+=1;
+			}
+		}
+		if(j>0){
+			$.post('/diys/Bo/rh/assgin_edit', {
+			arr : arr.toString(),
+			id : id
+			}, function() {window.location.href = "/diys/Bo/user_list";})
+		}else{
+			$('#div').show();
+			return;
+		}
+	});
+});
+</script>
+
+</head>
+<body>
+	 <div id="main">
+      <div class="breadcrumb">当前位置：角色配置> 权限分配</div>
+      <div class="table-show-content">
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="20%" align="center"><input type="checkbox" id="checkAll" /></th>
+              <th width="40%">权限名称</th>
+              <th width="40%" >创建时间</th>
+            </tr>
+             <#if user?? >
+             	<input type="hidden" id="id" name="id"  value="${user.id!''}"/>
+             </#if>
+            <#if list?? >
+             <#list list as rights>
+			    <tr>
+				   <td align="center">
+				   		<#if "${ur!''}"?index_of('${rights.rightsCode}') != -1>
+							<input value="${(rights.rightsCode)!''}" type="checkbox" name="subBox" class="subBox"
+								checked="checked">
+						<#else>
+							<input value="${(rights.rightsCode)!''}" type="checkbox" name="subBox" class="subBox">
+						</#if>
+					</td>
+				   <td>${(rights.rightsName)!''}</td>
+			    <td>${(rights.createdWhen)!''}</td>
+			   </tr>
+			 </#list>
+            </#if>
+         
+       		<tr><td colspan="3" align="left">
+				<input type="button" id='submitPri' value="提交并修改" name="submitPri"  class="btn-submit">&nbsp;&nbsp;
+				<input type="button" value="取消并返回" onclick="javascript:location.href='/diys/Bo/user_list/'" name=""  class="btn-submit">
+				<span id="div" name="div"><font color="red">请至少选择一项</span></div>
+			</td></tr>
+		  </tbody>
+		 </table>
+		</div>
+    </div>
+</body>
+</html>

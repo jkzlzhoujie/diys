@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.ClientVersion">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="ClientVersion">
+			<id property="id" column="version_id" />
+			<result property="name" column="version_name" />
+			<result property="code" column="version_code" />
+			<result property="channelId" column="channel_id" />
+			<result property="os" column="version_os" />
+			<result property="size" column="version_size" />
+			<result property="downUrl" column="version_down_url" />
+			<result property="desc" column="version_desc" />
+			<result property="isForce" column="version_is_force" />
+			<result property="createdWhen" column="created_when" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select version_id,version_name,channel_id,version_code,version_os,version_size,version_down_url,
+		version_desc,version_is_force,created_when from emoji_client_version
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNumber(id)">and version_id = #{id}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and version_name like "%"#{name}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(code)">and version_code = #{code}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channelId)">and channel_id = #{channelId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(os)">and version_os = #{os}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(size)">and version_size = #{size}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(downUrl)">and version_down_url = #{downUrl}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(desc)">and version_desc = #{desc}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isForce)">and version_is_force = #{isForce}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where version_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="getNewVersion" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+		SELECT * FROM `emoji_client_version` WHERE `version_code` = (SELECT MAX(version_code) FROM emoji_client_version 
+	WHERE `version_code` > #{code} and  version_os = #{os} )
+	</select>
+	
+	<select id="findByPage" parameterType="ClientVersion" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM emoji_client_version 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="ClientVersion" useGeneratedKeys="true" keyProperty="id">
+	insert into emoji_client_version(version_name,version_code,channel_id,version_os,version_size,
+	version_down_url,version_desc,version_is_force,created_when) 
+	values(#{name},#{code},#{channelId},#{os},#{size},#{downUrl},#{desc},#{isForce},now())
+	</insert>
+	
+	<update id="update" parameterType="ClientVersion">
+	  UPDATE emoji_client_version
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)"> version_name = #{name},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(code)"> version_code = #{code},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channelId)"> channel_id = #{channelId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(os)"> version_os = #{os},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(size)"> version_size = #{size},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(downUrl)"> version_down_url = #{downUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(desc)"> version_desc = #{desc},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isForce)"> version_is_force = #{isForce},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                version_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from emoji_client_version where version_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM emoji_client_version
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

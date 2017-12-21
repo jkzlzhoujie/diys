@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.CirclePost">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap type="CirclePost" id="sql_resultMap">
+		<id property="id" column="id" />
+		<result property="text" column="text" />
+		<result property="title" column="title" />
+		<result property="userId" column="userId" />
+		<result property="circleId" column="circleId" />
+		<result property="circleName" column="circleName" />
+		<result property="status" column="status" />
+		<result property="discussNum" column="discussNum" />
+		<result property="zanNum" column="zanNum" />
+		<result property="caiNum" column="caiNum" />
+		<result property="shareNum" column="shareNum" />
+		<result property="isAccusation" column="isAccusation" />
+		<result property="createdWhen" column="createdWhen" />
+		<result property="nickName" column="nickName" />
+		<result property="headImageUrl" column="headImageUrl" />
+		<result property="circleUserId" column="circleUserId" />
+		<result property="flag" column="flag" />
+		<result property="picNum" />
+	</resultMap>
+	
+	<sql id="sql_selectAll">
+		SELECT cc.name AS circleName, cp.id,cp.circleId,cp.text,cp.title,cp.userId,DATE_FORMAT(cp.createdWhen,'%Y-%m-%d %H:%i') AS createdWhen,cp.discussNum,
+		cp.zanNum,cp.caiNum,cp.shareNum,cp.isaccusation,cp.status,cui.nick_name as nickName,cui.head_image_url as headImageUrl,
+		cc.userId as circleUserId,cc.flag as flag,(select count(1) from circlepostpic where circlepostid = cp.id) as picNum
+		from circlePost cp 
+		LEFT JOIN cm_user_info cui ON cp.userId = cui.user_id
+		LEFT JOIN cm_circle cc ON cp.circleid = cc.id 
+		left join circlepostpic cpp on circlepostid = cp.userId
+	</sql>
+	
+	<sql id="sql_where">
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and  cp.id  = ${id}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleIds)">and  cp.circleId  in ( ${circleIds} )</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(text)">and  cp.text like "%"#{text}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(title)">and  cp.title like "%"#{title}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)">and  cp.circleId = #{circleId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and  cp.userId = #{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and  cp.status = #{status}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isAccusation)">and  cp.isAccusation = #{isAccusation}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(cp.createdWhen,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+       		</if>
+          	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            	<![CDATA[
+                 	AND DATE_FORMAT(cp.createdWhen,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+          	  ]]>
+        	</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(threeMin)">
+		    	 and cp.userId = #{threeMin} 
+		    	 <![CDATA[ and timestampdiff(MINUTE, cp.createdWhen,NOW())<=3  ]]> 
+		    </if>
+		    <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(oneDay)">
+		     	 and cp.userId = #{oneDay} and  cp.text=#{text}
+		     	 <![CDATA[ and timestampdiff(day, cp.createdWhen,NOW()) < 1  ]]> 
+		    </if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="Long" useCache="false">
+		select count(1) from circlePost cp
+		<include refid="sql_where"></include>
+	</select>
+	
+	<select id="getById" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"></include>
+		where cp.id=#{id}
+	</select>
+	
+	<select id="findByPage" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(addTime)">	order by createdWhen desc </if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(zanNum)">	order by zanNum desc </if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sequenceShort) and  @cn.temobi.core.util.StringUtil@isNotEmpty(sequence)">order by ${sequenceShort}  ${sequence} , createdwhen desc</if>
+		limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+	</select>
+	
+	<select id="findAll" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		insert into circlePost(discussNum,userId,circleId,zanNum,caiNum,shareNum,status,createdWhen,isAccusation,text,title) 
+		 values(#{discussNum},#{userId},#{circleId},#{zanNum},#{caiNum},#{shareNum},#{status},NOW(),#{isAccusation},#{text},#{title} )
+	</insert>
+	
+	<update id="update" >
+		update circlePost
+		<set>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(text)">title=#{title},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(text)">text=#{text},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)">circleId=#{circleId},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">userId=#{userId},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">status=#{status},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(zanNum)">zanNum=#{zanNum},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(caiNum)">caiNum=#{caiNum},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(shareNum)">shareNum=#{shareNum},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(discussNum)">discussNum=#{discussNum},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isAccusation)">isAccusation=#{isAccusation},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="delete" flushCache="true">
+		delete from circlePost where id=#{id}
+	</delete>
+	
+</mapper>

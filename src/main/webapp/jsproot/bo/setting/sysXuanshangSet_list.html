@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>系统悬赏管理</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript">
+    	
+    	function selectOne(){
+    		$("#pageNo").val("1");
+    		$("#sysXuanshangSetForm").submit();
+    	}
+
+    	function refreshIndexCache() {
+		 	$('#loadingimg').jqmShow();
+			$.post('/diys/Bo/topic/refreshCache',function(data){
+				myAlert("成功");
+				$('#loadingimg').jqmHide();
+			});
+		}
+    </script>
+
+  </head>
+  
+  <body>
+     <div id="main">
+      <div class="breadcrumb">当前位置：系统管理 > 系统悬赏管理</div>
+      <form id="sysXuanshangSetForm" action="/diys/Bo/setting/sysXuanshangSetList" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-search">
+		<div style="display:inline">
+			名称：
+				<input type="text" name="name" />
+		         类型：
+	         	<select id="type" name="type" class="selectOpt w164">
+            			<option  value="">请选择</option>
+            			<option <#if "${type!''}" ==  "1">selected="selected"</#if> value="1">悬赏金额</option>
+       		  	</select>
+          	状态：
+	          	<select id="type" name="status" class="selectOpt w164">
+             			<option  value="">请选择</option>
+             			<option <#if "${status!''}" ==  "1">selected="selected"</#if> value="1">上线</option>
+             			<option <#if "${status!''}" ==  "0">selected="selected"</#if> value="0">下线</option>
+	          	</select>
+		</div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1"  class="btn-submit" value="查询" onclick="selectOne()" /></div>
+	  </div>
+	<div style="padding-bottom: 5px">
+		<div style="display: inline">
+			<!-- <input type="button" id="btn" value="刷新缓存"  class="btn-submit" onclick="refreshIndexCache()"/> -->
+			<input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('setting/sysXuanshangSetEdit')"/>
+		</div>
+	</div>    
+      <div class="table-show-content">
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="10%">名称</th>
+              <th width="10%">值</th>
+              <th width="10%">类型</th>
+              <th width="10%">编码</th>
+              <th width="10%">状态</th>
+              <th width="10%" >操作</th>
+            </tr>
+	        <#if list??>
+		    	<#list list as entity>
+					<tr>
+					 <td >
+						${(entity.name)!''}
+					  </td>
+					   <td >
+						${(entity.value)!''}
+					  </td>
+					  <td >
+							<#if entity.type??>
+								<#if "${entity.type}" == "1">悬赏金额
+								</#if>
+							</#if>
+						</td> 
+						<td>
+						${(entity.code)!''}
+						</td>
+					  <td >
+							<#if entity.status??>
+								<#if "${entity.status}" == "1">上线
+								<#elseif "${entity.status}" == "0">下线
+								</#if>
+							</#if>
+						</td> 
+					  <td>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('setting/sysXuanshangSetEdit','${(entity.id)!''}')">修改</a>
+						<a class="btn btn-delete" href="javascript:;" onclick="del_('setting/sysXuanshangSetDelete',#{(entity.id)!''})">删除</a>
+					  </td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+  </body>
+</html>

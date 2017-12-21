@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>系统参数管理</title>
+
+    <meta http-equiv="code-type" code="text/html; charset=UTF-8">
+    <script type="text/javascript">
+    	
+    	function selectOne(){
+    		$("#pageNo").val("1");
+    		$("#sysParameterForm").submit();
+    	}
+    	
+    	function selectReset(){
+    		$("#code").val("");
+    		$("#name").val("");
+
+    	}
+    	
+    	function refreshCacheUI() {
+			$('#editor2').jqm({
+						overlay : 30,
+						overlayClass : 'whiteOverlay'
+			}).draggable();
+			$('#editor2').jqmShow();
+		}
+    	
+    	function refreshCache() {
+		 	$('#loadingimg').jqmShow();
+		 	var key = $('#key').val();
+		 	if(key.length == 0 ){
+		 		alert("KEY 不能为空！");
+		 		return;
+		 	}else{
+		 		$.post('/diys/Bo/topic/refreshCacheByKey?key='+key,function(data){
+					myAlert("成功");
+					$('#loadingimg').jqmHide();
+				});
+		 	}
+			
+		}
+    </script>
+
+  </head>
+  
+  <body>
+     <div id="main">
+      <div class="breadcrumb">当前位置：系统管理 > 系统参数管理</div>
+      <form id="sysParameterForm" action="/diys/Bo/setting/sysParameterlist" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-search">
+		<div style="display:inline">
+		          名称：<input type="text" id="name" name="name" value="${name!''}" class="input-style" />
+			编码：<input type="text" id="code" name="code" value="${code!''}" class="input-style" />
+		</div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1" value="重置" class="btn-submit" onclick="selectReset()" /></div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1"  class="btn-submit" value="查询" onclick="selectOne()" /></div>
+	  </div>
+	<div style="padding-bottom: 5px">
+		<div style="display: inline">
+			<input type="button" id="btn" value="刷新缓存"  class="btn-submit" onclick="refreshCacheUI()"/>
+			<input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('setting/sysParameteredit')"/>
+		</div>
+	</div>    
+      <div class="table-show-code">
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="10%">名称</th>
+              <th width="10%">编码</th>
+              <th width="5%">值</th>
+              <th width="15%">备注</th>
+              <th width="10%" >操作</th>
+            </tr>
+	        <#if list??>
+		    	<#list list as entity>
+					<tr>
+					 <td >
+						${(entity.name)!''}
+					  </td>
+					  <td >
+						${(entity.code)!''}
+					  </td>
+					   <td >
+						${(entity.value)!''}
+					  </td>
+					  <td >
+							${(entity.note)!''}
+						</td> 
+					  <td>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('setting/sysParameteredit','${(entity.id)!''}')">修改</a>
+					  </td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+     
+      <div id="editor2" class="jqmWindow">
+		     	
+	    <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      	<div class="breadcrumb">当前位置： 系统参数管理 > 刷新缓存</div>
+		<div class="table-show-content">
+	        <table class="table-show" >
+		     	<tr id="sendText">
+		     		<td  align="right">缓存唯一KEY</td>
+		     		<td><input id="key" style="width: 250px;"></input></td>
+		     	</tr>
+		     	<tr id="sendIm">
+		     		<td width="50%">&nbsp;</td>
+		     		<td align="left"><button id="send" class="btn-submit" onclick="refreshCache()">刷新缓存</button></td>
+		     	</tr>
+	        </table>
+	     </div>
+     </div>
+     
+  </body>
+</html>

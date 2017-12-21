@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<#if isPublic?? && isPublic=='4'>
+<title>画作列表</title>
+<#else>
+<title>作品列表</title>
+</#if>
+
+<style type="text/css">  
+.sort_able{cursor:pointer;padding:0 28px;background:#f0f5f7 url(/diyroot/images/small.gif) no-repeat right center !important;}
+.asc{background:#f0f5f7 url(/diyroot/images/asc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+.desc{background:#f0f5f7 url(/diyroot/images/desc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+</style> 
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#laberForm').validate({	
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/product/makeLaber', $("#laberForm").serialize(), function(data) {
+					$("#userForm").submit();
+				});	
+		 	},		
+			 rules:{
+	              "rsDesc":{required:true}
+
+	            },
+	          messages:{
+	                "rsDesc":{required:"标签不能为空"}
+	            }
+			});	
+	
+		$("a[rel=example_group]").fancybox({
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'titlePosition' 	: 'over',
+				'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+				}
+			});
+		var orderFried = $("#orderFried").val();	
+		var sequence = $("#sequence").val();	
+		if(orderFried != '' && sequence != '')
+		{
+			$("#"+orderFried).attr('class',sequence);
+		}
+			
+	$('#uploadZip').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/zip',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.zip;',
+			'fileSizeLimit' : '100MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#url").attr("value",data);
+				$("#url").next().show();
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于100M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		
+		$("#zSubmit").click(function(){
+			this.disabled="false"
+			 $.post('/diys/Bo/product/zUpdate', $("#zProForm").serialize(), function(data) {
+					$("#userForm").submit();
+					this.disabled="true"
+				});	
+		})
+	});
+	function sort(obj)
+	{
+		var sortType = "asc";
+		var className = $(obj).attr('class');
+		var id = $(obj).attr('id');
+		if(className == "asc"){
+			sortType = "desc";
+		}else if(className == "desc")
+		{
+			sortType = "asc";
+		}
+		$("#orderFried").val(id);
+		$("#sequence").val(sortType);
+		$(this).attr('class',sortType);
+		$("#userForm").submit();
+	}
+	
+	function editSort(id) {
+		$("#productId").val(id);
+		$('#editor').jqm({
+					overlay : 30,
+					overlayClass : 'whiteOverlay'
+				}).draggable();
+		$('#editor').jqmShow();
+	}
+	
+	function upload() {
+		$('#editor1').jqm({
+					overlay : 30,
+					overlayClass : 'whiteOverlay'
+				}).draggable();
+		$('#editor1').jqmShow();
+	}
+	
+	function zPro(id) {
+		$("#productId3").val(id);
+		$('#editor3').jqm({
+					overlay : 30,
+					overlayClass : 'whiteOverlay'
+				}).draggable();
+		$('#editor3').jqmShow();
+	}
+	
+   
+   function label(image,id,laber) {
+	   	$("#rsImage").attr("src",image);
+	   	$("#rsId").val(id);
+	   	$("#rsDesc").val(laber);
+		$('#editor2').jqm({
+					overlay : 30,
+					overlayClass : 'whiteOverlay'
+				}).draggable();
+		$('#editor2').jqmShow();
+	}
+
+function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+  
+  	function recommend(id)
+	{
+		edit('product/predit','0&productId='+id);
+	}
+</script>
+</head>
+<body>
+   <div id="main">
+   <#if isPublic?? && isPublic=='4'>
+ <div class="breadcrumb">当前位置：专题管理 > 画作列表</div>
+<#else>
+ <div class="breadcrumb">当前位置：作品管理 > 作品列表</div>
+</#if>
+      <form id="userForm" action="/diys/Bo/product/list" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <input type="hidden" id="orderFried" name="orderFried" value="${(orderFried)!''}" />
+      <input type="hidden" id="sequence" name="sequence" value="${(sequence)!''}" />
+      <input type="hidden" id="isPublic" name="isPublic" value="${(isPublic)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+       		<div>
+				  <div style="display: inline">
+				  		作品id：<input name="id" id="id" type="text" value="${(id)!''}" class="inputtext" style="width: 100px">
+				  		昵称：<input name="nickName" id="nickName" type="text" value="${(nickName)!''}" class="inputtext" style="width: 100px">
+				  		用户id：<input name="userId" id="userId" type="text" value="${(userId)!''}" class="inputtext" style="width: 100px">
+				  </div>
+				   <div style="display: inline">
+				  		标签：<input name="laber" id="laber" type="text" value="${(laber)!''}" class="inputtext" style="width: 100px">
+				  </div>
+				  <div style="display: inline">
+          			创建时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+	                 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+          			<div>
+          			<#if isPublic?? && isPublic=='4'>
+					<#else>
+					  <div style="display: inline">
+				  		是否后台创建：<select id="createFrom" name="createFrom" class="inputtext">
+	              		<option  value="">请选择</option>
+   						<option <#if "${(createFrom)!''}"== "0">selected="selected"</#if> value="0">是</option>
+   						<option <#if "${(createFrom)!''}"== "1">selected="selected"</#if> value="1">否</option>
+           			</select>
+				  </div>
+					</#if>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/></div>
+				</div>
+			</div>
+        </div>
+        <#if isPublic?? && isPublic=='4'>
+					<#else>
+					  <div style="padding-bottom: 5px">
+				      		<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('product/edit?isPublic=1')"/></div>
+				      		<div style="display: inline"><input type="button" value="批量上传"  class="btn-submit" onclick="upload()"/></div>
+				      		 <div style="width:10%;display: inline;"><input type="button" id="btn" value="刷新缓存"  class="btn-submit" onclick="refreshCache()"/></div>
+				      </div>
+					</#if>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+            <th width="5%">作品id</th>
+              <th width="5%">昵称</th>
+              <th width="5%">头像</th>
+              <th width="5%">图片</th>
+               <th width="7%" id="search_count" onclick="sort(this)" class="sort_able">查看数</th>
+              <th width="7%" id="praise_count" onclick="sort(this)" class="sort_able">点赞数</th>
+               <th width="7%" id="discussCount" onclick="sort(this)" class="sort_able">评论数</th>
+              <th width="5%" id="createdWhen" onclick="sort(this)" class="sort_able">时间</th>
+              <th width="5%" id="hotScore" onclick="sort(this)" class="sort_able">热榜</th>
+              <th width="5%" id="magicScore" onclick="sort(this)" class="sort_able">神图</th>
+              <th width="5%" >是否后台创建</th>
+              <th width="7%" >是否相册</th>
+              <th width="10%" >跳转类型</th>
+              <th width="10%" >标签</th>
+              <th width="15%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td>
+							${entity.productId!''}
+						</td>
+						<td >
+							<a href="/diys/Bo/user/list?id=${(entity.userId)!0}">${(entity.nickName)!''}</a>
+						</td>
+						<td >
+							<img width="50px" height="50px" src="${(entity.headImageUrl)!''}">
+						</td>
+						<td>
+							<#if entity?? && entity.url??>
+								<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.url!''}" title=""><img  width="60" height="80" src="${entity.url!''}" /></a>
+							</#if>
+						</td>
+						<td>
+							${entity.searchCount!''}
+						</td>
+						<td>
+							${entity.praiseCount!''}
+						</td>
+						<td>
+							<a href="/diys/Bo/product/discussList?productId=${entity.productId!''}&parentDiscussId=0">${entity.discussCount!''}</a>
+						</td>
+	 					<td>
+							${entity.createdWhen!''}
+						</td>
+						<td>
+							${entity.hotScore!''}
+						</td>
+						<td>
+							${entity.magicScore!''}
+						</td>
+						<td>
+							<#if entity?? && entity.createFrom?? && entity.createFrom == '0'>
+							是
+							<#else>
+							否
+							</#if>
+						</td>
+						<td>
+							<#if entity?? && entity.picCollectFlag?? && entity.picCollectFlag == '1'>
+								<a class="btn btn-look" href="javascript:;" style="color: blue" onclick="edit('product/productCollectEdit','${(entity.productId)!''}')">相册</a>
+							<#else>
+								单个作品
+							</#if>
+						</td>
+						<td>
+							<#if entity?? && entity.jumpType?? && entity.jumpType == 0>
+							详情页
+							<#elseif entity?? && entity.jumpType?? && entity.jumpType == 1>
+							H5页
+							<#elseif entity?? && entity.jumpType?? && entity.jumpType == 2>
+							url地址
+							<#else>
+							下载地址
+							</#if>
+						</td>
+						<td>
+							${entity.productLabel!''}
+						</td>
+						<td>
+							<#if isPublic?? && isPublic=='1'>
+							<a class="btn btn-look" href="javascript:;" onclick="recommend('${(entity.productId)!''}')">推荐作品</a>
+							<a class="btn btn-look" href="javascript:;" onclick="del_new('/diys/Bo/product/examineupdate?id=${entity.productId}&status=2','你确定要下架？','userForm')">下架</a>
+							</#if>	
+							<a class="btn btn-look" href="javascript:;" onclick="edit('product/edit','#{(entity.productId)!0}&isPublic=${isPublic!'1'}')">编辑</a>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('product/jumpEdit','#{(entity.productId)!0}&isPublic=${isPublic!'1'}')">修改跳转类型</a>
+							<a class="btn btn-look" href="javascript:;" onclick="zPro(${entity.productId});">修改点赞数</a>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('product/discussEdit','#{(entity.productId)!0}')">评论</a>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('product/messageEdit','#{(entity.userId)!0}')">推送消息</a>
+							<#if entity?? && entity.createFrom?? && entity.createFrom == '0'>
+							<a class="btn btn-look" href="javascript:;" onclick="del_To('product/delete','你确定要删除？','${entity.productId}&isPublic=${isPublic!'1'}')">删除</a>
+							</#if>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow">
+     <form action="/diys/Bo/product/update" method="post" id="packetForm">
+      <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+     <input type="hidden" id="productId" name="id" value="" />
+      <div class="breadcrumb">当前位置：作品管理> 更改排序</div>
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">更改热榜排序值</td>
+	     		<td width="35%"><input type="text" id="hotSystemScore" name="hotSystemScore" value="0" class="inputtext" /></td>
+	     		<td width="15%" align="right">更改神图排序值</td>
+	     		<td width="35%"><input type="text" id="magicSystemScore" name="magicSystemScore" value="0" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td></td>
+	     	</tr>
+        </table>
+        </div>
+        </form>
+     </div>
+     
+      <div id="editor1" class="jqmWindow">
+      <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <form action="/diys/Bo/product/batchUpload" method="post" id="unloadForm">
+      <div class="breadcrumb">当前位置：作品管理> 批量上传</div>
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">选择文件</td>
+	     		<td width="35%">
+	     		<input type="file" id="uploadZip" name="uploadZip"/> 
+	     		<input type="hidden" id="url" name="url" class="inputtext" />
+	     		   <span class="note" style="color: red;display:none;">上传成功</span>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+        </form>
+     </div>
+     
+     <div id="editor2" class="jqmWindow">
+       <form id="laberForm"  method="post">
+     <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+       <input type="hidden" name="rsId" id="rsId" name="id"  />
+      <div class="breadcrumb">当前位置：素材管理> 打标签</div>
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+		     	<td width="35%"><img name="rsImage" id="rsImage" style="width: 80px;height: 80px"></td>
+		     	<td width="35%"><textarea name="rsDesc" id="rsDesc" name="desc" style="width: 250px;height: 100px;resize: none;"></textarea></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+        </form>
+    </div>
+    
+         <div id="editor3" class="jqmWindow">
+		    <form action="/diys/Bo/product/zSave" method="post" id="zProForm">
+		      <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+		      <input type="hidden" id="productId3" name="id" value="" />
+		      <div class="breadcrumb">当前位置：作品管理> 修改点赞和查看数</div>
+			  <div class="table-show-content">
+		        <table class="table-show" >
+			     	<tr>
+			     		<td width="15%" align="right">更改点赞数</td>
+			     		<td width="35%"><input type="text" id="zProNum" name="zProNum" value="0" class="inputtext" /></td>
+			     		<td width="15%" align="right">更改查看数</td>
+			     		<td width="35%"><input type="text" id="serProNum" name="serProNum" value="0" class="inputtext" /></td>
+			     	</tr>
+			     	<tr>
+			     		<td></td>
+			     		<td align="right"><input type="button" class=" btn-submit" id="zSubmit" name="btn1" value="提交"/></td>
+			     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+			     		<td></td>
+			     	</tr>
+		        </table>
+		       </div>
+		   </form>
+     </div>
+</body>
+</html>

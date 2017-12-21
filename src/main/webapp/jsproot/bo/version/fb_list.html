@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>反馈列表</title>
+
+<script type="text/javascript">
+	function selectInfo() {
+	  	$("#pageNo").val("1"); 
+	  	$("#userForm").submit();
+	  	
+	  }
+	function selectReset(){
+		$("#remark").val("");
+		$("#startDate").val("");
+		$("#endDate").val("");
+	}
+  
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：客户端管理 > 反馈列表</div>
+      <form id="userForm" action="/diys/Bo/client/fb_list" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div>
+      	<div style="display: inline">
+			备注：<input name="remark" id="remark" type="text" value="${(remark)!''}" class="input-style">
+			创建时间：<input type="text" id="startDate" name="startDate" value="${startDate!''}" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+			&nbsp;至&nbsp;<input type="text" id="endDate" name="endDate" value="${endDate!''}" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+		</div>
+         <div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()" id="btn" value="查询"  class="btn-submit" "/></div>
+      	 <div style="width:10%;display: inline;float: right"><input type="button" id="btn1" value="重置" class="btn-submit" onclick="selectReset()" /></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">内容</th>
+              <th width="5%">联系方式</th>
+               <th width="5%">imei</th>
+                <th width="5%">型号</th>
+              <th width="10%" >创建时间</th>
+              <th width="10%" >备注</th>
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.content)!''}
+						</td>
+						<td >
+							${(entity.phone)!''}
+						</td>
+						<td >
+							${(entity.imei)!''}
+						</td>
+						<td >
+							${(entity.machine)!''}
+						</td>
+						<td>
+							${entity.createdWhen!''}
+						</td>
+						<td>
+							${entity.remark!''}
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('client/fb_edit','#{(entity.id)!0}')">编辑</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

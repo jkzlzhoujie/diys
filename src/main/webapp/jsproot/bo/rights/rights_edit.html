@@ -1,0 +1,51 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$('#registForm').validate({	
+			 rules:{
+		            rightsName:{
+		            	required:true,
+		            	maxlength:100
+		           	},
+		            rightsCode:{
+			            required:true,
+			            maxlength:100
+		            }
+	          },
+	          messages:{
+	                rightsName:{
+		                required:"权限名称不能为空",
+		                maxlength:"最大长度为20个字符"
+	                },
+	                rightsCode:{
+		                required:"权限编号不能为空",
+		                maxlength:"最大长度为20个英文字符"
+	                }
+	            }
+			});	 
+	 	});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：权限管理> 编辑权限</div>
+      <form action="/diys/Bo/rh/rights_save" method="post" id="registForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+     			<td width="40%" align="right">权限名称</td>
+	     		<td width="40%"><input type="text" name="rightsName" value="${(entity.rightsName)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">权限编号</td>
+	     		<td><input type="text" name="rightsCode" id="rightsCode" value="${(entity.rightsCode)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+		          <td align="right"><input type="submit" value="提交"  class="btn-submit" /></td>
+		          <td><input type="reset" value="重置" class="btn-submit" /></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

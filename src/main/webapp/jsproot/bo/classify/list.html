@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>分类列表</title>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+	<script type="text/javascript">
+	    	
+	    	function selectOne(){
+	    		$("#pageNo").val("1");
+	    		$("#classifyForm").submit();
+	    	}
+	    	function refreshIndexCache() {
+			 	$('#loadingimg').jqmShow();
+				$.post('/diys/Bo/topic/refreshCache',function(data){
+					myAlert("成功");
+					$('#loadingimg').jqmHide();
+				});
+			}
+	</script>
+	
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：分类管理 > 分类列表</div>
+      <form id="classifyForm" action="/diys/Bo/classify/list" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+       <div class="table-search">
+		<div style="display:inline">
+			分类名称：
+				<input type="text" name="name" class="input-style"/>
+			分类类型：
+				 <select id="type" name="type" class="inputtext">
+             			<option  value="">请选择</option>
+             			<option <#if "${type!''}" ==  "1">selected="selected"</#if> value="1">主题</option>
+             			<option <#if "${type!''}" ==  "2">selected="selected"</#if> value="2">贴图</option>
+             			<option <#if "${type!''}" ==  "3">selected="selected"</#if> value="3">颜文字</option>
+             			<option <#if "${type!''}" ==  "4">selected="selected"</#if> value="4">表情</option>
+	          	</select>
+          	状态：
+	          	<select id="type" name="status" class="inputtext">
+             			<option  value="">请选择</option>
+             			<option <#if "${status!''}" ==  "1">selected="selected"</#if> value="1">正常</option>
+             			<option <#if "${status!''}" ==  "2">selected="selected"</#if> value="2">下线</option>
+	          	</select>
+		</div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1"  class="btn-submit" value="查询" onclick="selectOne()" /></div>
+	  </div>
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+      		<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('classify/edit')"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="10%" >分类ID</th>
+              <th width="10%" >分类名称</th>
+              <th width="10%">分类类型</th>
+              <th width="10%">分类图片</th>
+              <th width="5%">排序值</th>
+              <th width="5%">状态</th>
+              <th width="5%">点赞数</th>
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.name)!''}
+						</td>
+						<td >
+							<#if entity.type??>
+								<#if "${entity.type}" == "1">主题
+								<#elseif "${entity.type}" == "2">贴图
+									<#elseif "${entity.type}" == "3">颜文字
+									<#elseif "${entity.type}" == "4">表情
+								</#if>
+							</#if>
+						</td>
+						<td>
+							<img src="${(entity.image)!''}"  style="width: 120px;height: 60px"/>
+						</td>
+						<td>
+							${(entity.sort)!''}
+						</td>
+						<td>
+							<#if entity.status??>
+								<#if "${entity.status}" == "1"><p style="color: fuchsia">正常</p>
+									<#else><p style="color: blue">下线</p>
+								</#if>
+							</#if>
+						</td>
+						<td>
+							${(entity.loveNum)!''}
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('classify/edit','#{(entity.id)!0}')">编辑</a>
+							<a class="btn btn-delete" onclick="del_('classify/del','#{(entity.id)!0}')">删除</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<body>
+<script type="text/javascript">
+		
+		$(function(){
+			$('#classifyAddForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/operate/helpSave',$("#classifyAddForm").serialize(),function(data){
+					$("#orderForm").submit();
+				})
+			},
+			 rules:{
+		           content:{
+		              required:true
+		          },
+		          enParamName:{
+		              required:true
+		          }
+	          },
+	          messages:{
+	                  content:{
+		                required:"H5内容不能为空"
+	                },
+	                enParamName:{
+		                required:"类型不能为空"
+	                }
+	            }			});	
+			
+		
+		})
+		
+		var editor;
+	$(function() {
+		editor = KindEditor.create('textarea[name="content"]', {
+		   resizeType : 0,
+		   uploadJson : domainName+'/diys/upload/kindEditor',
+		   formatUploadUrl:false,
+		   width : '620',
+		   height : '150',
+		   afterBlur: function(){this.sync();},
+		   items : [
+				'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+				'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+				'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
+		});
+	});
+	
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：新增帮助与规则</div>
+      <form action="/diys/Bo/operate/helpSave" method="post" id="classifyAddForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">类型</td>
+	     		<td>
+	     		<select id="enParamName" name="enParamName" >
+	     		<option value="">请选择类型</option>
+	     		<#if typeList??>
+				<#list typeList as type>
+					   <option <#if entity?? && "${entity.enParamName}" ==  "${type.code}"> selected="selected"</#if> value="${type.code}">${type.name}</option>
+				</#list>
+				</#if>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">H5内容</td>
+    				<td>
+    					<textarea id="content" name="content" style="width: 250px;height: 50px;resize: none;">${(content)!''}</textarea>
+    				</td>
+	     	</tr>
+	     	<tr>	     		
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

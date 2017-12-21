@@ -1,0 +1,303 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<style type="text/css">
+			.inputstyle{width:260px;height:22px;}
+			#entityiddis{display:none}		
+		</style>
+		
+		<script type="text/javascript">
+			var status = null;
+		
+		$(function(){
+						status = $("#status option:selected").val(); 
+			$('#designereditForm').validate({	 
+				submitHandler:function(form){
+						alert(status+"555");
+					$.post('/diys/Bo/designer/designerEditSave',$("#designereditForm").serialize(),function(data){
+						$("#designerForm").submit();
+					});
+					},
+			 rules:{
+				 failResion:{required:
+						function(){
+						status = $("#status").val(); 
+						alert(status+",666");
+							if(status=="666"){
+					   	 		return true;
+					  		}else{
+								return false;
+					  		}
+						}
+						},
+				 userId:{required:true,number:true},
+				 realName:{required:true},
+				 labels:{required:true},
+				 idCardNum:{required:true}
+	          },
+	          messages:{
+	            }
+			});
+			
+			//生活照
+			$('#uploadLifeImageUrl').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#lifeImageUrl").attr("value",data);
+				$("#lifeImageUrl").next().hide();
+				document.getElementById("previewLifeImageUrl").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于10M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+			
+			//毕业证书照片
+			$('#uploadfinishSchoolPhoto').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#finishSchoolPhoto").attr("value",data);
+				$("#finishSchoolPhoto").next().hide();
+				document.getElementById("previewfinishSchoolPhoto").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于10M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+
+		//身份证照片1	
+		$('#uploadIdCardUrl1').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#idCardUrl1").attr("value",data);
+				$("#idCardUrl1").next().hide();
+				document.getElementById("previewIdCardUrl1").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于10M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		//身份证照片2
+		$('#uploadIdCardUrl2').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#idCardUrl2").attr("value",data);
+				$("#idCardUrl2").next().hide();
+				document.getElementById("previewIdCardUrl2").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于10M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		});
+		
+		
+			
+		</script>
+	</head>
+	
+	<body>
+		
+		<div>
+			  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+		      <div class="breadcrumb">当前位置：设计师管理>设计师编辑</div>
+		      <form action="/diys/Bo/designer/designerEditSave" method="post" id="designereditForm">
+		      <div class="table-show-content">
+		        <table class="table-show" >
+		        	<#if (entity??)>
+				     		<input type="hidden" id="id" name="id" value="${(entity.id)!''}" />
+			     	</#if>
+			     	<tr>
+			     		<td align="right">用户ID：<br><span style="color:red">(此项为必填*)</span>：</td><td><input class="inputstyle" type="text" id="userId" name="userId" value="${(entity.userId)!''}"/></td>
+			     	</tr>
+			     	<tr>
+			     		<td align="right">真实姓名：</td><td><input class="inputstyle" type="text" id="realName" name="realName" value="${(entity.realName)!''}"/></td>
+			     		<td align="right">身份证号：</td><td><input class="inputstyle" type="text" id="idCardNum" name="idCardNum" value="${(entity.idCardNum)!''}"/></td>
+			     	</tr>
+			     	<tr>
+			     		<td align="right">毕业学校：</td>
+			     		<td><input class="inputstyle" type="text" id="school" name="school" value="${(entity.school)!''}"/></td>
+			     		<td align="right">毕业时间：</td>
+			     		<td>
+			     		<input type="text" id="finishSchoolTime" name="finishSchoolTime" value="${(entity.finishSchoolTime)!''}" style="height:22px;width:260px;" class="Wdate" onClick="WdatePicker()"
+			     		</td>
+			     	</tr>
+			     	<tr>
+			     		
+			     		<td align="right">技能标签：</td>
+			     		<td><input class="inputstyle" type="text" id="labels" name="labels" value="${(entity.labels)!''}"/></td>
+			     		<td align="right">设计师状态：</td>
+				     	<td >
+				     	<select id="status" name="status" class="inputstyle">
+		   						<option 
+		   							<#if (entity?? && "0" == "${entity.status!''}") || (entity??) == false >selected="selected"</#if> value="0">待审核
+		   						</option>
+		   						<option 
+		   							<#if entity?? && "1" == "${entity.status!''}">selected="selected"</#if> value="1">审核中
+		   						</option>
+		   						<option 
+		   							<#if entity?? && "2" == "${entity.status!''}">selected="selected"</#if> value="2">通过
+		   						</option>
+		           			</select>
+		           			<input type="text" id="failResion" name="failResion"   class="inputtext"/>
+				     	</td>
+			     	<tr>
+			     	<tr>
+			     		<td align="right">生活照：</td>
+		     			<td >
+				     		<input type="file" id="uploadLifeImageUrl" name="uploadLifeImageUrl" />
+				     		<input type="hidden" id="lifeImageUrl" name="lifeImageUrl" value="${(entity.lefeImageUrl)!''}" class="inputtext" />
+					        <span class="note" style="color: red;"></span>
+					        <span class="tp"><img id="previewLifeImageUrl" src="${(entity.lifeImageUrl)!''}" width="220" height="150" /></span>
+			     		</td>
+			     		<td align="right">毕业证：</td>
+			     		<td>
+			     			<input type="file" id="uploadfinishSchoolPhoto" name="uploadfinishSchoolPhoto" />
+				     		<input type="hidden" id="finishSchoolPhoto" name="finishSchoolPhoto" value="${(entity.finishSchoolPhoto)!''}" class="inputtext" />
+					        <span class="note" style="color: red;"></span>
+					        <span class="tp"><img id="previewfinishSchoolPhoto" src="${(entity.finishSchoolPhoto)!''}" width="220" height="150" /></span>
+			     		</td>
+			     	</tr>
+			     	<tr>
+			     		<td align="right">身份证照1：</td>
+		     			<td >
+				     		<input type="file" id="uploadIdCardUrl1" name="uploadIdCardUrl1" />
+				     		<input type="hidden" id="idCardUrl1" name="idCardUrl1" value="${(entity.idCardUrl1)!''}" class="inputtext" />
+					        <span class="note" style="color: red;"></span>
+					        <span class="tp"><img id="previewIdCardUrl1" src="${(entity.idCardUrl1)!''}" width="220" height="150" /></span>
+				     		
+					    </td>
+					    <td align="right">身份证照2：</td>
+					    <td colspan="2">
+					    	<input type="file" id="uploadIdCardUrl2" name="uploadIdCardUrl2" />
+				     		<input type="hidden" id="idCardUrl2" name="idCardUrl2" value="${(entity.idCardUrl2)!''}" class="inputtext" />
+					        <span class="note" style="color: red;"></span>
+					        <span class="tp"><img id="previewIdCardUrl2" src="${(entity.idCardUrl2)!''}" width="220" height="150" /></span>
+					    </td>
+			     		
+			     	</tr>
+			     	<tr>
+			     		<td colspan="2" align="center"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+			     		<td colspan="2" align="center"><input type="reset" class=" btn-submit" name="btn2" value="重置"/></td>
+			     	</tr>
+		        </table>
+		        </div>
+		      </form>
+		    </div>
+	<body>
+
+
+</html>

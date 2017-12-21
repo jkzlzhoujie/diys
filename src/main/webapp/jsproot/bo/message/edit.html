@@ -1,0 +1,156 @@
+<body>
+<script type="text/javascript">
+
+    function changePlatform()
+    {
+   		var platformId =  $("#messageType").find("option:selected").val();
+    	$(".typeT").hide();
+    	if(platformId != "")
+    	{
+    		if(platformId == 5)
+    			$(".type2").show();
+    		else
+    			$(".type1").show();
+    	}
+    }
+
+	$(function(){
+		$("#messageType").change(function(){
+			changePlatform();
+		});
+	
+		changePlatform();
+
+		$('#classifyAddForm').validate({	 
+			 rules:{
+	              title:{
+		              required:true
+	             },
+	              type:{
+		              required:true
+	             },
+	              content:{
+		              required:true
+	             }
+
+	          },
+	          messages:{
+	                 title:{
+	                	 required:"标题不能为空"
+		            },
+		             type:{
+	               		 required:"类型不能为空"
+		            },
+		             content:{
+	               		 required:"内容不能为空"
+		            }
+
+	            }
+			});	
+	 	});
+	 
+	 
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：消息管理 > 新增消息</div>
+      <form action="/diys/Bo/message/save" method="post" id="classifyAddForm">
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">消息标题</td>
+	     		<td><textarea name="title" rows="2" cols="50"></textarea> </td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">消息内容</td>
+	     		<td><textarea name="content" rows="5" cols="50"></textarea> </td>
+	     	</tr>
+	     	<tr>
+     			<td align="right">类型 </td>
+	     		<td>
+		     		<select id="messageType" name="type" class="selectOpt w164">
+             			<option  value="">请选择类型</option>
+	   					<option <#if "${(entity.type)!0}"== "1">selected="selected"</#if> value="1">表情</option>
+	   					<option <#if "${(entity.type)!0}"== "2">selected="selected"</#if> value="2">贴图</option>
+	   					<option <#if "${(entity.type)!0}"== "3">selected="selected"</#if> value="3">颜文字</option>
+	   					<option <#if "${(entity.type)!0}"== "4">selected="selected"</#if> value="4">主题</option>
+	   					<option <#if "${(entity.type)!0}"== "5">selected="selected"</#if> value="5">外链</option>
+	   					<option <#if "${(entity.type)!0}"== "13">selected="selected"</#if> value="13">其他</option>
+          			</select>
+          			<span style="color: red;">主题填分类ID,表情，贴图，颜文字填素材ID,其他不填</span>
+		     	</td>
+	     	</tr>
+<!--
+	     	<tr class="typeT type1">
+     			<td align="right"> </td>
+	     		<td>
+		     		   <#if materialList1??><#assign tdCount=1>
+              		<#list materialList1 as material>
+		              	<input value="${material.id}" <#if entity?? && "${entity.materialId!''}"?index_of('${material.id}') != -1 >checked="checked"</#if> name="materialId" type="checkbox">${material.name}
+              			<#if (tdCount) % 12 =0></br></#if>
+              			<#assign tdCount=tdCount+1>
+              		</#list>
+              	</#if>
+		     	</td>
+	     	</tr>
+	     	<tr class="typeT type2">
+     			<td align="right"> </td>
+	     		<td>
+		     		   <#if materialList2??><#assign tdCount=1>
+              		<#list materialList2 as material>
+		              	<input value="${material.id}" <#if entity?? && "${entity.materialId!''}"?index_of('${material.id}') != -1 >checked="checked"</#if> name="materialId" type="checkbox">${material.name}
+              			<#if (tdCount) % 12 =0></br></#if>
+              			<#assign tdCount=tdCount+1>
+              		</#list>
+              	</#if>
+		     	</td>
+	     	</tr>
+	     	<tr class="typeT type3">
+     			<td align="right"> </td>
+	     		<td>
+		     		   <#if materialList3??><#assign tdCount=1>
+              		<#list materialList3 as material>
+		              	<input value="${material.id}" <#if entity?? && "${entity.materialId!''}"?index_of('${material.id}') != -1 >checked="checked"</#if> name="materialId" type="checkbox">${material.name}
+              			<#if (tdCount) % 12 =0></br></#if>
+              			<#assign tdCount=tdCount+1>
+              		</#list>
+              	</#if>
+		     	</td>
+	     	</tr>
+	     	<tr class="typeT type4">
+     			<td align="right"> </td>
+	     		<td>
+		     		   <#if themeList??><#assign tdCount=1>
+              		<#list themeList as theme>
+		              	<input value="${theme.id}" <#if entity?? && "${entity.themeId!''}"?index_of('${theme.id}') != -1 >checked="checked"</#if> name="themeId" type="checkbox">${theme.themeName}
+              			<#if (tdCount) % 12 =0></br></#if>
+              			<#assign tdCount=tdCount+1>
+              		</#list>
+              	</#if>
+		     	</td>
+	     	</tr>
+	     	<tr class="typeT type5">
+	     		<td  align="right">活动url</td>
+	     		<td><input type="text" id="url" name="url" value="${(entity.url)!''}" class="inputtext" /></td>
+	     	</tr>
+-->
+			
+			<tr class="typeT type1">
+				<td align="right">点击ID</td>
+				<td><input type="text"  name="materialId" class="inputtext"/></td>
+			</tr>
+			
+			<tr class="typeT type2">
+				<td align="right">活动页面url</td>
+				<td><input type="text"  name="url" class="inputtext"/></td>
+			</tr >
+			
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="left"><input type="submit" class=" btn-submit" name="btn1" value="发送"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+</body>

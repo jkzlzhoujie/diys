@@ -1,0 +1,153 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(form){
+				$.post('/diys/Bo/operate/sysPrivilegeSave',$("#editForm").serialize(),function(data){
+					$("#sysPrivilegeForm").submit();
+				});
+			},
+			rules:{
+				code:{required:true},
+				level:{required:true},
+				code:{required:true},
+				name:{required:true}
+			}
+		});
+	})
+	
+	$('#uploadImageUrl').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#imageUrl").attr("value",data);
+				$("#imageUrl").next().hide();
+				document.getElementById("previewImageUrl").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#imageUrl").next().html("文件大小不大于10M");
+				  	 	$("#imageUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		$('#uploadGrayImageUrl').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#grayImageUrl").attr("value",data);
+				$("#grayImageUrl").next().hide();
+				document.getElementById("previewGrayImageUrl").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#grayImageUrl").next().html("文件大小不大于1M");
+				  	 	$("#grayImageUrl").next().show();
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+</script>
+     <div>
+    	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+    	<div class="breadcrumb">当前位置：运营管理> 特权编辑</div>
+    	<form action="/diys/Bo/operate/sysPrivilegeSave" id="editForm" method="post">
+    		<input type="hidden" name="id" value="${(entity.id)!''}" >
+    		<div class="table-show-content">
+    		<table class="table-show" >
+    			<tr>
+    				<td align="right"> 图标</td>
+    				<td>
+			     		<input type="file" id="uploadImageUrl" name="uploadImageUrl"/> 
+			     		<input type="hidden" id="imageUrl" name="imageUrl" value="${(entity.imageUrl)!''}" class="inputtext" />
+				        <span class="note" style="color: red;"></span>
+				        <span class="tp"><img id="previewImageUrl" src="${(entity.ImageUrl)!''}" width="80" height="80" /></span></div>
+		     		</td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 灰色图标</td>
+    				<td>
+			     		<input type="file" id="uploadGrayImageUrl" name="uploadGrayImageUrl"/> 
+			     		<input type="hidden" id="grayImageUrl" name="grayImageUrl" value="${(entity.grayImageUrl)!''}" class="inputtext" />
+				        <span class="note" style="color: red;"></span>
+				        <span class="tp"><img id="previewGrayImageUrl" src="${(entity.grayImageUrl)!''}" width="80" height="80" /></span></div>
+		     		</td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 名称</td><td><input type="text" name="name" value="${(entity.name)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 编码</td><td><input type="text" name="code" value="${(entity.code)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 等级</td><td><input type="text" name="level" value="${(entity.level)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 备注</td><td><input type="text" style="width: 300px" name="note" value="${(entity.note)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 状态</td>
+    				<td>
+			     		<select id="status" name="status" class="selectOpt w164">
+		   					<option <#if "${(entity.status)!0}"== "1">selected="selected"</#if> value="1">上线</option>
+		   					<option <#if "${(entity.status)!0}"== "2">selected="selected"</#if> value="2">下线</option>
+	          			</select>
+		     		</td> 
+    			</tr>
+    			<tr>
+    				<td align="right"><input type="submit" value="提交" class=" btn-submit" /> </td>
+    				<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>

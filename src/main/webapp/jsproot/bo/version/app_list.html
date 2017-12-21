@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>客户端管理</title>
+<script type="text/javascript">
+		$(function(){
+$('#uploadBanner').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/userApp',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.apk;*.ipa;',
+			'fileSizeLimit' : '100MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#url").html("上传成功，地址为"+data);
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于100M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于100M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		});
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：客户端管理 > 上传包</div>
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+       <span class="note" style="color: red;font-size: 30px">注意同名文件将被覆盖，上传成功后生成的下载路径的格式为http://121.40.107.240:8091/diys/rs/app/userApp/+文件名</span>
+      		<input type="file" id="uploadBanner" name="uploadBanner"/> 
+	        <span class="note" id="url" style="color: red;"></span>
+      </div>
+       </div>
+       </div>
+</body>
+</html>

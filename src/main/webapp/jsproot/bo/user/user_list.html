@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>用户列表</title>
+<style type="text/css">  
+.sort_able{cursor:pointer;padding:0 28px;background:#f0f5f7 url(/diyroot/images/small.gif) no-repeat right center !important;}
+.asc{background:#f0f5f7 url(/diyroot/images/asc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+.desc{background:#f0f5f7 url(/diyroot/images/desc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+</style> 
+<script type="text/javascript">
+	$(document).ready(function() {
+		var orderFried = $("#orderFried").val();	
+		var sequence = $("#sequence").val();	
+		if(orderFried != '' && sequence != '')
+		{
+			$("#"+orderFried).attr('class',sequence);
+		}
+	});
+	
+	function sort(obj)
+	{
+		var sortType = "asc";
+		var className = $(obj).attr('class');
+		var id = $(obj).attr('id');
+		if(className == "asc"){
+			sortType = "desc";
+		}else if(className == "desc")
+		{
+			sortType = "asc";
+		}
+		$("#orderFried").val(id);
+		$("#sequence").val(sortType);
+		$(this).attr('class',sortType);
+		$("#userForm").submit();
+	}
+	
+	function setUser(id,status)
+	{
+		$.post('/diys/Bo/user/setUser', {
+			id : id,
+			status:status,
+		}, function() {
+			$("#userForm").submit();
+		})
+	}
+	
+	function userZ(id)
+	{
+		$.post('/diys/Bo/user/userBatchZ', {
+			userId : id
+		}, function() {
+		})
+		myAlert("成功");
+	}
+	
+
+	function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：用户管理 > 用户列表</div>
+      <form id="userForm" action="/diys/Bo/user/list" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+         <input type="hidden" id="orderFried" name="orderFried" value="${(orderFried)!''}" />
+      <input type="hidden" id="sequence" name="sequence" value="${(sequence)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+      <div style="width:100%;padding-top: 10px">
+ 					<div style="display: inline"> 绑定微信：
+ 					<select style="width: 50px" id="isWeixin" name="isWeixin" class="select-style">
+ 					<option value="">无</option>
+	   				<option <#if isWeixin?? && isWeixin=="0">selected="selected"</#if> value="0">是</option>
+	   				<option <#if isWeixin?? && isWeixin=="1">selected="selected"</#if> value="1">否</option>
+			      </select>
+			      </div>
+			      <div style="display: inline"> 绑定QQ：
+ 					<select style="width: 50px" id="isQq" name="isQq" class="select-style">
+ 					<option value="">无</option>
+	   				<option <#if isQq?? && isQq=="0">selected="selected"</#if> value="0">是</option>
+	   				<option <#if isQq?? && isQq=="1">selected="selected"</#if> value="1">否</option>
+			      </select>
+			      </div>
+			      <div style="display: inline"> 绑定微博：
+ 					<select style="width: 50px" id="isWeibo" name="isWeibo" class="select-style">
+ 					<option value="">无</option>
+	   				<option <#if isWeibo?? && isWeibo=="0">selected="selected"</#if> value="0">是</option>
+	   				<option <#if isWeibo?? && isWeibo=="1">selected="selected"</#if> value="1">否</option>
+			      </select>
+			      </div>
+			      <div style="display: inline">
+          			手机号： <input type="text" name="mobile" value="${mobile!''}" class="inputtext"  style="width: 100px"/>
+          			</div>
+          			<div style="display: inline">
+          			用户id： <input type="text" name="id" value="${id!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          			  <div style="display: inline">
+          			昵称： <input type="text" name="nickName" value="${nickName!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          			<div style="display: inline">
+          			创建时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:80px;" class="Wdate" onClick="WdatePicker()" />
+	                 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:80px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+          			<div style="margin-top: 5px">
+          			  <div style="display: inline">
+          			   渠道：
+ 					<select style="width: 150px" id="channel" name="channel" class="select-style">
+ 					<option value="">请选择渠道</option>
+ 					<#if changeList??>
+   						<#list changeList as change>
+   						<option <#if "${(channel)!''}"== "${change.enParamName}">selected="selected"</#if> value="${change.enParamName}">${change.paramValue}</option>
+   						</#list>
+   						</#if>
+			      </select>
+			       </div>
+			       <div style="display: inline">
+				  		是否后台创建：<select id="registerFrom" name="registerFrom" class="inputtext">
+	              		<option  value="">请选择</option>
+   						<option <#if "${(registerFrom)!''}"== "0">selected="selected"</#if> value="0">是</option>
+   						<option <#if "${(registerFrom)!''}"== "1">selected="selected"</#if> value="1">否</option>
+           			</select>
+				  </div>
+				  <div style="display: inline"> 禁止评论：
+ 					<select style="width: 50px" id="isBan" name="isBan" class="select-style">
+ 					<option value="">无</option>
+	   				<option <#if isBan?? && isBan=="0">selected="selected"</#if> value="0">否</option>
+	   				<option <#if isBan?? && isBan=="1">selected="selected"</#if> value="1">是</option>
+			      </select>
+			      </div>
+			      
+			      <div style="display: inline">
+          			用户身份标识： <input type="text" name="identity" value="${identity!''}" class="inputtext"  style="width: 80px"/>
+          		 </div>
+          		 <div style="display: inline">
+          			用户imei： <input type="text" name="imei" value="${imei!''}" class="inputtext"  style="width: 80px"/>
+          		 </div>
+          </div>
+        </div>
+        <div style="padding-bottom: 5px">
+      		<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('user/edit')"/></div>
+      		<div style="display: inline"><input type="button" id="btn" value="批量新增"  class="btn-submit" onclick="del_To('user/moreAdd','确实批量新增20个用？','')"/></div>
+      		<div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()"  id="btn" value="查询"  class="btn-submit"/></div>
+      </div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">用户ID</th>
+              <th width="5%">手机号</th>
+              <th width="5%">昵称</th>
+              <th width="5%">imei号</th>
+     <!--         <th width="5%">是否绑定qq</th>
+               <th width="5%">是否绑定微信</th>
+              <th width="5%">是否绑定微博</th> --> 
+               <th width="5%">头像</th>
+                <th width="5%" id="product_count" onclick="sort(this)" class="sort_able">作品数</th>
+                <th width="5%">是否可以举报</th>
+                <th width="5%">是否可以评论</th>
+                <th width="5%">是否后台创建</th>
+                 <th width="5%">渠道</th>
+              <th width="10%" >注册时间</th>
+              <th width="10%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.mobile)!''}
+						</td>
+						<td >
+							${(entity.nickName)!''}
+							<div style="color: red;">
+							<#if entity?? && entity.userType?? && entity.userType == 1>
+							(设计师)
+							</#if>
+							</div>
+						</td>
+						<td >
+							${(entity.imei)!''}
+						</td>
+		<!--  			<td >
+						<#if entity.qqUserId??>
+						是
+						<#else>
+						否
+						</#if>
+						</td>
+						<td >
+						<#if entity.weixinUserId??>
+						是
+						<#else>
+						否
+						</#if>
+						</td>
+						<td >
+						<#if entity.weiboUserId??>
+						是
+						<#else>
+						否
+						</#if>
+						</td>-->	
+						<td >
+						<img width="50px" height="50px" src="${(entity.headImageUrl)!''}">
+						</td>
+						<td>
+						<a style="color: blue;" href="/diys/Bo/product/mylist?userId=${(entity.id)!''}">${entity.productCount!''}</a>
+						</td>
+						<td>
+						<#if entity?? && entity.accuErrCount gt 3>
+						否
+						<#else>
+						是
+						</#if>
+						</td>
+						<td>
+						<#if entity?? && entity.isBan == 1>
+						否
+						<#else>
+						是
+						</#if>
+						</td>
+						<td>
+						<#if entity?? && entity.registerFrom?? && entity.registerFrom == '0'>
+						是
+						<#else>
+						否
+						</#if>
+						</td>
+						<td>
+							${entity.clientChannel!''}
+						</td>
+						<td>
+							${entity.createdWhen!''}
+						</td>
+						<td>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('user/dredit',${(entity.id)!0});">添加达人</a>
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('user/user_group_edit','0&userId=${(entity.id)!''}')" >添加到分组</a>
+							<#if entity?? && entity.registerFrom?? && entity.registerFrom == '0'>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('user/edit','${(entity.id)!0}')">编辑</a>
+						</#if>
+							<#if entity?? && entity.accuErrCount gt 3>
+							<a class="btn btn-look" href="javascript:;" onclick="del_To('user/resetNum','确实启用？','${(entity.id)!0}&status=1')">启用举报</a>
+							<#else>
+							<a class="btn btn-look" href="javascript:;" onclick="del_To('user/resetNum','确实禁用？','${(entity.id)!0}&status=2')">禁用举报</a>
+							</#if>
+							<#if entity?? && entity.userType?? && entity.userType == 0>
+							<a class="btn btn-look" href="javascript:;" onclick="setUser(${(entity.id)!0},1)">设为设计师</a>
+							<#else>
+							<a class="btn btn-look" href="javascript:;" onclick="setUser(${(entity.id)!0},0)">设为普通用户</a>
+							</#if>
+							<#if entity?? && entity.isBan?? && entity.isBan == 0>
+							<a class="btn btn-look" href="javascript:;" onclick="del_To('user/isBan','确定禁评？','${(entity.id)!0}&isBan=1')" >禁止评论</a>
+							<#else>
+							<a class="btn btn-look" href="javascript:;" onclick="del_To('user/isBan','确定取消禁评？','${(entity.id)!0}&isBan=0')" >取消禁评</a>
+							</#if>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('user/pushMsg','#{(entity.id)!0}&type=1')">推送消息</a>
+							<a class="btn btn-look" href="javascript:;" onclick="userZ(${(entity.id)!0})">使用用户批量点赞</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

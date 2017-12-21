@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>P图列表</title>
+
+<style type="text/css">  
+.sort_able{cursor:pointer;padding:0 28px;background:#f0f5f7 url(/diyroot/images/small.gif) no-repeat right center !important;}
+.asc{background:#f0f5f7 url(/diyroot/images/asc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+.desc{background:#f0f5f7 url(/diyroot/images/desc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+</style> 
+<script type="text/javascript">
+		var orderFried = $("#orderFried").val();	
+		var sequence = $("#sequence").val();	
+		if(orderFried != '' && sequence != '')
+		{
+			$("#"+orderFried).attr('class',sequence);
+		}
+		
+	function sort(obj)
+	{
+		var sortType = "asc";
+		var className = $(obj).attr('class');
+		var id = $(obj).attr('id');
+		if(className == "asc"){
+			sortType = "desc";
+		}else if(className == "desc")
+		{
+			sortType = "asc";
+		}
+		$("#orderFried").val(id);
+		$("#sequence").val(sortType);
+		$(this).attr('class',sortType);
+		$("#userForm").submit();
+	}
+	$(document).ready(function() {
+		$("a[rel=example_group]").fancybox({
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'titlePosition' 	: 'over',
+				'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+				}
+			});
+		$("a[rel=example_groupTo]").fancybox({
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'titlePosition' 	: 'over',
+				'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+				}
+			});
+	
+	$("#zSubmit").click(function(){
+			this.disabled="false"
+			 $.post('/diys/Bo/product/zUpdate', $("#zProForm").serialize(), function(data) {
+					$("#userForm").submit();
+					this.disabled="true"
+				});	
+		})
+	});	
+	function zPro(id) {
+		$("#productId3").val(id);
+		$('#editor3').jqm({
+					overlay : 30,
+					overlayClass : 'whiteOverlay'
+				}).draggable();
+		$('#editor3').jqmShow();
+	}
+	
+  function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	$("#userForm").submit();
+  }
+  
+  function selectReset() {
+  	 $("#srcProductId").val("");
+  	 $("#nickName").val("");
+  	 $("#id").val("");
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+ <div class="breadcrumb">当前位置：专题管理 > p图列表</div>
+      <form id="userForm" action="/diys/Bo/topic/pTlist" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <input type="hidden" id="orderFried" name="orderFried" value="${(orderFried)!''}" />
+      <input type="hidden" id="sequence" name="sequence" value="${(sequence)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+				  <div style="display: inline">
+				  		id：<input name="id" id="id" type="text" value="${(id)!''}" class="inputtext" style="width: 100px !important">
+				  </div>
+				  <div style="display: inline">
+				  		昵称：<input name="nickName" id="nickName" type="text" value="${(nickName)!''}" class="inputtext" style="width: 100px !important">
+				  </div>
+				  <div style="display: inline">
+          			创建时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+	                 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+          			  <div style="display: inline">
+          				金额： <input type="text" name="startPrice" value="${startPrice!''}" id="startPrice" style="width: 100px" class="inputtext" />
+	                	 &nbsp;至&nbsp;
+	               		<input type="text" name="endPrice" value="${endPrice!''}" id="endPrice" style="width: 100px" class="inputtext" />
+          		 	 </div>
+          		 	 <div style="display: inline">
+				  		是否被采纳：<select id="isGet" name="isGet" class="inputtext">
+	              		<option  value="">请选择</option>
+   						<option <#if "${(isGet)!''}"== "0">selected="selected"</#if> value="0">否</option>
+   						<option <#if "${(isGet)!''}"== "1">selected="selected"</#if> value="1">是</option>
+           			</select>
+				  </div>
+				  <div>
+				   <div style="display: inline">
+				  		原图id：<input name="joinId" id="joinId" type="text" value="${(joinId)!''}" class="inputtext" style="width: 100px !important">
+				  </div>
+				   <div style="display: inline">
+				  		作品Id：<input name="productId" id="productId" type="text" value="${(productId)!''}" class="inputtext"  style="width: 100px">&nbsp;&nbsp;
+				  </div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn1" value="重置" class="btn-submit" onclick="selectReset()"></div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/></div>
+          			 <div style="width:10%;display: inline;;float: right"><input type="button" id="btn" value="刷新缓存"  class="btn-submit" onclick="refreshCache()"/></div>
+          			</div>
+        </div>
+					  <div style="padding-bottom: 5px">
+				      		<div style="display: inline"><input type="button" id="btn" value="新增p图"  class="btn-submit" onclick="editNew('topic/pTedit?joinId=${joinId!''}')"/></div>
+				      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">id</th>
+               <th width="5%">原图id</th>
+                <th width="5%">原图作品id</th>
+              <th width="5%">用户ID</th>
+              <th width="5%">昵称</th>
+              <th width="5%">头像</th>
+  				<th width="5%">原图</th>              
+              <th width="5%">图片</th>
+              <th width="5%">是否被采纳</th>
+              <th width="5%">金额</th>
+                <th width="5%">查看数</th>
+              <th width="5%">点赞数</th>
+               <th width="5%">评论数</th>
+              <th width="10%" id="createdWhen" onclick="sort(this)" class="sort_able">时间</th>
+              <th width="7%" id="hotScore" onclick="sort(this)" class="sort_able">热榜值</th>
+              <th width="7%" id="magicScore" onclick="sort(this)" class="sort_able">神图值</th>
+              <th width="10%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.joinId)!''}
+						</td>
+						<td >
+							${(entity.srcProductId)!''}
+						</td>
+						<td >
+							${(entity.psUserId)!''}
+						</td>
+						<td >
+							${(entity.nickName)!''}
+						</td>
+						<td >
+							<img width="50px" height="50px" src="${(entity.headImageUrl)!''}">
+						</td>
+						<td>
+						<#if entity?? && entity.srcUrl??>
+						<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.srcUrl!''}" title=""><img  width="60" height="80" src="${entity.srcUrl!''}" /></a>
+						</#if>
+						</td>
+						<td>
+								<#if entity?? && entity.url??>
+						<a title="Lorem ipsum dolor sit amet" rel="example_groupTo" href="${entity.url!''}" title=""><img  width="60" height="80" src="${entity.url!''}" /></a>
+						</#if>
+						</td>
+						<td>
+						<#if entity.isGet??>
+								<#if "${entity.isGet}" == "0">否
+								<#elseif "${entity.isGet}" == "1">是
+								</#if>
+							</#if>
+						</td>
+						<td>
+							${entity.price!''}
+						</td>
+						<td>
+							${entity.searchCount!''}
+						</td>
+						<td>
+							${entity.praiseCount!''}
+						</td>
+						<td>
+							${entity.discussCount!''}
+						</td>
+	 					<td>
+							${entity.psTime!''}
+						</td>
+						<td>
+							${entity.hotScore!''}
+						</td>
+						<td>
+							${entity.magicScore!''}
+						</td>
+						<td>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('product/edit','#{(entity.productId)!0}&isPublic=${isPublic!'1'}')">编辑</a>
+						<a class="btn btn-look" href="javascript:;" onclick="del_new('/diys/Bo/product/examineupdate?id=${entity.productId}&status=2','你确定要下架？','userForm')">下架</a>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('product/discussEdit','#{(entity.productId)!0}')">评论</a>
+						<a class="btn btn-look" href="javascript:;" onclick="zPro(${entity.productId});">修改点赞数</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+    
+    
+         <div id="editor3" class="jqmWindow">
+    <form action="/diys/Bo/product/zSave" method="post" id="zProForm">
+      <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+     <input type="hidden" id="productId3" name="id" value="" />
+      <div class="breadcrumb">当前位置：作品管理> 修改点赞和查看数</div>
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">更改点赞数</td>
+	     		<td width="35%"><input type="text" id="zProNum" name="zProNum" value="0" class="inputtext" /></td>
+	     		<td width="15%" align="right">更改查看数</td>
+	     		<td width="35%"><input type="text" id="serProNum" name="serProNum" value="0" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="button" class=" btn-submit" id="zSubmit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td></td>
+	     	</tr>
+        </table>
+        </div>
+        </form>
+     </div>
+</body>
+</html>

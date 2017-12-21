@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.PmTopicCase">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="PmTopicCase">
+			<id property="id" column="case_id" />
+			<result property="topicId" column="topic_id" />
+			<result property="srcProductUrl" column="src_product_url" />
+			<result property="psProductUrl" column="ps_product_url" />
+			<result property="caseType" column="case_type" />
+			<result property="createdWhen" column="created_when" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from pm_topic_case
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(caseType)">and case_type = #{caseType}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where case_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="findByPage" parameterType="PmTopicCase" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM pm_topic_case 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="PmTopicCase" useGeneratedKeys="true" keyProperty="id">
+	insert into pm_topic_case(topic_id,src_product_url,ps_product_url,case_type,created_when)
+	values(#{topicId},#{srcProductUrl},#{psProductUrl},#{caseType},now())
+	</insert>
+	
+	<update id="update" parameterType="PmTopicCase">
+	  UPDATE pm_topic_case
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicId)"> topic_id = #{topicId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(srcProductUrl)"> src_product_url = #{srcProductUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(psProductUrl)"> ps_product_url = #{psProductUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(caseType)"> case_type = #{caseType},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                case_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from pm_topic_case where case_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM pm_topic_case
+		<where>
+				case_id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

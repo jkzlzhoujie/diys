@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>帖子评论举报管理</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript">
+    	
+    	function selectOne(){
+    		$("#pageNo").val("1");
+    		$("#circlePostAccusationForm").submit();
+    	}
+    	
+    	function selectReset(){
+    		$("#circlePostId").val("");
+    		$("#circlePostDiscId").val("");
+    		$("#userId").val("");
+			$("#startDate").val("");
+			$("#endDate").val("");
+    	}
+    	
+    </script>
+
+  </head>
+  
+  <body>
+     <div id="main">
+      <div class="breadcrumb">当前位置：兴趣圈管理 > 帖子评论举报管理</div>
+      <form id="circlePostAccusationForm" action="/diys/Bo/boCirclePost/circlePostAccusationList" method="post" >
+      <input type="hidden" id="pageNo" userId="pageNo" value="${(pageNo)!''}" />
+      <div class="table-search">
+		<div style="display:inline">
+			帖子ID：<input type="text" id="circlePostId" name="circlePostId" value="${circlePostId!''}" class="input-style" />
+		          评论ID：<input type="text" id="circlePostDiscId" name="circlePostDiscId" value="${circlePostDiscId!''}" class="input-style" />
+		           被举报用户ID：<input type="text" id="userId" name="userId" value="${userId!''}" class="input-style" />
+		</div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1" value="重置" class="btn-submit" onclick="selectReset()" /></div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1"  class="btn-submit" value="查询" onclick="selectOne()" /></div>
+	  </div>
+	<div style="padding-bottom: 5px">
+		<div style="display: inline">
+		</div>
+	</div>    
+      <div class="table-show-content">
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">ID</th> 
+              <th width="5%">被举报人ID</th>
+              <th width="5%">被举报人昵称</th>
+              <th width="5%">帖子ID</th> 
+              <th width="5%">帖子标题</th>
+              <th width="5%">帖子内容</th> 
+              
+              <th width="5%">评论ID</th> 
+              <th width="5%">评论内容</th> 
+              <th width="5%">举报类型</th>
+              <th width="5%">举报人ID</th>
+              <th width="5%">举报人昵称</th>
+              <th width="5%">举报时间</th>
+              <th width="5%">处理状态</th>
+              <th width="10%">操作</th>
+            </tr>
+	        <#if list??>
+		    	<#list list as entity>
+					<tr>
+					  <td >${(entity.id)!''}</td>
+					  <td >${(entity.userId)!''}</td>
+					  <td >${(entity.userNick)!''}</td>
+					  <td >${(entity.circlePostId)!''} </td>
+					  <td >${(entity.circlePostTitle)!''}</td>
+					  <td >${(entity.circlePostText)!''}</td>
+					   <td >${(entity.circlePostDiscId)!''}</td>
+					  <td >${(entity.circlePostDiscText)!''}</td>
+					  
+					   <td >${(entity.type)!''}</td>
+					  <td >${(entity.accusationUserId)!''}</td>
+					  <td >${(entity.accusationUserNick)!''}</td>
+					  <td >${(entity.createdWhen)!''}</td>
+					  <td >
+						<#if entity.isDistort??>
+							<#if "${entity.isDistort}" == "0">未处理
+							<#elseif "${entity.isDistort}" == "1">不属实
+							<#elseif "${entity.isDistort}" == "2">属实
+							</#if>
+						</#if>
+					  </td> 
+					  <td>
+					  	<#if entity.isDistort??>
+							<#if "${entity.isDistort}" == "0">
+								<a class="btn btn-look" href="javascript:;" onclick="del_To('boCirclePost/accusationRelease','你确定要解除举报？','${entity.id}')">解除举报</a>
+								<a class="btn btn-look" href="javascript:;" onclick="del_To('boCirclePost/accusationIsTrue','你确认属实？','${entity.id}')">确认属实</a>
+							</#if>
+						</#if>
+					  </td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+  </body>
+</html>
+

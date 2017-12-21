@@ -1,0 +1,466 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${title} </title>
+<link rel="stylesheet" type="text/css" href="/diyroot/css/t_manage.css">
+<link rel="stylesheet" type="text/css" href="/diyroot/css/login.css">
+<script type="text/javascript" src="/diyroot/js/jquery/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/diyroot/js/jquery/jquery.validate.js"></script>
+<script type="text/javascript" src="/diyroot/js/uploadify/jquery.uploadify.min.js"></script>
+<link rel="stylesheet" href="/diyroot/js/uploadify/uploadify.css" type="text/css">
+<script type="text/javascript" src="/diyroot/js/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="/diyroot/js/jquery/jqmodal.js"></script>
+<script type="text/javascript" src="/diyroot/js/common.js"></script>
+<script type="text/javascript" src="/diyroot/js/fancybox/js/jquery.fancybox-1.3.1.js"></script>
+<link rel="stylesheet" href="/diyroot/js/fancybox/style/jquery.fancybox-1.3.1.css" type="text/css" />
+
+<!--顶部时钟-->
+<script type="text/javascript" src="/diyroot/js/index/Clock.js"></script>
+<!--左侧菜单-->
+<script  type="text/javascript" src="/diyroot/js/index/ddaccordion.js"></script>
+<!--日期控件-->
+<script src="/diyroot/js/index/datepicker_lang_HK.js" type="text/javascript"></script>
+<script src="/diyroot/js/jquery/jquery.datepicker.js" type="text/javascript"></script>
+
+<!--公用js文件-->
+<script src="/diyroot/js/common.js" type="text/javascript"></script>
+
+<!--表单验证-->
+<script type="text/javascript" src="/diyroot/js/jquery/jquery.validate.js"></script>
+<script type="text/javascript" src="/diyroot/js/jquery/validate-ex.js"></script>
+
+<!--Dialog插件-->
+<script type="text/javascript" src="/diyroot/js/jquery/jqdnr.js"></script>
+<script src="/diyroot/js/jquery/jquery.ui.core.js"></script>
+<script src="/diyroot/js/jquery/jquery.ui.widget.js"></script>
+<script src="/diyroot/js/jquery/jquery.ui.mouse.js"></script>
+<script src="/diyroot/js/jquery/jquery.ui.draggable.js"></script>
+<script type="text/javascript" src="/diyroot/js/editor/kindeditor.js"></script>
+${head}
+</head>
+<body>
+<div id="header" class="clearfix">
+  <div class="headerlogo">
+    <h2><a href="#" target="_blank" title="和黄信息" >和黄信息</a></h2>
+  </div>
+
+  <div class="user">
+    <p class="text-right">
+      <input name="" type="button" onclick="javascript:location.href='/diys/Bo/exit?key=rcadmin123'" class="btn-close" value="安全退出" />
+    </p>
+    <p class="clock"><span id="clock"></span>
+      <script type=text/javascript>
+	   var clock = new Clock();  
+      clock.display(document.getElementById("clock"));
+    </script>
+    </p>
+  </div>
+</div>
+<div id="main-container">
+  <div>
+    <div id="sideBar">
+    <div class="arrowlistmenu">
+    
+       <h3 class="menuheader expandable">系统管理</h3>
+	   <ul class="categoryitems">
+	        	<li class="first"><a href="/diys/Bo/pwd_edit">修改密码</a></li>
+	        	 <#if privilege?? &&"${privilege}"?index_of("system_user") != -1>
+	        			<li class="first"><a href="/diys/Bo/user_list">后台用户管理</a></li>
+	        	  </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("system_right") != -1>
+	           			 <li class="first"><a href="/diys/Bo/rh/rights_list">权限管理</a></li>
+	            </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("system_setting") != -1>
+	       	   			 <li class="first"><a href="/diys/Bo/setting">系统设置</a></li>
+	       	    </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("system_change") != -1>
+	       	   			 <li class="first"><a href="/diys/Bo/setting/changelist">渠道列表</a></li>
+	       	     </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("system_industry") != -1>
+	           			 <li class="first"><a href="/diys/Bo/setting/list">行业列表</a></li>
+	             </#if>
+	        	 <#if privilege?? &&"${privilege}"?index_of("system_user_type") != -1>
+	            		 <li class="first"><a href="/diys/Bo/setting/writterlist">技能类型</a></li>
+	             </#if>
+	             <#if privilege?? &&"${privilege}"?index_of("system_score_list") != -1>
+	             		<li class="first"><a href="/diys/Bo/setting/scorelist?flag=1">每日分值配置</a></li>
+	             </#if>
+	             <#if privilege?? &&"${privilege}"?index_of("system_score_list") != -1>
+	            		 <li class="first"><a href="/diys/Bo/setting/scorelist?flag=2">一次性分值配置</a></li>
+	             </#if>
+	             <#if privilege?? &&"${privilege}"?index_of("system_black_list") != -1>
+	             		<li class="first"><a href="/diys/Bo/product/blacklist">评论禁词</a></li>
+	             </#if>
+	               
+	               <#if privilege?? &&"${privilege}"?index_of("system_nickName_black_list") != -1>
+	             		<li class="first"><a href="/diys/Bo/black/blacklistNickName">昵称禁词</a></li>
+	               </#if>
+	               <#if privilege?? &&"${privilege}"?index_of("system_userEquipment_black_list") != -1>
+	            		 <li class="first"><a href="/diys/Bo/black/blacklistUserEquipment">用户设备黑名单</a></li>
+	               </#if>
+	               <#if privilege?? &&"${privilege}"?index_of("system_qq_list") != -1>
+	                 	 <li class="first"><a href="/diys/Bo/setting/qqlist">QQ群管理</a></li>
+	               </#if>
+	               <#if privilege?? &&"${privilege}"?index_of("system_xuanshang_set") != -1>
+	                 	 <li class="first"><a href="/diys/Bo/setting/sysXuanshangSetList">系统悬赏管理</a></li>
+	               </#if>
+	               <#if privilege?? &&"${privilege}"?index_of("system_parameter_list") != -1>
+	                 	 <li class="first"><a href="/diys/Bo/setting/sysParameterlist">系统参数管理</a></li>
+	               </#if>
+	               <#if privilege?? &&"${privilege}"?index_of("system_column_list") != -1>
+	              		<li class="first"><a href="/diys/Bo/setting/columnlist">首页栏目</a></li>
+	               </#if>
+	               <li class="first"><a href="/diys/Bo/setting/typelist">类型设置</a></li>
+	   </ul>
+	    <#if privilege?? &&"${privilege}"?index_of("resource") != -1>
+      <h3 class="menuheader expandable">资源管理</h3>
+      <ul class="categoryitems">
+      			<#if privilege?? &&"${privilege}"?index_of("resource_edit") != -1>
+	        	<li class="first"><a href="/diys/Bo/rs/pk_list?status=2">素材编辑</a></li>
+	        	  </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("resource_commercial") != -1>
+	        	<li class="first"><a href="/diys/Bo/rs/pk_list?status=1">商用素材</a></li>
+	        	  </#if>
+	        	 <#if privilege?? &&"${privilege}"?index_of("resource_use_list") != -1>
+	        	<li class="first"><a href="/diys/Bo/rs/material_use_list">评论表情列表</a></li>
+	        	 </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("resource_classify") != -1>
+	        	<li class="first"><a href="/diys/Bo/classify/list">分类列表</a></li>
+	        	  </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("resource_theme") != -1>
+	            <li class="first"><a href="/diys/Bo/theme/list">主题列表</a></li>
+	              </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("resource_application") != -1>
+	            <li class="first"><a href="/diys/Bo/application/list">应用列表</a></li>
+	              </#if>
+	   </ul>
+	     </#if>
+	    <#if privilege?? &&"${privilege}"?index_of("product") != -1>
+	   <h3 class="menuheader expandable">作品管理</h3>
+	   <ul class="categoryitems">
+	  		 <#if privilege?? &&"${privilege}"?index_of("product_list") != -1>
+	           <li class="first"><a href="/diys/Bo/product/list?isPublic=1">作品列表</a></li>
+	             </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("product_examine") != -1>
+	           <li class="first"><a href="/diys/Bo/product/examinelist">未审核列表</a></li>
+	            </#if>
+	            <#if privilege?? &&"${privilege}"?index_of("product_discuss") != -1>
+	            <li class="first"><a href="/diys/Bo/product/discussList">作品评论</a></li>
+	             </#if>
+	             <#if privilege?? &&"${privilege}"?index_of("product_recommend") != -1>
+	             <li class="first"><a href="/diys/Bo/product/prlist">作品推荐</a></li>
+	             </#if>
+	              <#if privilege?? &&"${privilege}"?index_of("product_theme") != -1>
+				<li class="first"><a href="/diys/Bo/product/theme_product_list">作品与主题关联表</a></li>
+				 </#if>
+	   </ul>
+	   </#if>
+	    <#if privilege?? &&"${privilege}"?index_of("client") != -1>
+	   <h3 class="menuheader expandable">客户端管理</h3>
+	   <ul class="categoryitems">
+	        	<#if privilege?? &&"${privilege}"?index_of("client_package") != -1>
+	          <li class="first"><a href="/diys/Bo/client/app_list">上传包</a></li>
+	            </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("client_version") != -1>
+	          <li class="first"><a href="/diys/Bo/client/vs_list">版本管理</a></li>
+	            </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("client_start") != -1>
+	          <li class="first"><a href="/diys/Bo/client/sp_list">启动页面管理</a></li>
+	            </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("client_feedback") != -1>
+	          <li class="first"><a href="/diys/Bo/client/fb_list">反馈列表</a></li>
+	            </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("client_fb_type") != -1>
+	          <li class="first"><a href="/diys/Bo/client/fb_type_list">反馈类型列表</a></li>
+	            </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("client_messgae") != -1>
+	          <li class="first"><a href="/diys/Bo/message/list">消息列表</a></li>
+	            </#if>
+	   </ul>
+	    </#if>
+	     <#if privilege?? &&"${privilege}"?index_of("clientuser") != -1>
+	   <h3 class="menuheader expandable">用户管理</h3>
+	   <ul class="categoryitems">
+	        	<#if privilege?? &&"${privilege}"?index_of("clientuser_list") != -1>
+	          <li class="first"><a href="/diys/Bo/user/list">用户管理</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("clientuser_drlist") != -1>
+	          <li class="first"><a href="/diys/Bo/user/drlist">达人管理</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("clientuser_at") != -1>
+	          <li class="first"><a href="/diys/Bo/user/accusationlist">举报管理</a></li>
+	          </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("clientuser_group") != -1>
+	          <li class="first"><a href="/diys/Bo/user/group_list">分组管理</a></li>
+	           </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("clientuser_userGroup") != -1>
+	          <li class="first"><a href="/diys/Bo/user/user_group_list">用户分组列表</a></li>
+	           </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("clientuser_userReceive") != -1>
+	          	<li class="first"><a href="/diys/Bo/userReceive/user_receive_list">用户收货信息</a></li>
+	          </#if>
+	          
+	  </ul>
+	  </#if>
+	  
+	  <#if privilege?? &&"${privilege}"?index_of("account") != -1>
+	  <h3 class="menuheader expandable">账户管理</h3>
+	   <ul class="categoryitems">
+	    	  <#if privilege?? &&"${privilege}"?index_of("account_list") != -1>
+	          	 <li class="first"><a href="/diys/Bo/account/list">用户账户管理</a></li>
+	           </#if>
+	           <#if privilege?? &&"${privilege}"?index_of("account_privilegeList") != -1>
+	          	 <li class="first"><a href="/diys/Bo/account/userPrivilegeList">用户特权列表</a></li>
+	           </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("account_walletList") != -1>
+	          <li class="first"><a href="/diys/Bo/account/walletList">用户交易列表</a></li>
+	             </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("account_buyList") != -1>
+	          <li class="first"><a href="/diys/Bo/account/buyList">用户购买列表</a></li>
+	            </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("account_redpacketList") != -1>
+	          <li class="first"><a href="/diys/Bo/account/redpacketList">用户红包列表</a></li>
+	             </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("account_withdrawList") != -1>
+	          <li class="first"><a href="/diys/Bo/account/withdrawList">用户提现列表</a></li>
+	             </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("account_signList") != -1>
+	          <li class="first"><a href="/diys/Bo/account/signList">用户签到数据</a></li>
+	            </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("account_signLogList") != -1>
+	          <li class="first"><a href="/diys/Bo/account/signLogList">用户签到日志</a></li>
+	             </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("account_orderList") != -1>
+	          <li class="first"><a href="/diys/Bo/account/orderList">支付宝微信交易流水</a></li>
+	 		   </#if>
+	  </ul>
+	   </#if>
+	  
+	   <#if privilege?? &&"${privilege}"?index_of("operate") != -1>
+	  <h3 class="menuheader expandable">运营管理</h3>
+	   <ul class="categoryitems">
+	   		 <#if privilege?? &&"${privilege}"?index_of("operate_anList") != -1>
+	         		<li class="first"><a href="/diys/Bo/operate/timeList">玩按钮设置</a></li>
+	         </#if>
+	         <#if privilege?? &&"${privilege}"?index_of("operate_menuList") != -1>
+	         		<li class="first"><a href="/diys/Bo/operate/menuList">APP首页菜单设置</a></li>
+	         </#if>
+	         <#if privilege?? &&"${privilege}"?index_of("operate_levelList") != -1>
+	          		<li class="first"><a href="/diys/Bo/operate/levelList">等级设置</a></li>
+	         </#if>
+	         <#if privilege?? &&"${privilege}"?index_of("operate_helpList") != -1>
+	          		<li class="first"><a href="/diys/Bo/operate/helpList">X秀服务与帮助</a></li>
+	         </#if>
+	         <#if privilege?? &&"${privilege}"?index_of("operate_bannerList") != -1>
+	           		<li class="first"><a href="/diys/Bo/operate/bannerList">广告管理</a></li>
+	          </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("operate_sysPackageList") != -1>
+	           		<li class="first"><a href="/diys/Bo/operate/sysPackageList">套餐管理</a></li>
+	          </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("operate_sysPrivilegeContentTypeList") != -1>
+	           		<li class="first"><a href="/diys/Bo/operate/sysPrivilegeContentTypeList">特权内容管理</a></li>
+	           </#if>
+	           <#if privilege?? &&"${privilege}"?index_of("operate_sysPrivilegeList") != -1>
+	           		<li class="first"><a href="/diys/Bo/operate/sysPrivilegeList">特权管理</a></li>
+	           </#if>
+	           <#if privilege?? &&"${privilege}"?index_of("operate_backgroundPic") != -1>
+	           		<li class="first"><a href="/diys/Bo/operate/backgroundPic">背景图管理</a></li>
+	           </#if>
+	  </ul>
+	   </#if>
+	  
+	   <#if privilege?? &&"${privilege}"?index_of("statistics") != -1>
+	   <h3 class="menuheader expandable">数据统计</h3>
+	   <ul class="categoryitems">
+	        	<#if privilege?? &&"${privilege}"?index_of("statistics_client") != -1>
+	          <li class="first"><a href="/diys/Bo/st/us_list">客户端用户列表</a></li>
+	           </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("statistics_image") != -1>
+	          <li class="first"><a href="/diys/Bo/st/image_list">用户分享或者保存记录</a></li>
+	           </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("statistics_share") != -1>
+	          <li class="first"><a href="/diys/Bo/st/count_list">分享统计</a></li>
+	           </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("statistics_day") != -1>
+	          <li class="first"><a href="/diys/Bo/st/day_count">每日统计</a></li>
+	           </#if>
+	           <#if privilege?? &&"${privilege}"?index_of("statistics_infolist") != -1>
+	           <li class="first"><a href="/diys/Bo/st/infolist">用户每日行为统计</a></li>
+	           </#if>
+	           <#if privilege?? &&"${privilege}"?index_of("statistics_ranklist") != -1>
+	           <li class="first"><a href="/diys/Bo/st/ranklist">主题排行</a></li>
+	            </#if>
+	            <#if privilege?? &&"${privilege}"?index_of("statistics_mllist") != -1>
+	           <li class="first"><a href="/diys/Bo/st/material_list">热门素材使用排行</a></li>
+	           </#if>
+	            <#if privilege?? &&"${privilege}"?index_of("statistics_pCount") != -1>
+	           <li class="first"><a href="/diys/Bo/st/pCount">每日P图统计</a></li>
+	           </#if>
+	            <#if privilege?? &&"${privilege}"?index_of("statistics_cCount") != -1>
+	           <li class="first"><a href="/diys/Bo/st/cCount">每日彩绘统计</a></li>
+	           </#if>
+	   </ul>
+	    </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("laber") != -1>
+	    <h3 class="menuheader expandable">标签管理</h3>
+	    <ul class="categoryitems">
+	        	<#if privilege?? &&"${privilege}"?index_of("laber_list") != -1>
+	         <li class="first"><a href="/diys/Bo/laber/list">标签列表</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("laber_backup") != -1>
+	         <li class="first"><a href="/diys/Bo/laber/backuplist">用户搜索标签列表</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("laber_configure") != -1>
+	         <li class="first"><a href="/diys/Bo/laber/configure_list">标签配置列表</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("laber_userhot") != -1>
+	         <li class="first"><a href="/diys/Bo/laber/userhotlist">热门标签列表</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("laber_exp") != -1>
+	         <li class="first"><a href="/diys/Bo/rs/all_exp_list">批量打标签</a></li>
+	          </#if>
+	    </ul>
+	     </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("topic") != -1>
+	     <h3 class="menuheader expandable">专题管理</h3>
+	    <ul class="categoryitems">
+	        	<#if privilege?? &&"${privilege}"?index_of("topic_list") != -1>
+	         <li class="first"><a href="/diys/Bo/topic/list">专题列表</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("topic_custom_list") != -1>
+	         <li class="first"><a href="/diys/Bo/account/colouredList">彩绘订单</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("topic_case") != -1>
+	         <li class="first"><a href="/diys/Bo/topic/caseList">案例列表</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("topic_draw_list") != -1>
+	         <li class="first"><a href="/diys/Bo/product/list?isPublic=4">画作列表</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("topic_draw_user") != -1>
+	         <li class="first"><a href="/diys/Bo/topic/drawUserList">画家管理</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("topic_draw_demand") != -1>
+	         <li class="first"><a href="/diys/Bo/topic/customList">大画家需求列表</a></li>
+	          </#if>
+	        	<#if privilege?? &&"${privilege}"?index_of("topic_pt_list") != -1>
+	         <li class="first"><a href="/diys/Bo/account/pList">悬赏求P</a></li>
+	          </#if>
+	          <#if privilege?? &&"${privilege}"?index_of("topic_pTlist") != -1>
+	          <li class="first"><a href="/diys/Bo/topic/pTlist">p图效果图列表</a></li>
+	          </#if>
+	<!--          <#if privilege?? &&"${privilege}"?index_of("topic_order") != -1>
+	         <li class="first"><a href="/diys/Bo/topic/orderList">订单列表</a></li>
+	          </#if>  -->
+	         <#if privilege?? &&"${privilege}"?index_of("topic_commodity") != -1>
+	         <li class="first"><a href="/diys/Bo/topic/listCommodity">商品列表</a></li>
+	          </#if>
+	    </ul>
+	    </#if>
+	    <#if privilege?? &&"${privilege}"?index_of("finance") != -1>
+	     <h3 class="menuheader expandable">对账管理</h3>
+	    <ul class="categoryitems">
+	        	<#if privilege?? &&"${privilege}"?index_of("finance_list") != -1>
+	         <li class="first"><a href="/diys/Bo/finance/list">财务对账列表</a></li>
+	          </#if>
+	    </ul>
+	    </#if>
+	    
+	    
+	    <#if privilege?? &&"${privilege}"?index_of("circle") != -1>
+	    <h3 class="menuheader expandable">兴趣圈管理</h3>
+	    <ul class="categoryitems">
+	    	  <#if privilege?? &&"${privilege}"?index_of("circleType_list") != -1>
+	    	 		<li class="first"><a href="/diys/Bo/circleManager/circleTypeList">圈子类型</a></li>
+	    	  </#if>
+	   		  <#if privilege?? &&"${privilege}"?index_of("circle_list") != -1>
+	    	 		<li class="first"><a href="/diys/Bo/circle/list">圈子列表</a></li>
+	    	  </#if>
+	    	  <#if privilege?? &&"${privilege}"?index_of("circle_product") != -1>
+	    			 <li class="first"><a href="/diys/Bo/circle/productlist">圈子作品列表</a></li>
+	    	  </#if>
+	    	  <#if privilege?? &&"${privilege}"?index_of("circle_user") != -1>
+	    			 <li class="first"><a href="/diys/Bo/circle/userlist">圈子用户列表</a></li>
+	    	  </#if>
+	    	 <!--<li class="first"><a href="/diys/Bo/circle/userloglist">圈子用户访问记录</a></li>-->
+	    	 
+	    	 <#if privilege?? &&"${privilege}"?index_of("circlePost_list") != -1>
+	    	 		<li class="first"><a href="/diys/Bo/boCirclePost/circlePostList">帖子列表</a></li>
+	    	 </#if>
+	    	 <#if privilege?? &&"${privilege}"?index_of("circleDiscPost_list") != -1>
+	    	 		<li class="first"><a href="/diys/Bo/boCirclePost/circlePostDiscList">帖子评论列表</a></li>
+	    	 </#if>
+	    	 <#if privilege?? &&"${privilege}"?index_of("circlePostAccusation_list") != -1>
+	    	 		<li class="first"><a href="/diys/Bo/boCirclePost/circlePostAccusationList">帖子评论举报管理</a></li>
+	    	 </#if>
+	   	</ul>
+	    </#if>
+	    <#if privilege?? &&"${privilege}"?index_of("designer") != -1>
+	    <h3 class="menuheader expandable">设计师管理</h3>
+	    <ul class="categoryitems">
+	    	<#if privilege?? &&"${privilege}"?index_of("clientuser_designerInfo") != -1>
+	          	<li class="first"><a href="/diys/Bo/designer/designerList">设计师信息</a></li>
+	        </#if>
+	        <#if privilege?? &&"${privilege}"?index_of("clientuser_designerProductInfo") != -1>
+	          	<li class="first"><a href="/diys/Bo/designer/designerProductInfoList">设计师商品信息</a></li>
+	        </#if>
+	        <#if privilege?? &&"${privilege}"?index_of("clientuser_designerOrder") != -1>
+	          	<li class="first"><a href="/diys/Bo/designer/designerOrder">设计师订单管理</a></li>
+	        </#if>
+	        <#if privilege?? &&"${privilege}"?index_of("clientuser_designerSaleComment") != -1>
+	          	<li class="first"><a href="/diys/Bo/designer/designerSaleCommentList">设计师商品评价表</a></li>
+	        </#if>
+	    </ul>
+	    </#if>
+	    
+	    
+      </div>
+    </div>
+     ${body}
+   </div> 
+   <!-- 删除时候的确认框start -->
+	<div class="jqmConfirm" id="confirm">
+	  <div id="ex3b" class="jqmConfirmWindow">
+	    <div class="jqmConfirmTitle clearfix">
+	      <h1>提示</h1>
+	      <input type="button" value="关闭" class="jqmClose " name="close">
+	    </div>
+	    <div class="jqmConfirmContent">
+	     <span class="warm">&nbsp;</span>&nbsp;<span class="jqmConfirmMsg"></span>
+	    </div>
+	    <div style="margin:10px 0 0 0; text-align:center">
+	      <input  type="submit" value="确定" />
+	      <input  type="submit" value="取消" />
+	    </div>
+	  </div>
+	</div>
+  <!-- 所有提示框start -->
+	<div class="jqmConfirm" id="alertDiv">
+	  <div id="ex3b" class="jqmConfirmWindow">
+	    <div class="jqmConfirmTitle clearfix">
+	      <h1>提示</h1>
+	      <input type="button" value="关闭" class="jqmClose " name="close">
+	    </div>
+	    <div class="jqmConfirmContent">
+	     <span class="warm">&nbsp;</span>&nbsp;<span class="jqmConfirmMsg"></span>
+	    </div>
+	    <div style="margin:10px 0 0 0; text-align:center">
+	      <input  type="submit" value="确定" />
+	    </div>
+	  </div>
+	</div>
+<!-- 所有提示框end -->
+
+<!--进度条弹出框  hk-->
+	<img id="loadingimg" class="jqmLoad" style="height:32px;width:32px; border:0 none" src="/diyroot/images/bo/loading.gif" />
+   
+</div>
+<div id="footer" class="clearfix">
+  <div class="content">
+    <p>Copyright (C) 2014 和黄信息版权所有</p>
+    <p></p>
+  </div>
+</div>
+</body>
+</html>

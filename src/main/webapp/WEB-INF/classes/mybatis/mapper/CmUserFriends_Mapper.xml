@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.CmUserFriends">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="CmUserFriends">
+			<id property="id" column="friends_id" />
+			<result property="userId" column="user_id" />
+			<result property="friendUserId" column="friend_user_id" />
+			<result property="createdWhen" column="created_when" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from cm_user_friends
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where friends_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="findByPage" parameterType="CmUserFriends" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM cm_user_friends 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="CmUserFriends" useGeneratedKeys="true" keyProperty="id">
+	insert into cm_user_friends(user_id,friend_user_id,created_when)
+	values(#{userId},#{friendUserId},now())
+	</insert>
+	
+	<update id="update" parameterType="CmUserFriends">
+	  UPDATE cm_user_friends
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> user_id = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(friendUserId)"> friend_user_id = #{friendUserId},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                friends_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from cm_user_friends where friends_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM cm_user_friends
+		<where>
+				friends_id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>用户列表</title>
+<style type="text/css">  
+.sort_able{cursor:pointer;padding:0 28px;background:#f0f5f7 url(/diyroot/images/small.gif) no-repeat right center !important;}
+.asc{background:#f0f5f7 url(/diyroot/images/asc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+.desc{background:#f0f5f7 url(/diyroot/images/desc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+</style> 
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		var orderFried = $("#orderFried").val();	
+		var sequence = $("#sequence").val();	
+		if(orderFried != '' && sequence != '')
+		{
+			$("#"+orderFried).attr('class',sequence);
+		}
+});
+	function sort(obj)
+	{
+		var sortType = "asc";
+		var className = $(obj).attr('class');
+		var id = $(obj).attr('id');
+		if(className == "asc"){
+			sortType = "desc";
+		}else if(className == "desc")
+		{
+			sortType = "asc";
+		}
+		$("#orderFried").val(id);
+		$("#sequence").val(sortType);
+		$(this).attr('class',sortType);
+		$("#userForm").submit();
+	}
+	
+	function selectInfo() {
+  		$("#userForm").submit();
+  }
+  
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：用户管理 > 用户列表</div>
+      <form id="userForm" action="/diys/Bo/user/drlist" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+        <input type="hidden" id="orderFried" name="orderFried" value="${(orderFried)!''}" />
+      <input type="hidden" id="sequence" name="sequence" value="${(sequence)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+          <div>
+				   <div style="display: inline">
+				   		用户ID：<input id="userId" name="userId" type="text" class="input-style"/>
+				   		手机号：<input id="mobile" name="mobile" type="text" class="input-style"/>
+				  		类型：<select id="type" name="type" class="inputtext">
+	              		<option  value="">请选择类型</option>
+   						<option 
+   							<#if "1"=="${type!''}">selected="selected"</#if> value="1">热榜达人
+   						</option>
+   						<option 
+   							<#if "2"=="${type!''}">selected="selected"</#if> value="2">彩绘达人
+   						</option>
+           			</select>
+				  </div>
+				  	
+          		  <div style="width:10%;display: inline;">
+          		  	<input type="button" id="btn" value="刷新缓存"  class="btn-submit" onclick="refreshDrCache()"/>
+          		  </div>
+          		  <div style="width:10%;display: inline;float: right">
+          		  	<input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/>
+          		  </div>
+			</div>
+        </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">用户ID</th>
+              <th width="5%">手机号</th>
+              <th width="5%">昵称</th>
+               <th width="5%">头像</th>
+              <th width="5%" id="fans_count" onclick="sort(this)" class="sort_able">粉丝数</th>
+               <th width="5%" id="product_count" onclick="sort(this)" class="sort_able">作品数</th>
+              <th width="5%" >排序</th>
+              <th width="10%" >类型</th>
+               <th width="10%" >最后登录时间</th>
+              <th width="10%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.userId)!''}
+						</td>
+						<td >
+							${(entity.mobile)!''}
+						</td>
+						<td >
+							${(entity.nickName)!''}
+						</td>
+						<td >
+						<img width="50px" height="50px" src="${(entity.headImageUrl)!''}">
+						</td>
+						<td>
+							${entity.fansCount!''}
+						</td>
+						<td>
+						<a href="/diys/Bo/product/mylist?userId=${(entity.userId)!''}">${entity.productCount!''}</a>
+						</td>
+						<td>
+							${entity.sort!''}
+						</td>
+						<td >
+							<#if entity.type??>
+								<#if "${entity.type}" == "1">热榜达人
+									<#elseif "${entity.type}" == "2">彩绘达人
+								</#if>
+							</#if>
+						</td>
+						<td>
+							${entity.loginTime!''}
+						</td>
+						<td>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('user/dredit','${(entity.userId)!0}&talenId=${entity.id!''}')">排序</a>
+							<a class="btn btn-look" href="javascript:;" onclick="del_('user/drdel','${entity.id}')">删除</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

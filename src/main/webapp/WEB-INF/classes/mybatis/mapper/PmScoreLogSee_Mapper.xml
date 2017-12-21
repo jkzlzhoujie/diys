@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.PmScoreLogSee">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap type="PmScoreLogSee" id="sql_resultMap">
+		<id property="id" column="id" />
+		<result property="content" column="content"/>
+		<result property="type" column="type"/>
+		<result property="integral" column="integral"/>
+		<result property="experience" column="experience"/>
+		<result property="charm" column="charm"/>
+		<result property="originality" column="originality"/>
+		<result property="credit" column="credit"/>
+		<result property="addTime" column="addTime"/>
+		<result property="userId" column="user_id"/>
+		<result property="clientId" column="client_id"/>
+		<result property="otherId" column="other_id"/>
+	</resultMap>
+	
+	<sql id="sql_selectAll">
+		select * from pm_score_log_see
+	</sql>
+	
+	<sql id="sql_where">
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and type = #{type}</if>	
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(content)">and content = #{content}</if>	
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and user_id=#{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)">and client_id=#{clientId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(otherId)">and other_id=#{otherId}</if>
+			 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(time)">
+             <![CDATA[
+                 AND DATE_FORMAT(addTime,'%Y-%m-%d')=Date_FORMAT(#{time},'%Y-%m-%d')
+            ]]>
+         </if>
+		</where>
+	</sql>
+	
+	<select id="findAll" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+	</select>
+	
+	<select id="findCountByUser" useCache="false" parameterType="map" resultType="cn.temobi.complex.dto.CountScoreDto">
+		SELECT type,COUNT(*) as num FROM `pm_score_log_see` 
+		<include refid="sql_where"/>
+		 GROUP BY TYPE
+	</select>
+	
+	<select id="count" resultType="Long" useCache="false">
+		select count(*) from pm_score_log_see
+		<include refid="sql_where"></include>
+	</select>
+	
+	<select id="getById" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"></include>
+		where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resultMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY addTime desc
+	</select>
+	
+	<select id="findByPage" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+		order by id limit #{limit} offset #{offset}
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		insert into pm_score_log_see(content,type,integral,experience,charm,originality,credit,addTime,user_id,client_id,other_id)
+		values(#{content},#{type},#{integral},#{experience},#{charm},#{originality},#{credit},now(),#{userId},#{clientId},#{otherId})
+	</insert>
+	
+	<update id="update" >
+		update pm_score_log_see
+		<set>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(content)">content=#{content},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">type=#{type},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(integral)">integral=#{integral},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(experience)">experience=#{experience},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(charm)">charm=#{charm},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(originality)">originality=#{originality},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(credit)">credit=#{credit},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">user_id=#{userId},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)">client_id=#{clientId},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(otherId)">other_id=#{otherId},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="delete" flushCache="true">
+		delete from pm_score_log_see where id=#{id}
+	</delete>
+
+</mapper>

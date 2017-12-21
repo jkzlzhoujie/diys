@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+        >
+    <description>Quartz的本地Cron式执行任务配置</description>
+    
+    <!-- Quartz本地Schduler -->
+    <!-- 总管理类  -->
+    <bean id="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <!-- Triggers集成 -->
+        <property name="triggers">
+            <list>
+            <!-- 本地测试 先注释 上线打开 -->
+            
+            	 
+            	<!-- <ref bean="triggersZJob"/>-->	
+				<!-- <ref bean="triggersUpdateJob"/> 
+				<ref bean="triggersPJob"/>
+            	<ref bean="cronTriggerByRankingJob"/>
+            	<ref bean="cronTriggerByCircleJob"/>
+            	<ref bean="triggersUserPriJob"/>
+           		<ref bean="triggersUserPriRemindJob"/> -->
+           
+            </list>
+        </property>
+        <!-- Quartz配置 -->
+        <property name="quartzProperties">
+            <props>
+                <prop key="org.quartz.threadPool.threadPriority">1</prop>
+                <prop key="org.quartz.threadPool.threadCount">5</prop>
+            </props>
+        </property>
+        <!-- 启动时延期5秒开始任务 -->
+        <property name="startupDelay" value="5"/>
+        <property name="overwriteExistingJobs" value="true"/>
+    </bean>
+    
+   
+    <!-- 要调用的工作类 -->
+    <bean id="targetObjectUpdateJob" class="cn.temobi.complex.schedule.UpdateJob"/>
+    
+    <!-- 定义调用对象和调用对象的方法 -->
+    <bean id="jobDetailUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="targetObjectUpdateJob"/>	<!-- 调用的类 -->
+        <property name="targetMethod" value="execute"/> 			<!-- 调用类中的方法 -->
+        <property name="concurrent" value="true"/>   				<!-- 并发运行 -->
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+    </bean>
+     <!-- 定义触发时间 -->
+    <!-- 
+     <bean id="triggersUpdateJob"  class="org.springframework.scheduling.quartz.SimpleTriggerBean">  
+        <property name="jobDetail">  
+            <ref bean="jobDetailUpdateJob"></ref>  
+        </property>  
+    -->
+          <!--延迟3s--> 
+    <!--
+        <property name="startDelay">  
+            <value>3</value>  
+        </property>  
+    -->
+          <!--每60s启动一次-->  
+    <!--
+        <property name="repeatInterval">  
+            <value>60000</value>  
+        </property>  
+     -->
+    	<!--重复一次-->  
+    <!--
+        <property name="repeatCount">  
+            <value>1</value>  
+        </property>  
+    </bean> 
+     -->
+    
+    <bean id="triggersUpdateJob" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="jobDetailUpdateJob"/>
+        <property name="cronExpression">
+             <value>0 */2 * * * ?</value>   <!-- 2分钟执行一次 -->
+        </property>
+    </bean>
+    <bean id="targetObjectZJob" class="cn.temobi.complex.schedule.ZJob"/>
+    
+    <bean id="jobDetailZJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="targetObjectZJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="true"/>   
+    </bean>
+    
+    <bean id="triggersZJob" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="jobDetailZJob"/>
+        <property name="cronExpression">
+             <value>0 */2 * * * ?</value>   
+        </property>
+    </bean>
+    
+    
+     <bean id="targetObjectPJob" class="cn.temobi.complex.schedule.PJob"/>
+     <bean id="jobDetailPJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="targetObjectPJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="true"/>   <!-- 并发运行 -->
+        
+    </bean>
+    <bean id="triggersPJob" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="jobDetailPJob"/>
+        <property name="cronExpression">
+             <value>0 */1 * * * ?</value>   <!-- 一分钟执行一次 -->
+        </property>
+    </bean>
+    
+     <!-- <bean id="triggersPJob"  class="org.springframework.scheduling.quartz.SimpleTriggerBean">  
+        <property name="jobDetail">  
+            <ref bean="jobDetailPJob"></ref>  
+        </property>  
+        <property name="startDelay">  
+            <value>3</value>  
+        </property>  
+        <property name="repeatInterval">  
+            <value>0</value>  
+        </property>  
+        <property name="repeatCount">  
+            <value>0</value>  
+        </property>  
+    </bean> 
+     -->
+    
+    <bean id="rankingJob" class="cn.temobi.complex.schedule.RankingJob"/>
+    <bean id="cronRankingJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="rankingJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="true"/>
+    </bean>
+    <bean id="cronTriggerByRankingJob" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="cronRankingJob"/>
+        <property name="cronExpression">
+             <value>0 30 2 * * ? *</value>   
+        </property>
+    </bean>
+    
+    
+    
+    <bean id="circleJob" class="cn.temobi.complex.schedule.CircleJob"/>
+    
+    <bean id="cronCircleJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="circleJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="true"/>
+    </bean>
+    
+    <bean id="cronTriggerByCircleJob" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="cronCircleJob"/>
+        <property name="cronExpression">
+             <value>0 30 3 * * ? *</value>   
+        </property>
+    </bean>
+    
+    
+    <bean id="targetObjectUserPriJob" class="cn.temobi.complex.schedule.UserPriJob"/>
+    
+    <bean id="jobUserPriJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="targetObjectUserPriJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="true"/>   
+    </bean>
+    
+      <bean id="triggersUserPriJob" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="jobUserPriJob"/>
+        <property name="cronExpression">
+             <value>0 */10 * * * ?</value>   <!-- 10分钟执行一次 -->
+        </property>
+    </bean>
+    
+    
+    <bean id="targetObjectUserPriRemindJob" class="cn.temobi.complex.schedule.UserPriRemindJob"/>
+    
+    <bean id="jobUserPriRemindJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="targetObjectUserPriRemindJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="true"/>   
+    </bean>
+    
+      <bean id="triggersUserPriRemindJob" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="jobUserPriRemindJob"/>
+        <property name="cronExpression">
+             <value>0 0 14 * * ? *</value>   <!-- 下午2点 -->
+        </property>
+    </bean>
+    
+    
+</beans>

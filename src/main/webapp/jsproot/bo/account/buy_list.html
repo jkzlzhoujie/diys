@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>用户购买列表</title>
+<style type="text/css">  
+.sort_able{cursor:pointer;padding:0 28px;background:#f0f5f7 url(/diyroot/images/small.gif) no-repeat right center !important;}
+.asc{background:#f0f5f7 url(/diyroot/images/asc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+.desc{background:#f0f5f7 url(/diyroot/images/desc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+</style> 
+<script type="text/javascript">
+	$(document).ready(function() {
+		var orderFried = $("#orderFried").val();	
+		var sequence = $("#sequence").val();	
+		if(orderFried != '' && sequence != '')
+		{
+			$("#"+orderFried).attr('class',sequence);
+		}
+	});
+	
+	function sort(obj)
+	{
+		var sortType = "asc";
+		var className = $(obj).attr('class');
+		var id = $(obj).attr('id');
+		if(className == "asc"){
+			sortType = "desc";
+		}else if(className == "desc")
+		{
+			sortType = "asc";
+		}
+		$("#orderFried").val(id);
+		$("#sequence").val(sortType);
+		$(this).attr('class',sortType);
+		$("#userForm").submit();
+	}
+
+	function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：账户管理 > 用户购买列表</div>
+      <form id="userForm" action="/diys/Bo/account/buyList" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+         <input type="hidden" id="orderFried" name="orderFried" value="${(orderFried)!''}" />
+      <input type="hidden" id="sequence" name="sequence" value="${(sequence)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+          			<div style="display: inline">
+          			价格： <input type="text" name="price" value="${price!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          				<div style="display: inline">
+          			用户ID： <input type="text" name="userId" value="${userId!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+			     <div style="display: inline">
+				  		支付状态：<select id="status" name="status" class="inputtext">
+	              		<option  value="">请选择</option>
+   						<option <#if "${(status)!''}"== "0">selected="selected"</#if> value="0">未支付</option>
+   						<option <#if "${(status)!''}"== "1">selected="selected"</#if> value="1">已支付</option>
+   						<option <#if "${(status)!''}"== "2">selected="selected"</#if> value="2">支付失败</option>
+   						<option <#if "${(status)!''}"== "3">selected="selected"</#if> value="3">已取消</option>
+   						<option <#if "${(status)!''}"== "4">selected="selected"</#if> value="4">已删除</option>
+   						<option <#if "${(status)!''}"== "5">selected="selected"</#if> value="5">已退款</option>
+           			</select>
+				  </div>
+			      <div style="display: inline"> 类型：
+ 					<select style="width: 150px" id="type" name="type" class="select-style">
+ 					<option value="">请选择类型</option>
+   						<option <#if "${(type)!''}"== "1">selected="selected"</#if> value="1">购买彩绘</option>
+   						<option <#if "${(type)!''}"== "2">selected="selected"</#if> value="2">悬赏求P</option>
+   						<option <#if "${(type)!''}"== "3">selected="selected"</#if> value="3">充值</option>
+   						<option <#if "${(type)!''}"== "4">selected="selected"</#if> value="4">开通特权</option>
+   						<option <#if "${(type)!''}"== "5">selected="selected"</#if> value="5">参与夺宝</option>
+			      </select>
+       			 </div>
+          <div style="display: inline"> 支付类型：
+ 					<select style="width: 150px" id="payType" name="payType" class="select-style">
+ 					<option value="">请选择消费的类型</option>
+   						<option <#if "${(payType)!''}"== "1">selected="selected"</#if> value="1">微信</option>
+   						<option <#if "${(payType)!''}"== "2">selected="selected"</#if> value="2">支付宝</option>
+   						<option <#if "${(payType)!''}"== "3">selected="selected"</#if> value="3">余额</option>
+   						<option <#if "${(payType)!''}"== "4">selected="selected"</#if> value="4">支付宝组合支付</option>
+   						<option <#if "${(payType)!''}"== "5">selected="selected"</#if> value="5">微信组合支付</option>
+			      </select>
+        </div>
+        <div>
+          <div style="display: inline">
+          				时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:80px;" class="Wdate" onClick="WdatePicker()" />
+	                	 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:80px;" class="Wdate" onClick="WdatePicker()">&nbsp;&nbsp;
+          		 	 </div>
+          <div style="display: inline">
+          			购买ID： <input type="text" name="id" value="${id!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          	<div style="display: inline">
+          			彩绘ID： <input type="text" name="joinId" value="${joinId!''}" class="inputtext"  style="width: 80px"/>
+          			</div>	
+          	<div style="display: inline">
+          			购买订单号： <input type="text" name="orderNo" value="${orderNo!''}" class="inputtext"  style="width: 80px"/>
+          			</div>			
+          
+        <div style="padding-bottom: 5px">
+      		<div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()"  id="btn" value="查询"  class="btn-submit"/></div>
+      		<div style="width:10%;display: inline;float: right">总金额：${totalPrice!0}</div>
+      	</div>
+      </div>
+       </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+             <th width="5%">购买ID</th>
+             <th width="5%">彩绘ID</th>
+              <th width="5%">价格</th>
+              <th width="5%">状态</th>
+              <th width="5%">商品类型ID</th>
+              <th width="5%">用户ID</th>
+              <th width="5%">类型</th>
+              <th width="5%">支付类型</th>
+              <th width="5%">购买时间</th>
+              <th width="5%">购买订单号</th>
+              <th width="5%">操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.retionId)!''}
+						</td>
+						<td >
+							${(entity.price)!''}
+						</td>
+						<td>
+							<#if entity.status?? && "${entity.status}"=="0">
+							未支付
+							<#elseif entity.status?? && "${entity.status}"=="1">
+							已支付
+							<#elseif entity.status?? && "${entity.status}"=="2">
+							支付失败
+							<#elseif entity.status?? && "${entity.status}"=="3">
+							已取消
+							<#elseif entity.status?? && "${entity.status}"=="4">
+							已删除
+							<#elseif entity.status?? && "${entity.status}"=="5">
+							已退款
+							</#if>
+						</td>
+						<td >
+							${(entity.commodityInfoId)!''}
+						</td>
+						<td >
+							${(entity.userId)!''}
+						</td>
+						<td>
+							<#if entity.type?? && "${entity.type}"=="1">
+							购买彩绘
+							<#elseif entity.type?? && "${entity.type}"=="2">
+							悬赏求p
+							<#elseif entity.type?? && "${entity.type}"=="3">
+							充值 
+							<#elseif entity.type?? && "${entity.type}"=="4">
+							 开通特权
+							<#elseif entity.type?? && "${entity.type}"=="5">
+							 参与夺宝
+							</#if>
+						</td>
+						<td >
+							<#if entity.payType??>
+								<#if "${entity.payType}" == "0">免费
+								<#elseif "${entity.payType}" == "1">微信
+								<#elseif "${entity.payType}" == "2">支付宝
+								<#elseif "${entity.payType}" == "3">余额
+								<#elseif "${entity.payType}" == "4">支付宝组合支付
+								<#elseif "${entity.payType}" == "5">微信组合支付
+								</#if>
+							</#if>
+						</td>
+						<td >
+							${(entity.addTime)!''}
+						</td>
+						<td >
+							${(entity.orderNo)!''}
+						</td>
+						<td >
+						<#if entity.status?? && ("${entity.status}"=="1" || "${entity.status}"=="4")>
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('account/refundEdit','${(entity.id)!''}')">退款</a>
+						</#if>
+						</td>						
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

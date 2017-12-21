@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.CmUserExtendInfo">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="CmUserExtendInfo">
+			<result property="userId" column="user_id" />
+			<result property="qq" column="qq" />
+			<result property="education" column="education" />
+			<result property="career" column="career" />
+			<result property="interest" column="interest" />
+			<result property="signature" column="signature" />
+			<result property="coverThumbnail" column="cover_thumbnail" />
+			<result property="coverPraises" column="cover_praises" />
+			<result property="introduce" column="introduce" />
+			<result property="attentionLabel" column="attention_label" />
+			<result property="identityInfo" column="identity_info" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from cm_user_extend_info
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+				 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isLaberNoNull)">and attention_label is not null</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where user_id=#{userId}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findByPage" parameterType="CmUserExtendInfo" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+ limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM cm_user_extend_info 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="CmUserExtendInfo" useGeneratedKeys="true" keyProperty="id">
+	insert into cm_user_extend_info(user_id,qq,education,career,interest,signature,introduce,attention_label,cover_thumbnail,identity_info,cover_praises)
+	values(#{userId},#{qq},#{education},#{career},#{interest},#{signature},#{introduce},#{attentionLabel},#{coverThumbnail},#{identityInfo},#{coverPraises})
+	</insert>
+	
+	<update id="update" parameterType="CmUserExtendInfo">
+	  UPDATE cm_user_extend_info
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(qq)"> qq = #{qq},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(education)"> education = #{education},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(career)"> career = #{career},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(interest)"> interest = #{interest},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(signature)"> signature = #{signature},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(introduce)"> introduce = #{introduce},</if>
+		 attention_label = #{attentionLabel},
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(coverThumbnail)"> cover_thumbnail = #{coverThumbnail},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(coverPraises)"> cover_praises = #{coverPraises},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(identityInfo)"> identity_info = #{identityInfo},</if>
+		 </set>
+        <where>
+                user_id=#{userId}
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from cm_user_extend_info where user_id = #{userId}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM cm_user_extend_info
+		<where>
+				user_id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

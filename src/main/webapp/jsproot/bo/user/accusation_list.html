@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>举报用户列表</title>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("a[rel=example_group]").fancybox({
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'titlePosition' 	: 'over',
+				'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+				}
+			});
+	});
+	
+	function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：用户管理 > 举报用户列表</div>
+      <form id="userForm" action="/diys/Bo/user/accusationlist" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+          			  <div style="display: inline">
+          			举报人昵称： <input type="text" name="accusationNickName" value="${accusationNickName!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          			  <div style="display: inline">
+          			被举报人昵称： <input type="text" name="nickName" value="${nickName!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          			<div style="display: inline">
+          			举报时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:80px;" class="Wdate" onClick="WdatePicker()" />
+	                 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:80px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+			       <div style="display: inline">
+				  		是否属实：<select id="isDistort" name="isDistort" class="inputtext">
+	              		<option  value="">请选择</option>
+   						<option <#if "${(isDistort)!''}"== "0">selected="selected"</#if> value="0">未处理</option>
+   						<option <#if "${(isDistort)!''}"== "1">selected="selected"</#if> value="1">不属实</option>
+   						<option <#if "${(isDistort)!''}"== "2">selected="selected"</#if> value="2">属实</option>
+           			</select>
+				  </div>
+        <div style="padding-bottom: 5px">
+         <div style="display: inline">
+          			举报人Id： <input type="text" name="accusationUserId" value="${accusationUserId!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          			  <div style="display: inline">
+          			被举报人Id： <input type="text" name="userId" value="${userId!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          			 <div style="display: inline">
+          			作品Id： <input type="text" name="productId" value="${productId!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+      		<div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()"  id="btn" value="查询"  class="btn-submit"/></div>
+      </div>
+        </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">举报人昵称</th>
+              <th width="5%">举报人Id</th>
+              <th width="5%">举报人举报次数</th>
+              <th width="5%">图片</th>
+              <th width="5%">作品ID</th>
+              <th width="5%">被举报人昵称</th>
+              <th width="5%">被举报人Id</th>
+               <th width="5%">类型</th>
+               <th width="5%">作品类型</th>
+              <th width="10%" >举报时间</th>
+              <th width="5%" >是否属实</th>
+              <th width="10%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.accusationNickName)!''}
+						</td>
+						<td >
+							${(entity.accusationUserId)!''}
+						</td>
+						<td >
+							${(entity.accuCount)!'0'}
+						</td>
+						<td >
+							<#if entity?? && entity.productUrl??>
+						<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.productUrl!''}" title=""><img  width="60" height="80" src="${entity.productUrl!''}" /></a>
+						</#if>
+						</td>
+						<td >
+						${(entity.productId)!''}
+						</td>
+						<td >
+						${(entity.nickName)!''}
+						</td>
+						<td >
+						${(entity.userId)!''}
+						</td>
+						<td>
+							${entity.type!''}
+						</td>
+						<td>
+							<#if entity?? && entity.isPublic?? && entity.isPublic == 2 && entity.createType == 1>
+							悬赏求P P图
+							<#elseif entity?? && entity.isPublic?? && entity.isPublic == 2 && entity.createType == 0>
+							悬赏求P 原图
+							<#else>
+							作品
+							</#if>
+						</td>
+						<td>
+							${entity.createdWhen!''}
+						</td>
+						<td>
+							<#if entity?? && entity.isDistort?? && entity.isDistort == "2">
+							属实
+							<#elseif entity?? && entity.isDistort?? && entity.isDistort == "1">
+							不属实
+							<#else>
+							未处理
+							</#if>
+						</td>
+						<td>
+						<#if entity?? && entity.isDistort?? && entity.isDistort == "1">
+						<#elseif entity?? && entity.isDistort?? && entity.isDistort == "2">
+							<a class="btn btn-look" href="javascript:;" onclick="del_To('user/accusationCancel','你确认？','${entity.id}')">取消</a>
+						<#else>
+													<a class="btn btn-look" href="javascript:;" onclick="del_To('user/accusationupdate','你确定要解除举报？','${entity.id}')">解除举报</a>
+							<a class="btn btn-look" href="javascript:;" onclick="del_To('user/accusationStatus','你确认？','${entity.id}')">确认属实</a>
+						</#if>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

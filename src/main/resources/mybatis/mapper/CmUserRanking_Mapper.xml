@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.CmUserRanking">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+		<resultMap id="sql_resuleMap" type="CmUserRanking">
+			<id property="id" column="id" />
+			<result property="userId" column="user_id" />
+			<result property="nickName" column="nick_name" />
+			<result property="headImageUrl" column="head_image_url" />
+			<result property="addTime" column="addTime" />
+			<result property="charm" column="charm" />
+			<result property="originality" column="originality" />
+			<result property="totalScore" column="totalScore" />
+			<result property="charmNum" column="charmNum" />
+			<result property="originalityNum" column="originalityNum" />
+			<result property="totalScoreNum" column="totalScoreNum" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from cm_user_ranking
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(time)">and addTime = #{time}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and user_id = #{userId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and id != #{id}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY addTime desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="maxNum" resultType="long" useCache="false">
+	SELECT Min(`totalScoreNum`) FROM `cm_user_ranking` 
+		<include refid="sql_where"/>
+    </select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderField)">ORDER BY ${orderField} desc </if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(limit)">limit #{limit} offset #{offset}</if>
+	</select>
+	
+	<select id="executeSqlStrat" parameterType="list" resultMap="sql_resuleMap" useCache="false">
+	SET @oldTimes=DATE_SUB(CURDATE(),INTERVAL 3 DAY);
+	DELETE FROM `cm_user_ranking` WHERE ADDTIME &lt;= @oldTimes;
+	SET @times=DATE_SUB(CURDATE(),INTERVAL 1 DAY);
+	DELETE FROM `cm_user_ranking` WHERE ADDTIME = @times;
+	</select>
+	
+	<select id="executeSql" parameterType="list" resultMap="sql_resuleMap" useCache="false">
+	SET @times=DATE_SUB(CURDATE(),INTERVAL 1 DAY);
+	INSERT INTO  `cm_user_ranking`(user_id,nick_name,head_image_url,charm,originality,ADDTIME,totalScore) 
+		values
+       <foreach collection="list" item="item" index="index" separator="," >  
+           (#{item.id},#{item.nickName},#{item.headImageUrl},#{item.charm},#{item.originality},@times,#{item.score}*2+#{item.level}*100+#{item.experience}+#{item.charm}+#{item.credit}*10)
+       </foreach>  
+	</select>
+	
+	<select id="executeSqlEnd" parameterType="list" resultMap="sql_resuleMap" useCache="false">
+	SET @times=DATE_SUB(CURDATE(),INTERVAL 1 DAY);
+	SET @mycnt1 = 0;
+	UPDATE cm_user_ranking SET charmNum=(@mycnt1 := @mycnt1 + 1) WHERE ADDTIME = @times ORDER BY charm DESC;
+	SET @mycnt2 = 0;
+	UPDATE cm_user_ranking SET originalityNum=(@mycnt2 := @mycnt2 + 1) WHERE ADDTIME = @times ORDER BY originality DESC;
+	SET @mycnt3 = 0;
+	UPDATE cm_user_ranking SET totalScoreNum=(@mycnt3 := @mycnt3 + 1) WHERE ADDTIME = @times ORDER BY totalScore DESC; 
+	</select>
+	
+	<select id="findByPage" parameterType="CmUserRanking" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY addTime desc  limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM cm_user_ranking 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="CmUserRanking" useGeneratedKeys="true" keyProperty="id">
+	insert into cm_user_ranking(user_id,nick_name,head_image_url,addTime,charm,originality,totalScore)
+	values(#{userId},#{nickName},#{headImageUrl},now(),#{charm},#{originality},#{totalScore})
+	</insert>
+	
+	<update id="update" parameterType="CmUserRanking">
+	  UPDATE cm_user_ranking
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> user_id = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)"> nick_name = #{nickName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(headImageUrl)"> head_image_url = #{headImageUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(charm)"> charm = #{charm},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(originality)"> originality = #{originality},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(totalScore)"> totalScore = #{totalScore},</if>
+		</set>
+         where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from cm_user_ranking where id = #{id}
+	</delete>
+</mapper>

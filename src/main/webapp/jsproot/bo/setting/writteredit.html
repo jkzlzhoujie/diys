@@ -1,0 +1,42 @@
+  <body>
+  <script type="text/javascript">
+  		$(function(){
+  			$('#writterForm').validate({
+  				rules:{
+  					name:{
+  						required:true
+  					}
+  				},
+  				messages:{
+  					name:{
+  						required:"必填"
+  					}
+  				}
+  			})
+  		})
+  </script>
+    <div>
+    	<input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+    	
+    	<div class="breadcrumb">当前位置：作家管理 > 类型编辑</div>
+    	<form action="/diys/Bo/setting/writtersave" method="post" id="writterForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}">
+    		<input type="hidden" name=parentId value="${parentId!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<tr>
+    				<td align="right">名称</td><td><input type="text" name="name" value="${(entity.name)!''}" class="inputtext"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">颜色</td><td><input type="text" name="typeColor" value="${(entity.typeColor)!''}" class="inputtext"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right"><input type="submit" class=" btn-submit"  value="提交"/></td>
+    				<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>   
+    </div>
+  </body>
+</html>

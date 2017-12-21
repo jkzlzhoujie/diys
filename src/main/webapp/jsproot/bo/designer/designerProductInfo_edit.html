@@ -1,0 +1,140 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<style type="text/css">
+			.inputstyle{width:260px;height:22px;}
+			#entityiddis{display:none}		
+		</style>
+		
+		<script type="text/javascript">
+		$(function(){
+			$('#designerProductInfoEditForm').validate({	 
+			 rules:{
+				 designerId:{required:true,number:true},
+				 name:{required:true}
+	          },
+	          messages:{
+	            }
+			});
+				
+		$('#uploadproductImgUrl').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#productImgUrl").attr("value",data);
+				$("#productImgUrl").next().hide();
+				document.getElementById("previewproductImgUrl").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于10M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		});
+		
+		
+			
+		</script>
+	</head>
+	
+	<body>
+		
+		<div>
+			  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+		      <div class="breadcrumb">当前位置：设计师管理>设计师商品编辑</div>
+		      <form action="/diys/Bo/designer/designerProductInfosave" method="post" id="designerProductInfoEditForm">
+		      	<input class="inputstyle" type="hidden" id="id" name="id" value="${(entity.id)!''}"/>
+		      <div class="table-show-content">
+		        <table class="table-show" >
+			     	
+			     		<#if entity??>
+			     				<input class="inputstyle" type="hidden" id="designerId" name="designerId" value="${(entity.designerId)!''}"/></td>
+			     		<#else>
+			     			<tr>
+					     		<td align="right">设计师ID：<br><span style="color:red">(此项为必填*)</span>：</td>
+					     		<td><input class="inputstyle" type="text" id="designerId" name="designerId" value="${(entity.designerId)!''}"/></td>
+			     			</tr>
+			     		</#if>	
+			     	<tr>
+			     		<td align="right">商品名称：</td>
+			     		<td><input class="inputstyle" type="text" id="name" name="name" value="${(entity.name)!''}"/></td>
+			     	</tr>
+			     	<tr>
+			     		<td align="right">虚拟商品：</td>
+			     		<td><select id="type" name="isVirtual" class="inputtext">
+		   						<option 
+		   							<#if (entity?? && "0" == "${entity.isVirtual!''}") || (entity??) == false >selected="selected"</#if> value="0">虚拟
+		   						</option>
+		   						<option 
+		   							<#if entity?? && "1" == "${entity.isVirtual!''}">selected="selected"</#if> value="1">实物
+		   						</option>
+		           			</select>
+		           		</td>
+			     		<td align="right">商品状态：</td>
+				     	<td >
+				     	<select id="type" name="status" class="inputtext">
+		   						<option 
+		   							<#if entity?? && "0" == "${entity.status!''}" >selected="selected"</#if> value="0">下架
+		   						</option>
+		   						<option 
+		   							<#if (entity?? && "1" == "${entity.status!''}") || (entity??) == false >selected="selected"</#if> value="1">上架
+		   						</option>
+		   						<option 
+		   							<#if entity?? && "2" == "${entity.status!''}">selected="selected"</#if> value="2">删除
+		   						</option>
+		           			</select>
+				     	</td>
+			     		
+			     	</tr>
+			     	<tr>
+			     		
+			     	<tr>
+			     	<tr>
+			     		<td align="right">作品照片：</td>
+		     			<td >
+				     		<input type="file" id="uploadproductImgUrl" name="uploadproductImgUrl" />
+				     		<input type="hidden" id="productImgUrl" name="productImgUrl" value="${(entity.productImgUrl)!''}" class="inputtext" />
+					        <span class="note" style="color: red;"></span>
+					        <span class="tp"><img id="previewproductImgUrl" src="${(entity.productImgUrl)!''}" width="220" height="150" /></span>
+			     		</td>
+			     		<td align="right">作品描述：</td>
+			     		<td><textarea id="productDescribe" name="productDescribe" style="width: 260px;height: 180px;resize: none;" class="valid" >${(entity.productDescribe)!''}</textarea></td>
+			     	</tr>
+			     	<tr>
+			     		<td colspan="2" align="center"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+			     		<td colspan="2" align="center"><input type="reset" class=" btn-submit" name="btn2" value="重置"/></td>
+			     	</tr>
+		        </table>
+		        </div>
+		      </form>
+		    </div>
+	<body>
+
+
+</html>

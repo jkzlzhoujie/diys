@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>专题管理</title>
+
+<script type="text/javascript">
+	
+	function selectInfo(){
+		$("#bannerForm").submit();
+	}
+	function editType(id){
+		$("#bannerForm").attr("action","/diys/Bo/topic/commodityInfoList");
+		$("#id").val(id);
+		$("#bannerForm").submit();					
+	}
+		function updatePush(id,status) {
+		$.post('/diys/Bo/topic/commodityStatus', {
+			id : id,
+			status:status,
+		}, function() {
+			$("#bannerForm").submit();			
+		})
+	}
+	function refreshIndexCache() {
+	 	$('#loadingimg').jqmShow();
+		$.post('/diys/Bo/topic/refreshCache',function(data){
+			myAlert("成功");
+			$('#loadingimg').jqmHide();
+		});
+	 	
+	}
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：专题管理 > 商品列表</div>
+      <form id="bannerForm" action="/diys/Bo/topic/listCommodity" method="post">
+      <input type="hidden" id="id" name="commodityId" value="${(entity.id)!''}"/>
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-search">
+          <div>
+				   <div style="display: inline">
+				   		名称：<input id="name" name="name" type="text" class="input-style"/>
+				   		价格：<input id="price" name="price" type="text" class="input-style"/>
+           			</select>
+				  </div>
+				  	
+          		  	<div style="width:10%;display: inline;float: right">
+          		  	<input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/>
+          		  </div>
+			</div>
+        </div>
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+      		<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="window.location.href='/diys/Bo/topic/compCommodity'"/></div>
+      		<div style="width:10%;display: inline;"><input type="button" id="btn" value="刷新缓存"  class="btn-submit" onclick="refreshIndexCache()"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="10%" >缩略图</th>
+              <th width="10%">名称</th>
+              <th width="10%">描述</th>
+              <th width="10%">原价<span style="color: red;">(单位分)</span></th>
+              <th width="10%">价格<span style="color: red;">(单位分)</span></th>
+              <th width="10%">状态</th>
+              <th width="10%">排序</th>
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							<img src="${(entity.thumbnail)!''}"  style="width: 120px;height: 160px"/>
+						</td>
+						<td >
+							${(entity.name)!''}
+						</td>
+						<td >
+							${(entity.detail)!''}
+						</td>
+						<td >
+							${(entity.originalPrice)!''}
+						</td>
+						<td >
+							${(entity.price)!''}
+						</td>
+						<td>
+						<#if entity.status?? &&  entity.status == "0">
+						正常
+						<#else>
+						下线
+						</#if>
+						</td>
+						<td >
+							${(entity.sort)!''}
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="window.location.href='/diys/Bo/topic/compCommodity?id=${(entity.id)!0}'">编辑</a>
+							<a class="btn btn-delete" onclick="del_('topic/delCommodity','#{(entity.id)!0}')">删除</a>
+							<a class="btn btn-look agentClaim2" onclick="editType(${(entity.id)!''})">编辑商品类型</a>
+							<#if entity.status?? &&  entity.status == "0">
+									<a class="btn btn-delete" onclick="updatePush('${entity.id}','1')">下线</a>
+							<#else>
+							<a class="btn btn-look" onclick="updatePush('${entity.id}','0')">上线</a>
+							</#if>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

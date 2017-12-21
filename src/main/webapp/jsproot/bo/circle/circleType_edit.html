@@ -1,0 +1,44 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(form){
+				$.post('/diys/Bo/circleManager/circleTypeSave',$("#editForm").serialize(),function(data){
+					$("#circleTypeForm").submit();
+				});
+			},
+			rules:{
+				name:{required:true}
+			}
+		});
+	})
+</script>
+     <div>
+    	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+    	<div class="breadcrumb">当前位置：圈子管理> 圈子类型编辑</div>
+    	<form action="/diys/Bo/circleManager/circleTypeSave" id="editForm" method="post">
+    		<input type="hidden" name="id" value="${(entity.id)!''}" >
+    		<div class="table-show-content">
+    		<table class="table-show" >
+    			<tr>
+    				<td align="right"> 名称</td><td><input type="text" name="name" value="${(entity.name)!''}"/> </td>
+    			</tr>
+    			
+    			<tr><td align="right">是否上线 </td>
+		     		<td>
+			     		<select id="isOnline" name="status" class="selectOpt w164">
+		   					<option <#if "${(entity.status)!-1}"== "1">selected="selected"</#if> value="1" >上线</option>
+		   					<option <#if "${(entity.status)!-1}"== "0">selected="selected"</#if> value="0" >下线</option>
+	          			</select>
+			     	</td>
+    			</tr>
+    			
+    			<tr>
+    				<td align="right"><input type="submit" value="提交" class=" btn-submit" /> </td>
+    				<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>

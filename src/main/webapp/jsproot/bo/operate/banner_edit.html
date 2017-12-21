@@ -1,0 +1,274 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#bannerAddForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/operate/bannerSave',$("#bannerAddForm").serialize(),function(data){
+					if(data==1)
+					{
+						myAlert("添加失败");
+					}else{
+						$("#bannerForm").submit();
+					}
+				})
+			},
+			 rules:{
+		          sequence:{digits:true },
+	              clickId:{digits:true},
+	              startTime:{ required:true},
+	              endTime:{ required:true},
+	          },
+	          messages:{
+	                sequence:{
+		                digits:"排序值必须填整数"
+	                },
+	                clickId:{
+		               digits:"点击ID必须填整数"
+		            }
+	            }
+			});	
+		});
+		$('#uploadBanner').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#picUrl").attr("value",data);
+				$("#picUrl").next().hide();
+				document.getElementById("previewBanner").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于10M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		
+		$('#uploadBanner2').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#picUrl2").attr("value",data);
+				$("#picUrl2").next().hide();
+				document.getElementById("previewBanner2").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl2").next().html("文件大小不大于1M");
+				  	 	$("#picUrl2").next().show();
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+			var editor;
+	$(function() {
+		editor = KindEditor.create('textarea[name="content"]', {
+		   resizeType : 0,
+		   uploadJson : domainName+'/diys/upload/kindEditor',
+		   formatUploadUrl:false,
+		   width : '620',
+		   height : '150',
+		   afterBlur: function(){this.sync();},
+		   items : [
+				'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+				'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+				'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
+		});
+	});
+	
+	$(function(){
+		var type = $("#sstype").val();
+  		if(type == "play_banner8"){
+  			$("#playTop").show();
+  		}else{
+  			$("#playTop").hide();
+  		}
+   });
+   
+   $("#sstype").change(function(){
+	  	var type = $("#sstype").val();
+	  	if(type == ""){
+	  		$("#playTop").hide();
+	  		$("#bannerSize").text("(714*200)");
+	  	}else{
+	  		if(type == "play_banner8"){
+	  			$("#playTop").show();
+	  		}else{
+	  			$("#playTop").hide();
+	  		}
+	  		if(type == "play_banner15"){
+	  			$("#bannerSize").text("(218*218)");
+	  		}else if(type == "play_banner16" ){
+	  			$("#bannerSize").text("(360*130))");
+	  		}else{
+	  			$("#bannerSize").text("(714*200)");
+	  		}
+	  	}
+	});
+	
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：资源管理 > 横幅编辑</div>
+      <form action="/diys/Bo/operate/bannerSave" method="post" id="bannerAddForm">
+            <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">横幅名称</td>
+	     		<td><input type="text" id="name" name="name" value="${(entity.name)!''}" class="inputtext" /></td>
+	     		<td align="right">类型 </td>
+	     		<td>
+		     		<select id="sstype" name="type" class="selectOpt w164">
+             			<option  value="">请选择类型</option>
+	   					<#if typeList??>
+						<#list typeList as type>
+							   <option <#if  entity?? && entity.type?? && "${entity.type}"?index_of("${type.code}")!=-1 > selected="selected"</#if> value="${type.code}">${type.name}</option>
+						</#list>
+						</#if>
+          			</select>
+		     	</td>
+	     		<td  align="right">横幅地址</br><span style="color: red;" id="bannerSize">(714*200)</span></td>
+		     	<td>
+		     		<input type="file" id="uploadBanner" name="uploadBanner"/> 
+		     		<input type="hidden" id="picUrl" name="picUrl" value="${(entity.picUrl)!''}" class="inputtext" />
+			        <span class="note" style="color: red;"></span>
+			        <span class="tp"><img id="previewBanner" src="${(entity.picUrl)!''}" width="180" height="80" /></span></div>
+		     	</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">开始时间<span style="color: red;">*</span></td>
+	     		<td><input type="text" id="startTime" name="startTime" value="${(entity.startTime?date)!''}" style="height:25px;width:130px;" class="Wdate" onClick="WdatePicker()" /></td>
+	     		<td align="right">结束时间<span style="color: red;">*</span></td>
+	     		<td><input type="text" id="endTime" name="endTime" value="${(entity.endTime?date)!''}" style="height:25px;width:130px;" class="Wdate" onClick="WdatePicker()" /></td>
+	     		<td align="right">排序值</td>
+	     		<td><input type="text" id="sequence" name="sequence" value="${(entity.sequence)!''}"  class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+     			<td align="right">跳转类型 </td>
+	     		<td>
+		     		<select id="actionType" name="actionType" class="selectOpt w164">
+             			<option  value="">请选择跳转类型</option>
+	   					<#if jumpList??>
+						<#list jumpList as type>
+							   <option <#if entity?? && entity.actionType?? && "${entity.actionType}" ==  "${type.code}"> selected="selected"</#if> value="${type.code}">${type.name}</option>
+						</#list>
+						</#if>
+          			</select>
+		     	</td>
+	     		<td align="right">点击URL地址</td>
+	     		<td><input type="text" id="clickUrl" name="clickUrl" value="${(entity.clickUrl)!''}" class="inputtext"/></td>
+	     		<td align="right">点击ID</td>
+	     		<td><input type="text" id="clickId" name="clickId" value="${(entity.clickId)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">状态</td>
+	     		<td >       
+	     			<input name="status" type="radio" class="loc" value="1" 
+	     				<#if "${(entity.status)!''}" == "1"> checked="checked" </#if>/>正常
+	                <input name="status" type="radio" class="loc" value="2"
+	                <#if "${(entity.status)!''}" != "1"> checked="checked" </#if>/>冻结
+	            </td>
+	            <td align="right">扩展属性(对应栏目类型ID)</td>
+	     		<td >       
+	     			<input type="text" id="extend" name="extend" value="${(entity.extend)!''}" class="inputtext" style="width: 90px"/>
+	     			<span style="color: red;">秀模块顶部和列表广告需在这里填入栏目类型区分,其他类型不填</span>
+	            </td>
+	            <td align="left" colspan="2"></span></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">系统类型</td>
+	     		<td >       
+	     			<input name="system" type="radio"  value="1" 
+	     				<#if "${(entity.system)!''}" == "1"> checked="checked" </#if>/>Android-安卓
+	                <input name="system" type="radio" value="2"
+	                <#if "${(entity.system)!''}" == "2"> checked="checked" </#if>/>IOS-苹果
+	            </td>
+	     		<td align="right">对应应用<span style="color: red;">（跳转类型为 下载apk时需指定对应应用）</span> </td>
+	     		<td>
+		     		<select id="applicationId" name="applicationId" class="selectOpt w164">
+             			<option  value="">请选择应用</option>
+	   					<#if applicationList??>
+						<#list applicationList as application>
+							   <option <#if entity?? && entity.applicationId?? && "${entity.applicationId}" ==  "${application.id}"> selected="selected"</#if> value="${application.id}">${application.name}</option>
+						</#list>
+						</#if>
+          			</select> 
+		     	</td>
+		     	<td align="left" colspan="2"></span></td>
+	     	</tr>
+	     	<tr id="playTop">
+	     		<td align="right" >玩模块-顶部大banner 横幅<span style="color: red;">(720*480)  （主要用于适用于类型为 玩秀模块-顶部banner 6.0.0及后续后版本，其他类型不用上传此banner）</span></td>
+    			<td >
+    				<input type="file" id="uploadBanner2" name="uploadBanner2"/> 
+		     		<input type="hidden" id="picUrl2" name="picUrl2" value="${(entity.picUrl2)!''}" class="inputtext" />
+			        <span class="note" style="color: red;"></span>
+			        <span class="tp"><img id="previewBanner2" src="${(entity.picUrl2)!''}" width="180" height="80" /></span></div>
+    			</td>
+    			<td align="left" colspan="4"><span style="color: red;"></span></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">H5内容</td>
+    			<td colspan="5">
+    				<textarea id="content" name="content" style="width: 250px;height: 50px;resize: none;">${(entity.content)!''}</textarea>
+    			</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td width="40%" colspan="5"></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

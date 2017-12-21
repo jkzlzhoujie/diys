@@ -1,0 +1,154 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+	font-family: "Arial", "SimHei", "Microsoft YaHei", "Helvetica",
+		sans-serif
+}
+
+*{margin:0px;padding:0px}
+*{tap-highlight-color:rgba(0,0,0,0);-webkit-tap-highlight-color:rgba(0,0,0,0);-ms-tap-highlight-color:rgba(0,0,0,0);}
+html{-webkit-text-size-adjust:none;}
+body{margin: 0;font: 14px/1.5 "微软雅黑",arial,sans-serif;}
+
+ul,ul li {
+	margin: 0;
+	padding: 0;
+	list-style: none
+}
+
+a,button,:focus,a:focus,button:focus,a:active,a:hover {
+	outline: 0
+}
+
+input {
+	-webkit-user-modify: read-write-plaintext-only
+}
+
+*,:after,:before {
+	webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box
+}
+
+a {
+	-webkit-touch-callout: none;
+	-webkit-user-drag: none;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-tap-highlight-color: transparent;
+	text-decoration: none
+}
+
+a:active {
+	opacity: 0.6;
+	filter: alpha(opacity = 60);
+	-webkit-box-shadow: none;
+	box-shadow: none
+}
+
+a:focus {
+	outline: 0 none
+}
+
+a:hover {
+	text-decoration: none
+}
+
+a[href]:hover {
+	cursor: pointer
+}
+
+html,body {
+	height: 100%;
+	width: 100%
+}
+
+body {
+	background: #fff;
+	padding: 0;
+	margin: 0;
+	-webkit-text-size-adjust: none;
+	-moz-text-size-adjust: none;
+	text-size-adjust: none;
+	text-rendering: optimizeLegibility;
+	-webkit-backface-visibility: hidden;
+	-ms-content-zooming: none
+}
+
+.mainPm {
+	height: 28.45rem;
+	width: 16rem;
+	margin: 0 auto;
+	position: relative;
+	overflow: hidden;
+	background: #f2c32f url(images/bg.jpg) no-repeat top center;
+	background-size: 16rem
+}
+
+.mainPm div {
+	position: absolute;
+	color: #fff;
+	width: 2.25rem;
+	height: 0.95rem;
+	line-height: 0.95rem;
+	font-size: 0.6rem;
+	text-align: center
+}
+
+.mainPm div.xf {
+	top: 8.35rem;
+	left: 0.85rem
+}
+
+.mainPm div.xfb {
+	top: 11.125rem;
+	left: 13.4rem
+}
+
+.mainPm div.tp {
+	top: 20rem;
+	left: 5.25rem
+}
+
+.mainPm div.hand {
+	top: 10.925rem;
+	left: 4.8rem;
+	width: 4.75rem;
+	height: 4.75rem;
+	text-align: center;
+	border-radius:3rem; 
+}
+
+.mainPm div.hand img {
+	margin: auto;
+	width: 4.75rem;
+	height: 4.75rem;
+	border-radius:3rem; 
+}
+
+.mainPm div.pm {
+	top: 15.825rem;
+	left: 6.075rem;
+	width: 2.25rem;
+	height: 1.1rem;
+	font-size: 0.9rem;
+	font-weight: bold;
+	line-height: 1.1rem;
+	text-shadow: #fe007d 0.1rem 0 0, #fe007d -0.1rem 0 0, #fe007d 0 0.1rem 0,
+		#fe007d 0 -0.1rem 0, #fe007d 0.1rem 0.1rem 0, #fe007d -0.1rem 0.1rem 0,
+		#fe007d -0.1rem 0.1rem 0, #fe007d 0.1rem -0.1rem 0, #fe007d -0.1rem
+		-0.1rem 0
+}
+
+.mainPm div.down {
+	top: 23.925rem;
+	left: 0.76rem;
+	width: 14.34rem;
+	height: 2rem;
+}
+
+.mainPm div.down img {
+	margin: auto;
+	max-width: 100%;
+	max-height: 100%;
+	cursor:pointer;
+}

@@ -1,0 +1,59 @@
+<body>
+	<script type="text/javascript">
+		$(function(){
+			$("#editForm").validate({
+				submitHandler:function(form){
+					$.post('/diys/Bo/boCirclePost/circlePostEditSave',$("#editForm").serialize(),function(data){
+						$("#circlePostForm").submit();
+					});
+				},
+				rules:{
+					name:{required:true},
+					status:{required:true}
+				}
+			});
+		})
+	</script>
+    <div>
+   	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+   	<div class="breadcrumb">当前位置：贴子列表 > 贴子编辑</div>
+   		<form id="editForm" action="/diys/Bo/boCirclePost/circlePostEditSave" method="post" >
+   		<input type="hidden" name="id" value="${(entity.id)!''}" >
+   		<div class="table-show-content">
+	   		<table class="table-show" >
+	   			<tr  class="list_title">
+				  	<td align="right">贴子标题：</td><td><input name="title" type="text" value="${(entity.title)!''}"></td>
+				</tr>
+				<tr class="table-show" >
+					<td align="right">贴子内容：</td><td><textarea id="text" name="text" style="width: 250px;height: 100px;resize: none;" class="valid" >${(entity.text)!''}</textarea></td>
+				</tr>
+				<tr >
+					<td align="right">删除状态</td>
+					<td >
+						<select id="type" name="status" class="inputtext">
+				              		<option  value="">请选择类型</option>
+			   						<option 
+			   							<#if entity?? && "1" == "${entity.status!''}">selected="selected"</#if> value="1">正常
+			   						</option>
+			   						<option 
+			   							<#if entity?? && "0" == "${entity.status!''}">selected="selected"</#if> value="0">册除
+			   						</option>
+			   			</select>
+		   			</td>
+				</tr>
+				<tr class="table-show" >
+					<td align="right">点赞数：</td><td><input name="zanNum" type="text" value="${(entity.zanNum)!''}"></td>
+				</tr>
+				<tr class="table-show" >
+					<td align="right">评论数量：</td><td><input name="discussNum" type="text" value="${(entity.discussNum)!''}"></td>
+				</tr>
+				
+				<tr>
+    				<td align="right"><input type="submit" value="提交"  class=" btn-submit"/> </td>
+    				<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+    			</tr>
+	   		</table>
+   		</div>
+   		</form>
+     </div>
+ </body>

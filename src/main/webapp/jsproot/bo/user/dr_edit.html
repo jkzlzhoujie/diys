@@ -1,0 +1,78 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#packetForm').validate({	 
+			
+			 submitHandler:function(form){
+				
+					$.post('/diys/Bo/user/drsave',$("#packetForm").serialize(),function(data){
+						if(data == 0)
+						{
+							myAlert("已存在达人列表");
+						}else{
+							$("#userForm").submit();
+						}
+					});
+				
+			},
+			 rules:{
+			  	  sort:{
+		          	  required: true,
+		          	   digits:true  ,
+		          	   min:1
+		          }
+	          },
+	          messages:{
+	              sort:{
+		          	  required: "排序值不合法" ,
+		          	   digits:"排序值不合法"  ,
+		          	   min:"排序值不合法"
+		          }
+	            }
+			});	
+		});
+</script>	
+<#if error??>
+${(error)!''}
+<#else>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：用户管理> 添加达人</div>
+      <form action="/diys/Bo/user/drsave" method="post" id="packetForm">
+            <input type="hidden" id="id" name="id" value="${(entity.id)!0}" />
+              <input type="hidden" name="talenId" value="${(talenId)!''}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">昵称</td>
+	     		<td width="35%">${(entity.nickName)!''}</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right">排序</td>
+		     	<td width="35%"><input type="text" value="${sort!'0'}" id="sort" name="sort"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right">类型</td>
+		     	<td width="35%">
+		     	<select id="type" name="type" class="inputtext">
+	              		<option  value="">请选择类型</option>
+   						<option 
+   							<#if "1"=="${type!''}">selected="selected"</#if> value="1">热榜达人
+   						</option>
+   						<option 
+   							<#if "2"=="${type!''}">selected="selected"</#if> value="2">彩绘达人
+   						</option>
+           			</select>
+		     	</td>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+</#if>
+<body>

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>关注人群列表</title>
+    <meta charset=UTF-8">
+  </head>
+  
+  <body>
+     <div id="main">
+  		<div class="breadcrumb">当前位置：兴趣圈管理> 圈子列表> 关注人群列表</div>
+  		<form action="/diys/Bo/circle/followlist" method="post" id="circleForm" >
+  			<input type="hidden" name="pageNo" id="pageNo" value="${pageNo!''}">
+  			<div class="table-show-content">
+				<table class="table-show">
+					<tr>
+						<th width="8%">圈子id</th>
+						<th width="8%">圈名</th>
+						<th width="10%">用户id</th>
+						<th width="10%">昵称</th>
+						<th width="15%">创建时间</th>
+					</tr>
+					<#if list??>
+						<#list list as entity>
+							<tr>
+								<td>${(entity.circleId!'')}</td>
+								<td>${(entity.name!'')}</td>
+								<td>${(entity.userId!'')}</td>
+								<td>${(entity.nickName!'')}</td>
+								<td>${(entity.addTime)!''}</td>
+							</tr>
+						</#list>
+					</#if>
+				</table>				
+  			</div>
+  			<#include "/bo/page.html">
+  		</form>
+  	</div>
+  	<div id="editor" class="jqmWindow"></div>
+  </body>
+</html>

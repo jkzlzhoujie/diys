@@ -1,0 +1,192 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+		$('#uploadBanner').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+					 var a = "<span><input type='hidden' name='image' value='"+data+"'/><img src="+data+" width='30' height='30' /> <a onclick='removeSpan(this);'>删除</a></span>"
+					$("#images").append(a);
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于10M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+	$('#uploadLogo').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#image").attr("value",data);
+				$("#image").next().hide();
+				document.getElementById("previewBanner").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#picUrl").next().html("文件大小不大于10M");
+				  	 	$("#picUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		$('#uploadApp').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/app',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.apk;',
+			'fileSizeLimit' : '100MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#url").attr("value",data);
+				$("#appdesc").html("上传成功");
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#downUrl").next().html("文件大小不大于100M");
+				  	 	$("#downUrl").next().show();
+				  	 	alert("文件大小不大于100M");
+	                  break
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+	});
+		
+		function removeSpan(which) {
+			$(which).parent().remove();
+		}
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：应用管理 > 应用编辑</div>
+      <form action="/diys/Bo/application/save" method="post" id="bannerAddForm">
+            <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">名称</td>
+	     		<td><input type="text" id="name" name="name" value="${(entity.name)!''}" class="inputtext" /></td>
+	     		<td align="right">简介</td>
+	     		<td><input type="text" id="title" name="title" value="${(entity.title)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">上传应用</td>
+	     		<td>
+	     			<input type="file" id="uploadApp" name="uploadApp"/> 
+	     			<input type="hidden" id="url" name="url" value="${(entity.url)!''}" class="inputtext" />
+				    <span id="appdesc" class="note" style="color: red;"></span>
+	     		</td>
+	     		<td align="right">描述</td>
+	     		<td>
+	     		<textarea name="detail" rows="5" cols="50">${(entity.detail)!''}</textarea>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">状态</td>
+	     		<td>       
+	     			<input name="status" type="radio" class="loc" value="1" 
+	     				<#if "${(entity.status)!''}" == "1"> checked="checked" </#if>/>上线
+	                <input name="status" type="radio" class="loc" value="2"
+	                <#if "${(entity.status)!''}" != "1"> checked="checked" </#if>/>下线
+	            </td>
+	            <td  align="right">logo</td>
+		     	<td>
+		     		<input type="file" id="uploadLogo" name="uploadLogo"/> 
+		     		<input type="hidden" id="image" name="logo" value="${(entity.logo)!''}" class="inputtext" />
+			        <span class="note" style="color: red;"></span>
+			        <span class="tp"><img id="previewBanner" src="${(entity.logo)!''}" width="180" height="80" /></span></div>
+		     	</td>
+	     	</tr>
+	     	<tr>
+	     	 <td  align="right">图片</td>
+		     	<td>
+		     		<input type="file" id="uploadBanner" name="uploadBanner"/> 
+		     		<div style="width: 450px" id="images">
+		     		 		<#if entity?? && entity.image??>
+		     		 		<#list imagelist as images >
+		     		 		<span><input type='hidden' name='image'
+												value="${images }" /> <img src="${images }" width='30'
+												height='30' /> <a onclick='removeSpan(this);'>删除</a> </span>
+		     		 		</#list>
+		     		 		</#if>
+				</div>
+		     	</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td width="40%"></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

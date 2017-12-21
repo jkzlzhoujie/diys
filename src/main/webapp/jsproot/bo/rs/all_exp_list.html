@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+<meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<meta HTTP-EQUIV="expires" CONTENT="0">
+<title>资源管理</title>
+<script type="text/javascript">
+	$(function() {
+     $("#checkAll").click(function() {
+          $('input[name="subBox"]').attr("checked",this.checked);
+      });
+      var $subBox = $("input[name='subBox']");
+      $subBox.click(function(){
+          $("#checkAll").attr("checked",$subBox.length == $("input[name='subBox']:checked").length ? true : false);
+      });
+      
+      	$('#tagLaber').click(function() {
+		var i = 0;
+		var j=0;
+		var arr = new Array();
+		var m = document.getElementsByName('subBox');
+		for ( var i = 0; i < m.length; i++) {
+			if (m[i].checked == true) {
+				arr[j] = $.trim(m[i].value);
+				j+=1;
+			}
+		}
+		if(j>0){
+			editAll('/diys/Bo/rs/all_edit_exp?ids='+arr.toString()+'&pageNo='+$('#pageNo').val());
+		}else{
+			myAlert("请至少选择一项");
+			return;
+		}
+	});
+	
+		$('#laberForm').validate({	
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/rs/makeLaber', $("#laberForm").serialize(), function(data) {
+					$("#expForm").submit();
+				});	
+		 	},		
+			 rules:{
+	              "rsDesc":{required:true}
+
+	            },
+	          messages:{
+	                "rsDesc":{required:"标签不能为空"}
+	            }
+			});	
+   });    
+   
+   function label(image,id,laber) {
+	   	$("#rsImage").attr("src",image);
+	   	$("#rsId").val(id);
+	   	$("#rsDesc").val(laber);
+		$('#editor1').jqm({
+					overlay : 30,
+					overlayClass : 'whiteOverlay'
+				}).draggable();
+		$('#editor1').jqmShow();
+	}
+	
+	function selectInfo() {
+  		$("#pageNo").val("1"); 
+  		$("#expForm").submit();	
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：资源管理 > 表情包列表 > 表情列表</div>
+      <form id="expForm" action="/diys/Bo/rs/all_exp_list" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+				   <div style="display: inline">
+				  		类型：<select id="type" name="type" class="inputtext">
+	              		<option  value="">请选择类型</option>
+   						<option 
+   							<#if "1"=="${type!''}">selected="selected"</#if> value="1">贴图
+   						</option>
+   						<option 
+   							<#if "2"=="${type!''}">selected="selected"</#if> value="2">颜文字
+   						</option>
+   						<option 
+   							<#if "3"=="${type!''}">selected="selected"</#if> value="3">表情
+   						</option>
+           			</select>
+				  </div>
+          			<input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/>
+		</div>
+      <input type="button" id="tagLaber" value="打标签"  class="btn-submit" />
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+               <th width="5%" align="center"><input type="checkbox" id="checkAll" /></th>
+              <th width="10%" >表情名称</th>
+              <th width="10%" >类型</th>
+              <th width="10%">表情包名</th>
+              <th width="10%">标签</th>
+              <th width="15%">图片</th>
+              <th width="10%">操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+					<td align="center">
+							<input value="${(entity.id)!''}" type="checkbox" name="subBox" class="subBox">
+						</td>
+						<td >
+							${(entity.name)!''}
+						</td>
+						<td >
+							${(entity.type)!''}
+						</td>
+						<td>
+							${(entity.materialName)!''}
+						</td>
+						<td>
+							${(entity.laberName)!''}
+						</td>
+						<td>
+							<img src="${(entity.imageUrl)!''}?rc=${.now?long}" style="width: 80px;height: 80px">
+						</td>
+						<td>
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="label('${(entity.imageUrl)!''}','${(entity.id)!''}','${(entity.laberName)!''}');">打标签</a>
+						</td>
+						</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+    
+    <div id="editor1" class="jqmWindow">
+       <form id="laberForm"  method="post">
+     <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+       <input type="hidden" name="rsId" id="rsId" name="id"  />
+      <div class="breadcrumb">当前位置：素材管理> 打标签</div>
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+		     	<td width="35%"><img name="rsImage" id="rsImage" style="width: 80px;height: 80px"></td>
+		     	<td width="35%"><textarea name="rsDesc" id="rsDesc" name="desc" style="width: 250px;height: 100px;resize: none;"></textarea></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<script type="text/javascript">
+	$(function(){
+		$("a[rel=example_group]").fancybox({
+			'transitionIn'		: 'none',
+			'transitionOut'		: 'fade',
+			'titlePosition' 	: 'over',
+			'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+				return '<span id="fancybox-title-over" style="z-index: 9999">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+			}
+		});
+	})
+</script>
+<body>
+    <div >
+   	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+   	<div class="breadcrumb">当前位置：设计师管理> 设计师作信息> 设计师荣誉信息</div>
+   		
+   		<div class="table-show-content">
+	   		<table class="table-show" >
+	   			<#if list??>
+				<tr>
+					<td width="30%">获奖时间：</td>
+					<td width="30%">获奖内容：</td>
+					<td width="30%">获奖图片：</td>
+							
+				</tr>
+				</#if>
+   			 	<#if list??>
+					<#list list as entity>
+					<tr>
+						<td>
+							<span>${entity.honorTime!''}</span>
+						</td>
+						<td>
+							<span>${entity.honorText!''}</span>
+						</td>
+						<td>
+							<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.imageUrl!''}" title="">
+							<img  width="30px" height="30px" src="${entity.imageUrl!''}" /></a>
+						</td>
+					</tr>
+					</#list> 
+				<#else>
+					<tr>
+					<td style="text-align: center">没有荣誉</td>
+					<tr>
+				</#if>
+	   		</table>
+   		</div>
+     </div>
+ </body>

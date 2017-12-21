@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.SysConfigParam">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="SysConfigParam">
+			<id property="id" column="param_id" />
+			<result property="cnParamName" column="cn_param_name" />
+			<result property="enParamName" column="en_param_name" />
+			<result property="paramValue" column="param_value" />
+			<result property="remark" column="remark" />
+			<result property="type" column="type" />
+			<result property="createdWhen" column="created_when" />
+			<result property="status" column="status" />
+			<result property="flag" column="flag" />
+			<result property="expand1" column="expand1" />
+			<result property="expand2" column="expand2" />
+			<result property="expand3" column="expand3" />
+			<result property="sort" column="sort" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from sys_config_param
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(expand1)">and expand1 = #{expand1}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and type = #{type}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(enParamName)">and en_param_name = #{enParamName}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where param_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="findByPage" parameterType="SysConfigParam" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM sys_config_param 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="SysConfigParam" useGeneratedKeys="true" keyProperty="id">
+	insert into sys_config_param(cn_param_name,en_param_name,param_value,remark,type,created_when,status,flag,expand1,expand2,expand3,sort)
+	values(#{cnParamName},#{enParamName},#{paramValue},#{remark},#{type},now(),#{status},#{flag},#{expand1},#{expand2},#{expand3},#{sort})
+	</insert>
+	
+	<update id="update" parameterType="SysConfigParam">
+	  UPDATE sys_config_param
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(cnParamName)"> cn_param_name = #{cnParamName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(enParamName)"> en_param_name = #{enParamName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(paramValue)"> param_value = #{paramValue},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remark)"> remark = #{remark},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)"> status = #{status},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)"> flag = #{flag},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(expand1)"> expand1 = #{expand1},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(expand2)"> expand2 = #{expand2},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(expand3)"> expand3 = #{expand3},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sort)"> sort = #{sort},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                param_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from sys_config_param where param_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM sys_config_param
+		<where>
+				param_id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

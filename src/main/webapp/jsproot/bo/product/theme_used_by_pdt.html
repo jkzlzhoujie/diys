@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>作品与主题关联表</title>
+
+<style type="text/css">  
+.sort_able{cursor:pointer;padding:0 28px;background:#f0f5f7 url(/diyroot/images/small.gif) no-repeat right center !important;}
+.asc{background:#f0f5f7 url(/diyroot/images/asc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+.desc{background:#f0f5f7 url(/diyroot/images/desc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+</style>  
+<script type="text/javascript">
+
+	$(function(){
+		var orderFried = $("#orderFried").val();	
+		var sequence = $("#sequence").val();	
+		if(orderFried != '' && sequence != '')
+		{
+			$("#"+orderFried).attr('class',sequence);
+		}
+	})
+	function sort(obj)
+	{
+		var sortType = "asc";
+		var className = $(obj).attr('class');
+		var id = $(obj).attr('id');
+		if(className == "asc"){
+			sortType = "desc";
+		}else if(className == "desc")
+		{
+			sortType = "asc";
+		}
+		$("#orderFried").val(id);
+		$("#sequence").val(sortType);
+		$("#userForm").submit();
+
+	}
+
+function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+  
+  		function selectReset(){
+			$("#startDate").val("");
+			$("#endDate").val("");
+			$("#themeId").val("");
+			$("#productId").val("");
+			$("#createFrom").val("");
+		}
+  
+  	function recommend(id)
+	{
+		edit('product/predit','0&productId='+id);
+	}
+</script>
+</head>
+<body>
+   <div id="main">
+	 <div class="breadcrumb">当前位置：作品管理 > 作品与主题关联表</div>
+
+      <form id="userForm" action="/diys/Bo/product/theme_product_list" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <input type="hidden" id="orderFried" name="orderFried" value="${(orderFried)!''}" />
+      <input type="hidden" id="sequence" name="sequence" value="${(sequence)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+       		<div>
+				  <div style="display: inline">
+				  		作品id：<input name="productId" id="productId" type="text" value="${(productId)!''}" class="input-style">
+				  		主题id：<input name="themeId" id="themeId" type="text" value="${(themeId)!''}" class="input-style">
+				  </div>
+				  <div style="display: inline">
+          			创建时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+	                 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+					  <div style="display: inline">
+				  		是否后台创建：<select id="createFrom" name="createFrom" class="inputtext">
+	              		<option  value="">请选择</option>
+   						<option <#if "${(createFrom)!''}"== "0">selected="selected"</#if> value="0">是</option>
+   						<option <#if "${(createFrom)!''}"== "1">selected="selected"</#if> value="1">否</option>
+           			</select>
+				  </div>
+					<div style="width:10%;display: inline;float: right" >
+  						<input type="button" value="重置" class="btn-submit" onclick="selectReset()">
+  					</div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/></div>
+			</div>
+        </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">作品id</th>
+              <th width="5%">作品</th>
+              <th width="5%">主题id</th>
+              <th width="5%">主题图</th>
+               <th width="5%">查看数</th>
+              <th width="5%">点赞数</th>
+               <th width="5%">评论数</th>
+              <th width="5%" id="createdWhen" onclick="sort(this)" class="sort_able">时间</th>
+              <th width="5%" id="hotScore" onclick="sort(this)" class="sort_able">热榜</th>
+              <th width="5%" id="magicScore" onclick="sort(this)" class="sort_able">神图</th>
+              <th width="10%" >是否后台创建</th>
+              <th width="10%" >标签</th>
+              <th width="10%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td>
+							${entity.productId!''}
+						</td>
+						<td>
+						<#if entity?? && entity.url??>
+						<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.url!''}" title=""><img  width="60" height="80" src="${entity.url!''}" /></a>
+						</#if>
+						</td>
+						<td>
+							${entity.themeId!''}
+						</td>
+						<td>
+						<#if entity?? && entity.imageUrl??>
+						<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.imageUrl!''}" title=""><img  width="60" height="80" src="${entity.imageUrl!''}" /></a>
+						</#if>
+						</td>
+						<td>
+							${entity.searchCount!''}
+						</td>
+						<td>
+							${entity.praiseCount!''}
+						</td>
+						<td>
+							<a href="/diys/Bo/product/discussList?productId=${entity.productId!''}&parentDiscussId=0">${entity.discussCount!''}</a>
+						</td>
+	 					<td>
+							${entity.createdWhen!''}
+						</td>
+						<td>
+							${entity.hotScore!''}
+						</td>
+						<td>
+							${entity.magicScore!''}
+						</td>
+						<td>
+						<#if entity?? && entity.createFrom?? && entity.createFrom == '0'>
+						是
+						<#else>
+						否
+						</#if>
+						</td>
+						<td>
+							${entity.productLabel!''}
+						</td>
+						<td>
+							<a class="btn btn-look" href="javascript:;" onclick="recommend('${(entity.productId)!''}')">推荐作品</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+     <div id="editor" class="jqmWindow">
+     </div>
+    </div>
+</body>
+</html>

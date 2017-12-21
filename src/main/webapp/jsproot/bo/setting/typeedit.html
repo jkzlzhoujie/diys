@@ -1,0 +1,53 @@
+<body>
+<script type="text/javascript">
+
+		$(function(){
+			$('#editForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/setting/typesave',$("#editForm").serialize(),function(data){				
+					$("#typeForm").submit();				
+				})
+			},
+			 rules:{
+	              type:{
+		             maxlength:1
+	              }
+	          }
+			});	
+		});
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：系统管理 > 类型编辑</div>
+    	<form action="/diys/Bo/setting/typesave" method="post" id="editForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<tr>
+    				<td align="right">名称</td><td><input type="text" id="name" name="name" value="${(entity.name)!''}"/></td>
+    			</tr>
+    			<tr>
+    			<td align="right">类型</td><td>
+		     		<select id="type" name="type" class="selectOpt w164">
+             			<option  value="">请选择</option>
+             			<option <#if entity ?? && "${entity.type!''}" ==  "0">selected="selected"</#if> value="0">父类类型</option>
+             				<#if typeList??>
+							<#list typeList as type>
+							<option <#if entity ?? && "${entity.type!''}" ==  "${type.code}">selected="selected"</#if> value="${type.code}">${type.name}</option>
+							</#list>
+							</#if>
+          			</select>
+          			</td>
+		     	</tr>
+    			<tr>
+    				<td align="right">编码</td><td><input type="text" id="code" name="code" value="${(entity.code)!''}"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right"><input type="submit" class="btn-submit" value="提交"/></td><td><input type="reset" class="btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+

@@ -1,0 +1,115 @@
+<body>
+<script type="text/javascript">
+	
+	$(function(){
+		$('#editForm').validate({
+			rules:{
+				title:{required:true},
+				userId:{required:true},
+				text:{required:true}	
+			}
+		})
+	})
+	
+	
+	$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/uploadImage',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				var myObject = eval('(' + data + ')');
+				$("#logo").attr("value",myObject.url);
+				$("#thumbnail").attr("value",myObject.thumbnail);
+				$("#logo").next().hide();
+				document.getElementById("previewPoster").src=myObject.thumbnail;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：兴趣圈管理> 圈子管理 > 发布帖子</div>
+    	<form action="/diys/Bo/boCirclePost/releasePostSave" method="post" id="editForm" enctype="multipart/form-data">
+    		<div class="table-show-content">
+	    		<table class="table-show" >
+		   			<input type="hidden" name="circleId" value="${(cmCircle.id)!''}"/>
+		   			<tr  class="list_title">
+						 <td width="50%" style="text-align: right">圈名</td>
+						 <td style="text-align: left">${(cmCircle.name)!''}</td>
+						 <td width="50%" style="text-align: right">用户ID</td>
+						<td style="text-align: left"><input type="text" name="userId" /> </td>
+					</tr>
+					<tr>
+						<td width="50%" style="text-align: right">标题</td>
+						<td style="text-align: left" colspan="3"><input type="text" name="title" style="width: 500px" /> </td>
+					</tr>
+					<tr>
+						<td width="50%" style="text-align: right">内容</td>
+						<td style="text-align: left" colspan="3"> <input type="text" name="text" style="width: 500px" />  </td>
+					</tr>
+					<tr>
+						<td width="50%" style="text-align: right">图片1</td>
+						<td style="text-align: left"><input type="file" name="file1" src="" /></td>
+						<td width="50%" style="text-align: right">图片2</td>
+						<td style="text-align: left"><input type="file" name="file2" /></td>
+					</tr>
+					<tr>
+						<td width="50%" style="text-align: right">图片3</td>
+						<td style="text-align: left"><input type="file"  name="file3"/></td>
+						<td width="50%" style="text-align: right">图片4</td>
+						<td style="text-align: left"><input type="file" name="file4" /></td>
+					</tr>
+					<tr>
+						<td width="50%" style="text-align: right">图片5</td>
+						<td style="text-align: left"><input type="file" name="file5" /></td>
+						<td width="50%" style="text-align: right">图片6</td>
+						<td style="text-align: left"><input type="file" name="file6" /></td>
+					</tr>
+					<tr>
+						<td width="50%" style="text-align: right">图片7</td>
+						<td style="text-align: left"><input type="file" name="file7"/></td>
+						<td width="50%" style="text-align: right">图片8</td>
+						<td style="text-align: left"><input type="file"  name="file8"/></td>
+					</tr>
+					<tr>
+						<td width="50%" style="text-align: right">图片9</td>
+						<td style="text-align: left"><input type="file" name="file9"/></td>
+					</tr>
+					<tr>
+	    				<td align="right"><input type="submit" class="btn-submit" value="提交"/></td>
+	    				<td><input type="reset" class="btn-submit" value="重置"/></td>
+    				</tr>
+		   		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+ 

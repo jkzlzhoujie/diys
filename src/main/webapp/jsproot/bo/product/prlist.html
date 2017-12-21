@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>作品推荐</title>
+
+    <meta  charset=UTF-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+<script type="text/javascript">
+function selectInfo() {
+  	$("#pageNo").val("1"); 
+  	$("#userForm").submit();
+  }
+  
+function refreshIndexCache() {
+	 $('#loadingimg').jqmShow();
+	 	var type = $("#type").val(); 
+	 	if(type.length > 0){
+			$.post('/diys/Bo/product/refreshCache?type='+type,function(data){
+				myAlert("成功");
+				$('#loadingimg').jqmHide();
+			});
+	 	}else{
+	 		alert("请选择 推荐类型！");
+	 		$('#loadingimg').jqmHide();
+	 	}
+}
+  
+  function zPro(id) {
+		$("#productId3").val(id);
+		$('#editor3').jqm({
+					overlay : 30,
+					overlayClass : 'whiteOverlay'
+				}).draggable();
+		$('#editor3').jqmShow();
+	}
+	
+	
+	$(document).ready(function() {
+		$("#zSubmit").click(function(){
+			this.disabled="false"
+			 $.post('/diys/Bo/product/zUpdate', $("#zProForm").serialize(), function(data) {
+					$("#userForm").submit();
+					this.disabled="true"
+				});	
+		})
+	});
+</script>
+  </head>
+  
+  <body>
+    <div id="main">
+      <div class="breadcrumb">当前位置：作品管理 > 推荐列表</div>
+      <form id="userForm" action="/diys/Bo/product/prlist" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+         <div class="table-search">
+       		<div>
+					  <div style="display: inline">
+				  		推荐类型：<select id="type" name="type" class="inputtext">
+	              		<option  value="">请选择</option>
+   					<#if columnlist??>
+             			<#list columnlist as column>
+             			<option <#if "${type!''}"== "${column.id}">selected="selected"</#if> value="${column.id}">${column.name}</option>
+             			</#list>
+             			</#if> 
+           			</select>
+           			 <div style="width:10%;display: inline;"><input type="button" id="btn" value="刷新缓存"  class="btn-submit" onclick="refreshIndexCache()"/></div>
+				  </div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/></div>
+			</div>
+        </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="10%">作品id</th>
+              <th width="5%">昵称</th>
+              <th width="5%">头像</th>
+              <th width="5%">图片</th>
+               <th width="5%">查看数</th>
+              <th width="5%">点赞数</th>
+               <th width="5%">评论数</th>
+              <th width="10%" >热榜排序值</th>
+              <th width="10%" >神图排序值</th>
+              <th width="10%">排序</th>
+              <th width="10%">推荐类型</th>
+              <th width="10%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.productId)!''}
+						</td>
+						<td >
+							${(entity.nickName)!''}
+						</td>
+						<td >
+							<img width="50px" height="50px" src="${(entity.headImageUrl)!''}">
+						</td>
+						<td>
+								<#if entity?? && entity.url??>
+						<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.url!''}" title=""><img  width="60" height="80" src="${entity.url!''}" /></a>
+						</#if>
+						</td>
+						<td>
+							${entity.searchCount!''}
+						</td>
+						<td>
+							${entity.praiseCount!''}
+						</td>
+						<td>
+							<a href="/diys/Bo/product/discussList?productId=${entity.productId!''}&parentDiscussId=0">${entity.discussCount!''}</a>
+						</td>
+						<td>
+							${entity.hotScore!''}
+						</td>
+						<td>
+							${entity.magicScore!''}
+						</td>
+						<td >
+							${(entity.recommendSeq)!''}
+						</td>
+						<td>
+						<#if columnlist??>
+             			<#list columnlist as column>
+             			<#if "${(entity.type)!0}"== "${column.id}">${column.name}</#if>
+             			</#list>
+             			</#if>
+						</td>
+						<td>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('product/predit','${(entity.id)!''}')">排序</a>
+							<a class="btn btn-look" href="javascript:;" onclick="del_('product/prdelete','${(entity.id)!''}')">删除</a>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('product/edit','#{(entity.productId)!0}&isPublic=1')">编辑</a>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('product/jumpEdit','#{(entity.productId)!0}&isPublic=1')">修改跳转类型</a>
+						<a class="btn btn-look" href="javascript:;" onclick="zPro(${entity.productId});">修改点赞数</a>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('product/discussEdit','#{(entity.productId)!0}')">评论</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+     
+     <div id="editor3" class="jqmWindow">
+    <form action="/diys/Bo/product/zSave" method="post" id="zProForm">
+      <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+     <input type="hidden" id="productId3" name="id" value="" />
+      <div class="breadcrumb">当前位置：作品管理> 修改点赞和查看数</div>
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">更改点赞数</td>
+	     		<td width="35%"><input type="text" id="zProNum" name="zProNum" value="0" class="inputtext" /></td>
+	     		<td width="15%" align="right">更改查看数</td>
+	     		<td width="35%"><input type="text" id="serProNum" name="serProNum" value="0" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="button" class=" btn-submit" id="zSubmit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td></td>
+	     	</tr>
+        </table>
+        </div>
+        </form>
+     </div>
+  </body>
+</html>

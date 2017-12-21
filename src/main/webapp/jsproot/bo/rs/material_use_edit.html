@@ -1,0 +1,43 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(form){
+				$.post('/diys/Bo/rs/material_use_save',$("#editForm").serialize(),function(data){
+					$("#pkForm").submit();
+				});
+				
+			},
+			rules:{
+				useSeq:{
+					required:true,
+					digits:true
+				
+				}
+			}
+		});
+	})
+</script>
+    <div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：素材管理 > 素材列表> 推荐素材</div>
+      
+      <form action="/diys/Bo/rs/material_use_save" method="post" id="editForm">
+            <input type="hidden" id="id" name="id" value="${(entity.id)!''}" />
+            <input type="hidden" id="materialId" name="materialId" value="${(materialId)!0}"/>
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="25%" align="right">排序值</td>
+		     	<td width="35%"><input type="text" id="useSeq" name="useSeq" value="${(entity.useSeq)!''}"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+</body>
+

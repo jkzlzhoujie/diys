@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.Classify">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="Classify">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="status" column="status" />
+			<result property="type" column="type" />
+			<result property="sort" column="sort" />
+			<result property="themeNum" column="themeNum" />
+			<result property="loveNum" column="loveNum" />
+			<result property="image" column="image" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from emoji_classify
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and name like "%"#{name}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and type = #{type}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and status = #{status}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY sort desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY sort desc
+	</select>
+	
+	<select id="findByPage" parameterType="Classify" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY sort desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM emoji_classify 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="Classify" useGeneratedKeys="true" keyProperty="id">
+	insert into emoji_classify(name,type,status,sort,themeNum,loveNum,image)
+	values(#{name},#{type},#{status},#{sort},#{themeNum},#{loveNum},#{image})
+	</insert>
+	
+	<update id="update" parameterType="Classify">
+	  UPDATE emoji_classify
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)"> name = #{name},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sort)"> sort = #{sort},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)"> status = #{status},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeNum)"> themeNum = #{themeNum},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(loveNum)"> loveNum = #{loveNum},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(image)"> image = #{image},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from emoji_classify where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM emoji_classify
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

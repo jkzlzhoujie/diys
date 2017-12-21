@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>广告列表</title>
+<script type="text/javascript">
+		function selectReset(){
+			$("#startDate").val("");
+			$("#endDate").val("");
+			$("#title").val("");
+		}
+		
+		function selectOne(){
+			var startDate = $("#startDate").val();
+			var endDate = $("#endDate").val();
+			$("#pageNo").val("1");
+			if(endDate!=""&&startDate!=""){
+				if(endDate<startDate){
+					myAlert("起始时间不能大于结束时间");
+				}else{
+					$("#advertForm").submit();}
+			}else{
+				$("#advertForm").submit();
+			}
+
+		}
+		
+		function updateStatus(id,status) {
+			$.post('/diys/Bo/advert/updateStatus', {
+				id : id,
+				status:status,
+			}, function() {
+				$("#advertForm").submit();
+			})
+		}
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：资源管理 > 广告列表</div>
+      <form id="advertForm" action="/diys/Bo/advert/list" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+		<div class="table-search">
+		  	<div style="display: inline">
+		  		标题：<input name="title" id="title" type="text" value="${(title)!''}" class="input-style">
+		    </div>
+			<div style="display: inline" >
+				创建时间：<input type="text" id="startDate" name="startDate" value="${startDate!''}" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+				&nbsp;至&nbsp;<input type="text" id="endDate" name="endDate" value="${endDate!''}" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+			</div>
+			<div style="width:10%;display: inline;float: right" >
+				<input type="button" value="重置" class="btn-submit" onclick="selectReset()">
+			</div>
+			<div style="width:10%;display: inline;float: right" >
+				<input type="button" value="查询" class="btn-submit" onclick="selectOne()">
+			</div>
+		</div>      
+      <div style="padding-bottom: 5px">
+     	 <div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('advert/edit')"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="20%" >图标</th>
+              <th width="20%" >标题</th>
+              <th width="20" >状态</th>
+              <th width="20" >类型</th>
+               <th width="20">时间</th>
+               <th width="20">操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+					<td >
+							<img src="${(entity.logo)!''}" width="80" height="80" />
+						</td>
+						<td >
+							${(entity.title)!''}
+						</td>
+						<td >
+							<#if entity.status??>
+								<#if "${entity.status}" == "0">正常
+								<#else>
+								下线
+								</#if>
+							</#if>
+						</td>
+						<td >
+							<#if entity.type??>
+								<#if "${entity.type}" == "1">H5页面
+								<#elseif "${entity.type}" == "2">url链接
+								</#if>
+							</#if>
+						</td>
+						<td>
+							${(entity.addTime)!''}
+						</td>
+						<td  style="display: table">			
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('advert/edit',${(entity.id)!''})" >编辑</a>
+							<a class="btn btn-delete" href="javascript:;" onclick="del_('advert/delete',${(entity.id)!''})">删除</a>
+							<#if entity.status?? && "${entity.status}" == "1">
+									<a class="btn btn-delete" onclick="updateStatus('${entity.id}','0')">上线</a>
+							<#else>
+							<a class="btn btn-look" onclick="updateStatus('${entity.id}','1')">下线</a>
+							</#if>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

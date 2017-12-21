@@ -1,0 +1,55 @@
+
+
+ <head>
+    <title>彩绘订单页环信 </title>
+    <script type="text/javascript" src="../../jsproot/im/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="../../jsproot/im/strophe.js"></script>
+	<script type="text/javascript" src="../../jsproot/im/websdk-1.1.2.js"></script>
+	<script type="text/javascript" src="../../jsproot/im/webim.config.js"></script>
+	<script type="text/javascript" src="../../jsproot/im/colourIm.js"> </script>
+	<script type="text/javascript" src="../../jsproot/im/websdk.shim.js"></script>
+	
+</head>
+<body>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置： 专题管理 > 彩绘订单 - 发送环信消息</div>
+       <input type="hidden" name="userId" value="heh${(userId)!''}" />
+	      <div class="table-show-content">
+	        <table class="table-show" >
+	       		 <tr>
+		     		<td  align="right">用户ID</td>
+		     		<td>${(userId)!''}</td>
+		     	</tr>
+		     	<tr>
+		     		<td  align="right">环信用户</td>
+		     		<td>heh${(userId)!''}</td>
+		     	</tr>
+		     	<tr id="loginUserName">
+		     		<td  align="right">环信账号</td>
+		     		<td><input type="text" id="userName" /></td>
+		     	</tr>
+		     	<tr id="loginPassword">
+		     		<td  align="right">密码</td>
+		     		<td><input type="password" id="password" /></td>
+		     	</tr>
+		     	<tr id="loginIm">
+		     		<td width="50%">&nbsp;</td>
+		     		<td align="left"><button id="login" class="btn-submit">登录</button></td>
+		     	</tr>
+		     	<tr id="sendText">
+		     		<td  align="right">文本内容</td>
+		     		<td><textarea id="textMess" style="width: 250px;"></textarea></td>
+		     	</tr>
+		     	<tr id="sendPic">
+	     			<td align="right">图片 </td>
+		     		<td> <input type="file" id="pictureInputMess"/></td>
+		     	</tr>
+		     	<tr id="sendIm">
+		     		<td width="50%">&nbsp;</td>
+		     		<td align="left"><button id="send" class="btn-submit">发送</button></td>
+		     	</tr>
+	        </table>
+	      </div>
+</div>
+<body>

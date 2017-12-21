@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <display-name>tao-volume</display-name>
+    <!-- Spring ApplicationContext配置文件的路径,可使用通配符,多个路径用,号分隔
+ 此参数用于后面的Spring Context Loader -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath*:/applicationContext.xml
+            classpath*:/spring-xml/applicationContext-quartz-cron.xml
+        </param-value>
+    </context-param>
+
+    <!-- Character Encoding filter -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <!-- Filter 映射 -->
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <filter>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>com.opensymphony.sitemesh.webapp.SiteMeshFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>sitemesh</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!--Spring的ApplicationContext 载入 -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!-- Spring 刷新Introspector防止内存泄露 -->
+    <listener>
+        <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+    </listener>     
+             
+    <!-- Processes application requests -->
+    <servlet>
+        <servlet-name>servetAction</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                classpath*:/spring-xml/spring-mvc-defined.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+     <servlet-mapping>
+        <servlet-name>servetAction</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>boServletAction</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                classpath*:/spring-xml/spring-mvc-bo-defined.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>boServletAction</servlet-name>
+        <url-pattern>/Bo/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>wapServletAction</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                classpath*:/spring-xml/spring-mvc-wap-defined.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>wapServletAction</servlet-name>
+        <url-pattern>/wap/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>clientApiServletAction</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                classpath*:/spring-xml/spring-client-api-defined.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>5</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>clientApiServletAction</servlet-name>
+        <url-pattern>/client/*</url-pattern>
+    </servlet-mapping>
+    
+     <servlet>
+        <servlet-name>clientNewApiServletAction</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                classpath*:/spring-xml/spring-client-newapi-defined.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>6</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>clientNewApiServletAction</servlet-name>
+        <url-pattern>/clientNew/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>siteMeshFreeMarker</servlet-name>
+        <servlet-class>com.opensymphony.module.sitemesh.freemarker.FreemarkerDecoratorServlet</servlet-class>
+        <init-param>
+          <param-name>TemplatePath</param-name>
+          <param-value>/</param-value>
+        </init-param>
+        <init-param>
+          <param-name>default_encoding</param-name>
+          <param-value>UTF-8</param-value>
+        </init-param>
+        <load-on-startup>5</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>siteMeshFreeMarker</servlet-name>
+        <url-pattern>*.dec</url-pattern>
+    </servlet-mapping>
+ 
+    <!-- session超时定义,单位为分钟 -->
+    <session-config>
+        <session-timeout>20</session-timeout>
+    </session-config>
+    
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    
+    <error-page>
+        <error-code>503</error-code>
+        <location>/jsproot/html/403.html</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/jsproot/html/404.html</location>
+    </error-page>
+</web-app>

@@ -1,0 +1,155 @@
+<script type="text/javascript">
+$(document).ready(function() {
+$('#customForm').validate({	
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/topic/customSave', $("#customForm").serialize(), function(data) {
+					$("#bannerForm").submit();
+				});	
+		 	},		
+			 rules:{
+	            },
+	          messages:{
+	            }
+			});	
+
+$('#uploadBanner').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#designUrl").attr("value",data);
+				$("#designUrl").next().hide();
+				document.getElementById("srcProductUrlBanner").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/uploadImage',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				var myObject = eval('(' + data + ')');
+				$("#url").attr("value",myObject.url);
+				$("#thumbnail").attr("value",myObject.thumbnail);
+				$("#url").next().hide();
+				document.getElementById("previewPoster").src=myObject.thumbnail;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+});	
+</script>
+  <body>
+    <div>
+    	<input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+    	
+    	<div class="breadcrumb">当前位置：专题管理 > 列表编辑</div>
+    	<form action="/diys/Bo/topic/customSave" method="post" id="customForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}">
+      		<input type="hidden" id="topicType" name="topicType" value="${(topicType)!''}" />
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<tr>
+    				<td align="right">设计师</td>
+    				<td><select id="acceptUserId" name="acceptUserId" class="inputtext">&nbsp;&nbsp;
+	              		<option  value="">请选择设计师</option>
+   						<#if cmUserList ??>
+   							<#list cmUserList as cmUser>
+   								<option <#if "${(entity.acceptUserId)!0}"== "${cmUser.id}">selected="selected"</#if> value="${cmUser.id}">${cmUser.nickName}</option>
+   							</#list>
+   						</#if>
+           			</select></td>
+    			</tr>
+    			<tr>
+    				<td align="right">派单人</td><td><input type="text" name="distributeUser" value="${(entity.distributeUser)!''}" class="inputtext"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">备注</td><td><input type="text" name="acceptRemark" value="${(entity.acceptRemark)!''}" class="inputtext"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">需求</td><td><input type="text" name="description" value="${(entity.description)!''}" class="inputtext"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">上传设计稿</td>
+    				<td>
+		     		<input type="file" id="uploadBanner" name="uploadBanner"/> 
+		     		<input type="hidden" id="designUrl" name="designUrl" value="${(entity.designUrl)!''}" class="inputtext" />
+			        <span class="note" style="color: red;"></span>
+			        <span class="tp"><img id="srcProductUrlBanner" src="${(entity.designUrl)!''}" width="180" height="80" /></span></div>
+		     	</td>
+    			</tr>
+    			   <#if entity?? && entity.topicId == 1>
+    			   <tr>
+    				<td align="right">修改作品</td>
+    				<td>
+	     			<input type="file" id="uploadPoster" name="uploadPoster"/> 
+			   			<input type="hidden" id="thumbnail" name="thumbnail" value="${(entity.thumbnail)!''}" class="inputtext" />
+			   			<input type="hidden" id="url" name="url" value="${(entity.url)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewPoster" src="${(entity.url)!''}" width="80" height="80" /></span>
+	     			</td>
+    			   </#if>
+    			<tr>
+    				<td align="right"><input type="submit" class=" btn-submit"  value="提交"/></td>
+    				<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>   
+    </div>
+  </body>
+</html>

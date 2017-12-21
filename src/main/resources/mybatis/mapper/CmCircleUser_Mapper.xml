@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.CmCircleUser">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+		<resultMap id="sql_resuleMap" type="CmCircleUser">
+			<id property="id" column="id" />
+			<result property="sort" column="sort" />
+			<result property="userId" column="userId" />
+			<result property="circleId" column="circleId" />
+			<result property="addTime" column="addTime" />
+			<result property="flag" column="flag" />
+			<result property="name" column="name" />
+			<result property="nickName" column="nick_name" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from cm_circle_user
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(max)">and sort = (select max(sort) from cm_circle_user)</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)">and a.flag = #{flag}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)">and circleId = #{circleId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and userId = #{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and name like "%"#{name}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and nick_name like "%"#{nickName}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.addTime,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+       		</if>
+          	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            	<![CDATA[
+                 	AND DATE_FORMAT(a.addTime,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+          	  ]]>
+        	</if>
+        </where>
+	</sql>
+	
+	<select id="check" resultType="Long" useCache="false">
+		SELECT count(*) FROM cm_circle_user where userId=#{userId} and circleId=#{circleId}
+	</select>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY addTime desc
+	</select>
+	
+	<select id="findUser" parameterType="map" resultType="cn.temobi.complex.dto.CmUserInfoListDto" useCache="false">
+	SELECT career,birth,a.userId,nick_name as nickName,head_image_url as headImageUrl,city,fans_count as fansCount,product_count as productCount,discuss_count as discussCount
+	 FROM  cm_circle_user a LEFT JOIN `cm_user_info` b ON a.`userId`=b.`user_id` LEFT JOIN `cm_user_extend_info` c ON b.user_id = c.`user_id`
+	<include refid="sql_where"/>
+	ORDER BY a.sort desc,created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findUserId" parameterType="map" resultType="Long" useCache="false">
+	SELECT userId FROM cm_circle_user a
+	<include refid="sql_where"/>
+	<choose>   
+   			<when test="@cn.temobi.core.util.StringUtil@isNotEmpty(searchAll)">   
+            </when>   
+            <otherwise>   
+        		limit #{limit} offset #{offset}
+            </otherwise>   
+        </choose>
+	</select>
+	
+	<select id="countUser" resultType="long" useCache="false">
+		SELECT count(1) FROM  cm_circle_user a LEFT JOIN `cm_user_info` b ON a.`userId`=b.`user_id` LEFT JOIN `cm_user_extend_info` c ON b.user_id = c.`user_id`
+	<include refid="sql_where"/>
+    </select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY addTime desc
+	</select>
+	
+	<select id="findByPage" parameterType="CmCircleUser" resultMap="sql_resuleMap" useCache="false">
+	SELECT a.*,b.name,c.`nick_name` FROM `cm_circle_user` a LEFT JOIN `cm_circle` b ON a.`circleId`=b.`id` LEFT JOIN `cm_user_info` c ON c.`user_id`=a.`userId`
+	<include refid="sql_where"/>
+	ORDER BY addTime desc  limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(1) FROM cm_circle_user  a
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="CmCircleUser" useGeneratedKeys="true" keyProperty="id">
+	insert into cm_circle_user(circleId,sort,userId,addTime) values(#{circleId},#{sort},#{userId},now())
+	</insert>
+	
+	<insert id="insertList" useGeneratedKeys="true" parameterType="map">  
+     	insert ignore into cm_circle_user(circleId,userId,addTime)
+		values
+       <foreach collection="list" item="item" index="index" separator="," >  
+           (#{circleId},#{item},now())
+       </foreach>  
+    </insert>  
+	
+	<update id="update" parameterType="CmCircleUser">
+	  UPDATE cm_circle_user
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)"> circleId = #{circleId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sort)"> sort = #{sort},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> userId = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)"> flag = #{flag},</if>
+		</set>
+         where id=#{id}
+	</update>
+	
+	<update id="upByCircleId" >
+	  UPDATE cm_circle_user
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)"> flag = #{flag},</if>
+		</set>
+         where circleId = #{circleId}
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from cm_circle_user where id = #{id}
+	</delete>
+	
+	<delete id="delBycircleId" parameterType="map" flushCache="true">
+		delete from cm_circle_user
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)">and flag = #{flag}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)">and circleId = #{circleId}</if>
+        </where>
+	</delete>
+</mapper>

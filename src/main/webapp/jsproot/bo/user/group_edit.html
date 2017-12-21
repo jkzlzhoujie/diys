@@ -1,0 +1,45 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#editForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/user/group_save',$("#editForm").serialize(),function(data){
+					if(data == 1)
+					{
+						myAlert("该分组已存在");
+					}else{
+						$("#groupForm").submit();
+					}		
+				})
+			},
+			 rules:{
+	              name:{
+		             required:true
+	              }
+	          }
+			});	
+		})
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：用户管理> 分组编辑</div>
+    	<form action="/diys/Bo/user/group_save" method="post" id="editForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<tr>
+    				<td align="right">组名</td><td><input type="text" id="name" name="name" value="${(entity.name)!''}"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">备注</td><td><textarea id="remark" name="remark" style="width: 250px;height: 100px;resize: none;">${(entity.remark)!''}</textarea></td>
+    			</tr>
+
+    			<tr>
+    				<td align="right"><input type="submit" class="btn-submit" value="提交"/></td><td><input type="reset" class="btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+

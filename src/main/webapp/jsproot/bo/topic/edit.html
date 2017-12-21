@@ -1,0 +1,107 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#topicForm').validate({	 
+			 rules:{
+		          topicName:{
+		            required: true
+		          },
+	              banner:{
+		            required: true
+	              }
+	          },
+	          messages:{
+	               topicName:{
+		            required: "名称不能为空"
+		          },
+	                banner:{
+		            required: "banner不能为空"
+	              }
+	            }
+			});	
+		});
+		$('#uploadBanner').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#bannerUrl").attr("value",data);
+				$("#bannerUrl").next().hide();
+				document.getElementById("previewBanner").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#bannerUrl").next().html("文件大小不大于10M");
+				  	 	$("#bannerUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：专题管理 > 专题编辑</div>
+      <form action="/diys/Bo/topic/save" method="post" id="topicForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">专题名称</td>
+	     		<td><input type="text" id="topicName" name="topicName" value="${(entity.topicName)!''}" class="inputtext" /></td>
+	     		<td  align="right">banner</td>
+		     	<td>
+		     		<input type="file" id="uploadBanner" name="uploadBanner"/> 
+		     		<input type="hidden" id="bannerUrl" name="bannerUrl" value="${(entity.bannerUrl)!''}" class="inputtext" />
+			        <span class="note" style="color: red;"></span>
+			        <span class="tp"><img id="previewBanner" src="${(entity.bannerUrl)!''}" width="180" height="80" /></span></div>
+		     	</td>
+	     	</tr>
+	     	<tr>
+     			<td align="right">运营用户数</td>
+	     		<td><input type="text" id="operatorUsers" name="operatorUsers" value="${(entity.operatorUsers)!''}"  class="inputtext"/></td>
+     			<td align="right">类型 </td>
+	     		<td>
+		     		<select id="topicType" name="topicType" class="selectOpt w164">
+	   					<option <#if "${(entity.topicType)!0}"== "0">selected="selected"</#if> value="0">求P专题</option>
+	   					<option <#if "${(entity.topicType)!0}"== "1">selected="selected"</#if> value="1">私人订制</option>
+	   					<option <#if "${(entity.topicType)!0}"== "2">selected="selected"</#if> value="2">大画家</option>
+          			</select>
+		     	</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">描述</td>
+	     		<td width="35%"><textarea id="remark" name="remark" style="width: 250px;height: 100px;resize: none;">${(entity.remark)!''}</textarea></td>
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td width="40%"></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

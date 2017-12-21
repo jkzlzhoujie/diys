@@ -1,0 +1,68 @@
+<body> 
+<script type="text/javascript">
+
+		$(function(){
+			$('#commodityForm').validate({	 
+				submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/topic/saveCommodityInfo', $("#commodityForm").serialize(), function(data) {
+					$("#commodityInfoForm").submit();
+				});	
+		 	},
+		 		rules:{
+		          name:{required: true },
+	              originalPrice:{ required: true },
+	              maxAmount:{
+	                 required: true,
+	             	 number:true
+	              },
+	              price:{ required: true }
+	          },
+	       		messages:{
+	                name:{ required: "不能为空"},
+	                originalPrice:{required: "不能为空"},
+	                maxAmount:{required: "不能为空,无最大销量限制填0"},
+	             	price:{required: "不能为空"}
+	            }
+			});	
+		});
+</script>  
+	<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：专题管理 > 商品类型编辑</div>
+      <form action="/diys/Bo/topic/saveCommodityInfo" method="post" id="commodityForm">
+      <input type="hidden" id="commodityId" name="commodityId" value="${commodityId!''}"/>
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td align="right">名称</td><td><input type="text" id="name" name="name" value="${(entity.name)!''}"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">原价</td><td><input type="text" id="originalPrice" name="originalPrice" value="${(entity.originalPrice)!''}"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">商品X秀平台价</td><td><input type="text" id="price" name="price" value="${(entity.price)!''}"/></td>
+	     	</tr>
+	     	<tr>
+   				<td align="right">是否需要填写收货信息</td>
+   				<td>
+	   				<select name="isNeedReceive" value="${(entity.isNeedReceive)!''}">
+	   					<option <#if "${(entity.isNeedReceive)!'1'}"== "0">selected="selected"</#if> value="0">不需要</option>
+	   					<option <#if "${(entity.isNeedReceive)!'1'}"== "1">selected="selected"</#if> value="1">需要</option>
+	   				</select>
+   				</td>
+   			</tr>
+   			<tr>
+	     		<td align="right">日限最大销量</td>
+	     		<td><input type="text" id="maxAmount" name="maxAmount" value="${(entity.maxAmount)!''}"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+</body>
+

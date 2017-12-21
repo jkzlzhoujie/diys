@@ -1,0 +1,111 @@
+<body>
+<script type="text/javascript">
+		$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#cover").attr("value",data);
+				$("#cover").next().hide();
+				document.getElementById("previewPoster").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		$(function(){
+			$('#laberAddForm').validate({	 
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/laber/userhotsave', $("#laberAddForm").serialize(), function(data) {
+					$("#classifyForm").submit();
+				});	
+		 	},	
+			 rules:{
+		          laberName:{
+		              required:true,
+		                    remote: {
+							    url: "/diys/Bo/laber/hotCheck",     //后台处理程序
+							    type: "post",                //数据发送方式
+							    data: {                     //要传递的数据
+							        	name: function() {
+							            	return $("#laberName").val();
+							        	},
+							        	id: function() {
+							            	return $("#id").val();
+							        	}
+							   		  }
+							}
+		          }
+	          },
+	          messages:{
+	                laberName:{
+		                required:"标签不能为空",
+		                remote:"标签名称不能重复"
+	                }
+	            }
+			});	
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：标签管理 > 个人热门标签编辑</div>
+      <form action="/diys/Bo/laber/userhotsave" method="post" id="laberAddForm">
+            <input type="hidden" id="id" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">标签</td>
+	     		<td>
+              	<input type="text" value="${(laber.name)!''}" id="laberName" name="laberName"/> 
+	     		</td>
+	   		</tr>
+	   		<tr>
+	     		<td  align="right">图标</td>
+	     		<td >
+	     			<input type="file" id="uploadPoster" name="uploadPoster"/> 
+			   			<input type="hidden" id="cover" name="cover" value="${(entity.cover)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewPoster" src="${(entity.cover)!''}" width="60" height="60" /></span>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">排序值</td>
+		     		<td>
+		     			<input type="text" value="${(entity.sortSeq)!''}" id="sortSeq" name="sortSeq"/> 
+		     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

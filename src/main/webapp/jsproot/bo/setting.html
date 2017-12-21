@@ -1,0 +1,251 @@
+<head>
+<meta charset="utf-8" />
+<title>系统设置</title>
+<script type="text/javascript">
+$(function(){
+		$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#shareImage").attr("value",data);
+				$("#shareImage").next().hide();
+				document.getElementById("previewPoster").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#shareImage").next().html("文件大小不大于10M");
+				  	 	$("#shareImage").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		
+		$('#uploadImage').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#godPUrl").attr("value",data);
+				$("#godPUrl").next().hide();
+				document.getElementById("previewPosterTo").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#shareImage").next().html("文件大小不大于10M");
+				  	 	$("#shareImage").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+	$('#uploadImage2').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#privateUrl").attr("value",data);
+				$("#privateUrl").next().hide();
+				document.getElementById("previewPosterTo2").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#shareImage").next().html("文件大小不大于10M");
+				  	 	$("#shareImage").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+	});
+</script>
+</head>
+<div id="main">
+      <div class="breadcrumb">当前位置：系统设置</div>
+      <form action="/diys/Bo/settingSave" method="post" >
+      <div class="table-show-content">
+        <table class="table-show" >
+          <tbody>
+	     	<tr>
+				<td width="25%">产品简介：</td>
+				<td width="25%">
+					<textarea name="productDesc" rows="5" cols="50">${(entity.productDesc)!''}</textarea>
+					
+				</td>
+				<td width="25%">应用下载地址</td>
+	     		<td width="25%">
+	     		<input class="input-style" name="downUrl" value="${(entity.downUrl)!''}" type="text">
+	     		</td>
+			</tr>
+			<tr>
+				<td width="25%">产品点赞页面：</td>
+				<td width="25%">
+					<input class="input-style" name="shopUrl" value="${(entity.shopUrl)!''}" type="text">
+				</td>
+				<td width="25%">分享后点击的URL</td>
+	     		<td width="25%">
+					<input class="input-style" name="shareUrl" value="${(entity.shareUrl)!''}" type="text">
+				</td>
+			</tr>
+	     	</tr>
+	     	<tr>
+	     		<td width="25%">分享的图片地址：</td>
+				<td width="25%">
+				<input type="file" id="uploadPoster" name="uploadPoster"/> 
+	   			<input type="hidden" id="shareImage" name="shareImage" value="${(entity.shareImage)!''}" class="inputtext" />
+	            <span class="note" style="color: red;"></span>
+	            <span class="tp"><img id="previewPoster" src="${(entity.shareImage)!''}" width="180" height="80" /></span>
+				</td>
+				<td width="25%">分享的标题</td>
+	     		<td width="25%">
+					<input class="input-style" name="shareTitle" value="${(entity.shareTitle)!''}" type="text">
+				</td>
+	     	</tr>	
+	     	<tr>
+	     		<td width="25%">分享的内容</td>
+	     		<td width="25%">
+	     		<textarea name="shareContent" rows="5" cols="50">${(entity.shareContent)!''}</textarea>
+				</td>
+				<td width="25%">视频地址</td>
+	     		<td width="25%">
+					<input class="input-style" name="videoUrl" value="${videoUrl!''}" type="text">
+				</td>
+	     	</tr>	
+	     	<tr>
+	     		<td width="25%">点赞对话框内容</td>
+	     		<td width="25%">
+	     		<textarea name="zContent" rows="5" cols="50">${(zContent)!''}</textarea>
+				</td>
+				<td width="25%">提建议对话框内容</td>
+	     		<td width="25%">
+						<textarea name="feebackContent" rows="5" cols="50">${(feebackContent)!''}</textarea>
+				</td>
+	     	</tr>	
+	     	<tr>
+	     		<td width="25%">几次分享弹出对话框</td>
+	     		<td width="25%">
+	     				<input class="input-style" name="shareNum" value="${shareNum!''}" type="text">
+				</td>
+				<td width="25%">P图每期几条数据</td>
+	     		<td width="25%">
+	     				<input class="input-style" name="pNum" value="${pNum!''}" type="text">
+				</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="25%">默认神P图片：</td>
+				<td width="25%">
+				<input type="file" id="uploadImage" name="uploadImage"/> 
+	   			<input type="hidden" id="godPUrl" name="godPUrl" value="${(godPUrl)!''}" class="inputtext" />
+	            <span class="note" style="color: red;"></span>
+	            <span class="tp"><img id="previewPosterTo" src="${(godPUrl)!''}" width="180" height="80" /></span>
+				</td>
+				<td width="25%">H5地址</td>
+	     		<td width="25%">
+	     				<input class="input-style" name="h5Url" value="${h5Url!''}" type="text">
+				</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="25%">私人订制默认大图：</td>
+				<td width="25%">
+				<input type="file" id="uploadImage2" name="uploadImage2"/> 
+	   			<input type="hidden" id="privateUrl" name="privateUrl" value="${(privateUrl)!''}" class="inputtext" />
+	            <span class="note" style="color: red;"></span>
+	            <span class="tp"><img id="previewPosterTo2" src="${(privateUrl)!''}" width="180" height="80" /></span>
+				</td>
+				<td width="25%">提升秘籍</td>
+	     		<td width="25%">
+	     		<textarea name="promoteStr" rows="5" cols="50">${promoteStr!''}</textarea>
+				</td>
+	     	</tr>	
+	     	<tr>
+				<td width="25%">小游戏地址</td>
+	     		<td width="25%">
+					<input class="input-style" name="playUrl" value="${playUrl!''}" type="text">
+				</td>
+				<td width="25%">IOS应用下载地址</td>
+	     		<td width="25%">
+	     		<input class="input-style" name="iosDownUrl" value="${iosDownUrl!''}" type="text">
+	     		</td>
+			</tr>
+			<tr>
+				<td width="25%">IOS产品点赞页面：</td>
+				<td width="25%">
+					<input class="input-style" name="iosShopUrl" value="${iosShopUrl!''}" type="text">
+				</td>
+				<td width="25%">IOS分享后点击的URL</td>
+	     		<td width="25%">
+					<input class="input-style" name="iosShareUrl" value="${iosShareUrl!''}" type="text">
+				</td>
+			</tr>
+	     	<tr>
+	     		<td width="25%"><input type="submit" class="btn-submit"  value="保存"/></td>
+	     	</tr>
+          </tbody>
+        </table>
+      </form>
+    </div>

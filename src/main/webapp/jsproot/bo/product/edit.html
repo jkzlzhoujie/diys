@@ -1,0 +1,134 @@
+<body>
+<script type="text/javascript">
+$(document).ready(function() {
+$('#packetForm').validate({	
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/product/update', $("#packetForm").serialize(), function(data) {
+					$("#userForm").submit();
+				});	
+		 	},		
+			 rules:{
+	              "hotSystemScore":{required:true},
+	              "magicSystemScore":{required:true}
+
+	            },
+	          messages:{
+	                "hotSystemScore":{required:"热榜排序不能为空"},
+	                "magicSystemScore":{required:"神图排序不能为空"}
+	            }
+			});	
+});	
+		$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/uploadImage',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				var myObject = eval('(' + data + ')');
+				$("#url").attr("value",myObject.url);
+				$("#thumbnail").attr("value",myObject.thumbnail);
+				$("#url").next().hide();
+				document.getElementById("previewPoster").src=myObject.thumbnail;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：作品管理> 新增作品</div>
+      <form action="/diys/Bo/product/update" method="post" id="packetForm">
+            <input type="hidden" name="id" value="${(entity.id)!0}" />
+            <input type="hidden" name="isPublic" value="${(isPublic)!'1'}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+        <#if entity??>
+        <tr>
+		     		<td width="15%" align="right">标签</td>
+		     		<td width="35%"><input type="text" id="productLabel" name="productLabel" value="${(entity.productLabel)!''}" class="inputtext" /></td>
+		     	</tr>
+	     	<#else>
+		     	<#if isPublic?? && isPublic=='1'>
+		     	<tr>
+		     		<td width="15%" align="right">用户Id</td>
+		     		<td width="35%"><input type="text" id="userId" name="userId" value="${(entity.userId)!''}" class="inputtext" /></td>
+		     		<td width="15%" align="right">标签</td>
+		     		<td width="35%"><input type="text" id="productLabel" name="productLabel" value="${(entity.productLabel)!''}" class="inputtext" /></td>
+		     	</tr>
+				<#else>
+				   <input type="hidden" id="userId" name="userId" value="${(userId)!''}"/>
+				</#if>
+	     	</#if>
+	     	<tr>
+	     		<td width="15%" align="right">描述</td>
+	     		<td width="35%">
+	     		<textarea id="description" name="description" style="width: 250px;height: 100px;resize: none;">${(entity.description)!''}</textarea>
+	     		</td>
+	     		<td width="15%" align="right">图片</td>
+	     		<td width="35%">
+	     			<input type="file" id="uploadPoster" name="uploadPoster"/> 
+			   			<input type="hidden" id="thumbnail" name="thumbnail" value="${(entity.thumbnail)!''}" class="inputtext" />
+			   			<input type="hidden" id="url" name="url" value="${(entity.url)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewPoster" src="${(entity.url)!''}" width="80" height="80" /></span>
+	     		</td>
+	     	</tr>
+	     	<#if isPublic?? && isPublic=='4'>
+	     	 	 <tr>
+	     		<td width="15%" align="right">作品类型</td>
+	     		<td width="35%" colspan="3" >
+	     		<#if typelist ??>
+   						<#list typelist as allTypeDto>
+   						<input <#if "${(allTypeDto.id)!0}"== "${(entity.typeId)!0}">checked="checked"</#if> type="radio" name="typeId" value="${(allTypeDto.id)!''}">${(allTypeDto.name)!''}
+   						</#list>
+   						</#if>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right"> 作品名称</td>
+	     		<td width="35%"><input type="text" id="productName" name="productName" value="${(entity.productName)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	</#if>
+	     	<tr>
+	     		<td width="15%" align="right">更改热榜排序值</td>
+	     		<td width="35%"><input type="text" id="hotSystemScore" name="hotSystemScore" value="0" class="inputtext" /></td>
+	     		<td width="15%" align="right">更改神图排序值</td>
+	     		<td width="35%"><input type="text" id="magicSystemScore" name="magicSystemScore" value="0" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

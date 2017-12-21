@@ -1,0 +1,89 @@
+<body>
+<script type="text/javascript">
+$(document).ready(function() {
+		$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/uploadImage',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				var myObject = eval('(' + data + ')');
+				$("#url").attr("value",myObject.url);
+				$("#thumbnail").attr("value",myObject.thumbnail);
+				$("#url").next().hide();
+				document.getElementById("previewPoster").src=myObject.thumbnail;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：专题管理> 新增原图</div>
+      <form action="/diys/Bo/topic/pYsave" method="post" id="packetForm">
+            <input type="hidden" name="id" value="${(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">用户Id</td>
+	     		<td width="35%"><input type="text" id="userId" name="userId" value="${(entity.userId)!''}" class="inputtext" /></td>
+	     		<td width="15%" align="right">类型</td>
+	     		<td width="35%">
+	     		<select name="joinType">
+	     		<option value="1">求网友P</option>
+	     		<option value="2">求设计师P</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right">描述</td>
+	     		<td width="35%">
+	     		<textarea id="description" name="description" style="width: 250px;height: 100px;resize: none;">${(entity.description)!''}</textarea>
+	     		</td>
+	     		<td width="15%" align="right">图片</td>
+	     		<td width="35%">
+	     			<input type="file" id="uploadPoster" name="uploadPoster"/> 
+			   			<input type="hidden" id="thumbnail" name="thumbnail" value="${(entity.thumbnail)!''}" class="inputtext" />
+			   			<input type="hidden" id="url" name="url" value="${(entity.url)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewPoster" src="${(entity.url)!''}" width="80" height="80" /></span>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

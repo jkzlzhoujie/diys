@@ -1,0 +1,44 @@
+<body>
+<script type="text/javascript">
+	$(function() {
+	$("#editForm").validate({
+		submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/topic/orderSave', $("#editForm").serialize(), function(data) {
+					$("#orderForm").submit();
+				});	
+		 	},
+		 rules:{
+	              remark:{required:true}
+
+	            },
+	     messages:{
+	                remark:{required:"不能为空"}
+	            }
+
+	});
+});	
+</script>
+    <div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：专题管理> 订单列表> 订单编辑</div>
+      <form action="/diys/Bo/topic/orderSave" method="post" id="editForm">
+      <input type="hidden" id="id" name="id" value="${(entity.id)!''}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">备注</td>
+	     		<td width="35%">
+	     		<textarea id="remark" name="remark"  style="width: 450px;height: 100px;resize: none;" class="inputtext" >${(entity.remark)!''}</textarea>
+	     		
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+</body>
+

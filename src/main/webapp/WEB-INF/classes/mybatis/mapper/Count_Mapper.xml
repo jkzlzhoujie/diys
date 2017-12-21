@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.Count">
+
+
+	<!--使用率前50的热门素材-->
+	<select id="materialCount" resultType="MaterialCount" useCache="false">
+		SELECT `res_image_url` resImageUrl,materialCount FROM(SELECT materialResId,COUNT(*) materialCount FROM `emoji_material_use_log`   
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(materialType)">WHERE materialType=#{materialType}</if>
+		GROUP BY materialResId ORDER BY materialCount desc LIMIT 50)AS b LEFT JOIN `emoji_material_resource` c ON b.materialResId=c.`id`  
+	</select>
+	
+	<!--用户每日行为统计-->
+	<select id="findCount" resultType="Count" useCache="false">
+		SELECT DATE_FORMAT(a.created_when,'%Y-%m-%d') date,IFNULL(zCount,0) zCount, IFNULL(isZCount,0) isZCount, IFNULL(pCount,0) pCount, IFNULL(isPCount,0) isPCount,IFNULL(productCount,0) productCount FROM 
+
+		(
+		SELECT DATE_FORMAT(created_when,'%Y-%m-%d') created_when FROM pm_product_praises WHERE  TYPE = 0 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and praise_user_id=#{id}</if>
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+			<![CDATA[
+				AND DATE_FORMAT(created_when,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+			]]>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+			<![CDATA[
+				and DATE_FORMAT(created_when,'%Y-%m-%d')<= DATE_FORMAT(#{endDate},'%Y-%m-%d')
+			]]>
+		</if>  
+		
+		UNION 
+		SELECT DATE_FORMAT(created_when,'%Y-%m-%d') FROM pm_product_discuss WHERE parent_discuss_id = 0
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and discuss_user_id=#{id}</if> 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+			<![CDATA[
+				AND DATE_FORMAT(created_when,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+			]]>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+			<![CDATA[
+				and DATE_FORMAT(created_when,'%Y-%m-%d')<= DATE_FORMAT(#{endDate},'%Y-%m-%d')
+			]]>
+		</if>   
+		
+		UNION
+		SELECT DATE_FORMAT(createdwhen,'%Y-%m-%d') FROM pm_product_info where audit=1 and is_public=1
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)"> and user_id=#{id}</if> 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+			<![CDATA[
+				AND DATE_FORMAT(createdwhen,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+			]]>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+			<![CDATA[
+				and DATE_FORMAT(createdwhen,'%Y-%m-%d')<= DATE_FORMAT(#{endDate},'%Y-%m-%d')
+			]]>
+		</if>   
+		
+		UNION 
+		SELECT DATE_FORMAT(created_when,'%Y-%m-%d') FROM pm_product_discuss WHERE parent_discuss_id = 0
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and user_id=#{id}</if> 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+			<![CDATA[
+				AND DATE_FORMAT(created_when,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+			]]>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+			<![CDATA[
+				and DATE_FORMAT(created_when,'%Y-%m-%d')<= DATE_FORMAT(#{endDate},'%Y-%m-%d')
+			]]>
+		</if>   
+		
+		UNION 
+		SELECT DATE_FORMAT(created_when,'%Y-%m-%d') FROM pm_product_praises WHERE TYPE = 0 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and product_id IN(SELECT product_id FROM pm_product_info WHERE user_id=#{id})</if> 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+			<![CDATA[
+				AND DATE_FORMAT(created_when,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+			]]>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+			<![CDATA[
+				and DATE_FORMAT(created_when,'%Y-%m-%d')<= DATE_FORMAT(#{endDate},'%Y-%m-%d')
+			]]>
+		</if>   
+		) AS a 
+		
+		LEFT JOIN 
+		
+		(SELECT DATE_FORMAT(created_when,'%Y-%m-%d') created_when,COUNT(*) zCount FROM pm_product_praises WHERE TYPE = 0 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and praise_user_id=#{id}</if>
+		
+		GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')) AS b ON  b.created_when=a.created_when
+		
+		LEFT JOIN 
+		
+		(SELECT DATE_FORMAT(created_when,'%Y-%m-%d') created_when,COUNT(*) pCount FROM pm_product_discuss WHERE parent_discuss_id = 0 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and discuss_user_id=#{id}</if>
+		
+		GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')) AS c ON c.created_when=a.created_when 
+		
+		LEFT JOIN 
+		
+		(SELECT DATE_FORMAT(created_when,'%Y-%m-%d') created_when,COUNT(*) isPCount FROM pm_product_discuss WHERE  parent_discuss_id = 0
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and user_id=#{id}</if>
+		
+		 GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')) AS d ON d.created_when=a.created_when
+		
+		LEFT JOIN 
+		
+		(SELECT DATE_FORMAT(created_when,'%Y-%m-%d') created_when,COUNT(*) isZCount FROM pm_product_praises WHERE TYPE = 0 
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and product_id IN(SELECT product_id FROM pm_product_info WHERE user_id=#{id})</if> 
+		
+		GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')) AS e ON e.created_when=a.created_when
+		
+		LEFT JOIN
+
+		(SELECT DATE_FORMAT(createdwhen,'%Y-%m-%d') created_when,COUNT(*) productCount FROM pm_product_info WHERE audit=1 and is_public=1
+
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)"> and user_id=#{id}</if> 
+		
+		GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')) AS f ON f.created_when=a.created_when
+		
+		GROUP BY date 
+	</select>
+	
+	<!--点赞数-->
+	<select id="zCount"  parameterType="map" resultType="Count" useCache="false">
+		SELECT DATE_FORMAT(created_when,'%Y-%m-%d') date,COUNT(*) zCount FROM pm_product_praises 
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+				<![CDATA[
+					AND DATE_FORMAT(created_when,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+				]]>
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+				<![CDATA[
+					and DATE_FORMAT(created_when,'%Y-%m-%d')<= DATE_FORMAT(#{endDate},'%Y-%m-%d')
+				]]>
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and praise_user_id=#{id}</if>
+			and type = 0
+		</where>
+		GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')
+	</select>
+	
+	<!--被赞数-->
+	<select id="isZCount" parameterType="map" resultType="Count" useCache="false">
+		SELECT DATE_FORMAT(created_when,'%Y-%m-%d') date,COUNT(*) isZCount FROM pm_product_praises 
+		
+		<where>
+			product_id in (SELECT product_id FROM pm_product_info WHERE user_id=#{id})
+
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+				<![CDATA[
+					AND DATE_FORMAT(created_when,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+				]]>
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+				<![CDATA[
+					and date_format(created_when,'%Y-%m-%d')<=date_format(#{endDate},'%Y-%m-%d')
+				]]>
+			</if>
+			and type = 0
+		</where>
+		GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')
+	</select>
+	
+	<!--评论数-->
+	<select id="pCount" parameterType="map" resultType="Count" useCache="false">
+		SELECT DATE_FORMAT(created_when,'%Y-%m-%d') date,COUNT(*) pCount FROM pm_product_discuss 
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+				<![CDATA[
+					AND DATE_FORMAT(created_when,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+				]]>
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+				<![CDATA[
+					and date_format(created_when,'%Y-%m-%d')<=date_format(#{endDate},'%Y-%m-%d')
+				]]>
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and discuss_user_id=#{id}</if>
+			and parent_discuss_id = 0
+		</where>
+		GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')
+	</select>
+	
+	<!--被评论数-->
+	<select id="isPCount" parameterType="map" resultType="Count" useCache="false">
+		SELECT DATE_FORMAT(created_when,'%Y-%m-%d') date,COUNT(*) isPCount FROM pm_product_discuss 
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+				<![CDATA[
+					AND DATE_FORMAT(created_when,'%Y-%m-%d')>= DATE_FORMAT(#{startDate},'%Y-%m-%d')
+				]]>
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+				<![CDATA[
+					and date_format(created_when,'%Y-%m-%d')<=date_format(#{endDate},'%Y-%m-%d')
+				]]>
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and user_id=#{id}</if>
+			and parent_discuss_id = 0
+		</where>
+		GROUP BY  DATE_FORMAT(created_when,'%Y-%m-%d')
+	</select>
+	
+	
+	<!--主题使用排行-->
+	<select id="themeUse" resultType="ThemeUseCount" useCache="false">
+		SELECT theme_id id,b.`imageUrl` ,useCount FROM(SELECT `theme_id`,COUNT(*) useCount FROM `emoji_resource_share` WHERE `theme_id`IS NOT NULL  
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(createdWhen,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(createdWhen,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+		
+		 GROUP BY `theme_id` )AS a LEFT JOIN `emoji_theme` b ON a.`theme_id`=b.`id`
+		 <where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(classifyId)">and classifyId=#{classifyId}</if>
+		 </where>
+		  ORDER BY useCount DESC
+	</select>
+	
+	<!--主题分类使用排行-->
+	<select id="classifyUse" resultType="ThemeUseCount" useCache="false">
+		SELECT `classifyId` id,IFNULL(sum(seq),0) useCount FROM (SELECT `theme_id`,COUNT(*) seq FROM `emoji_resource_share`  WHERE `theme_id`IS NOT NULL  
+		
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(createdWhen,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(createdWhen,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+		 GROUP BY `theme_id` )AS a LEFT JOIN `emoji_theme` b ON a.`theme_id`=b.`id` WHERE `theme_id` IS NOT NULL GROUP BY classifyId  ORDER BY useCount DESC
+	</select>
+	
+	
+	<!--每日统计-总计-->
+	<select id="countAll" parameterType="map" resultType="cn.temobi.complex.dto.CountDto" useCache="false">
+		SELECT clientNum,userNum FROM (SELECT COUNT(*)  AS clientNum FROM emoji_client
+		<where>
+			  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and client_channel = #{channel}</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+	             <![CDATA[
+	                 AND DATE_FORMAT(created_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+	          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+	            <![CDATA[
+	                 AND DATE_FORMAT(created_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+		</where>
+			) a,
+		(SELECT COUNT(*) AS userNum  FROM cm_user_info 
+		<where>
+			  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and client_channel = #{channel}</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+	             <![CDATA[
+	                 AND DATE_FORMAT(created_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+	          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+	            <![CDATA[
+	                 AND DATE_FORMAT(created_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+	         
+	             and register_from != 0
+		</where>
+		) b
+	</select>
+	
+	<!--每日统计-->
+	<select id="countUser" parameterType="map" resultType="cn.temobi.complex.dto.CountDto" useCache="false">
+		SELECT a.time,clientNum,userNum FROM 
+		(SELECT DATE_FORMAT(`created_when`,'%Y-%m-%d') AS TIME,COUNT(*) AS clientNum FROM `emoji_client` 
+		<where>
+			  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and client_channel = #{channel}</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+	             <![CDATA[
+	                 AND DATE_FORMAT(created_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+	          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+	            <![CDATA[
+	                 AND DATE_FORMAT(created_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+		</where>
+		GROUP BY DATE_FORMAT(created_when,'%Y-%m-%d') ) a
+		LEFT JOIN (
+		SELECT DATE_FORMAT(`created_when`,'%Y-%m-%d') AS TIME,COUNT(*) AS userNum FROM `cm_user_info` 
+		<where>
+			  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and client_channel = #{channel}</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+	             <![CDATA[
+	                 AND DATE_FORMAT(created_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+	          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+	            <![CDATA[
+	                 AND DATE_FORMAT(created_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+	         
+	             and register_from != 0
+		</where>
+		GROUP BY DATE_FORMAT(created_when,'%Y-%m-%d') ) b
+		ON a.time = b.time order by a.time desc limit #{limit} offset #{offset}
+	</select>
+	
+	<!--每日统计-总条数-->
+	<select id="countUserNum" parameterType="map" resultType="long" useCache="false">
+		SELECT count(*) FROM 
+		(SELECT DATE_FORMAT(`created_when`,'%Y-%m-%d') AS TIME,COUNT(*) AS clientNum FROM `emoji_client` 
+		<where>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and client_channel = #{channel}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+	            <![CDATA[
+	                AND DATE_FORMAT(created_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+	           ]]>
+	        </if>
+	         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+	           <![CDATA[
+	                AND DATE_FORMAT(created_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+	           ]]>
+	        </if>
+		</where>
+		GROUP BY DATE_FORMAT(created_when,'%Y-%m-%d') ) a
+		LEFT JOIN (
+		SELECT DATE_FORMAT(`created_when`,'%Y-%m-%d') AS TIME,COUNT(*) AS userNum FROM `cm_user_info` 
+		<where>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and client_channel = #{channel}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+	            <![CDATA[
+	                AND DATE_FORMAT(created_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+	           ]]>
+	        </if>
+	         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+	           <![CDATA[
+	                AND DATE_FORMAT(created_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+	           ]]>
+	        </if>
+        	and register_from != 0
+		</where>
+		GROUP BY DATE_FORMAT(created_when,'%Y-%m-%d') ) b
+		ON a.time = b.time
+	</select>
+	
+	
+	<!--分享统计-分页-->
+	<select id="findCountPage" parameterType="map" resultType="cn.temobi.complex.dto.ShareCountDto" useCache="false">
+		SELECT theme_id AS themeId,b.`userId` AS themeUserId,b.imageUrl,COUNT(DISTINCT CONCAT(imei,share_type)) AS allShareCount,b.createdWhen FROM `emoji_resource_share` a LEFT JOIN `emoji_theme` b ON a.theme_id = b.`id` WHERE a.theme_id IS NOT NULL AND a.use_type =1 
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeId)">and a.theme_id = #{themeId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeUserId)">and b.userId = #{themeUserId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(b.`createdWhen`,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+          </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(b.`createdWhen`,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+          </if>
+	 	GROUP BY theme_id
+	 	limit #{limit} offset #{offset}
+	</select>
+	
+	<!--分享统计-总条数-->
+	<select id="countShare" resultType="long" useCache="false">
+		SELECT COUNT(DISTINCT theme_id)
+		FROM `emoji_resource_share` a LEFT JOIN `emoji_theme` b ON a.theme_id = b.`id` 
+		WHERE a.theme_id IS NOT NULL AND a.use_type =1 
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeId)">and a.theme_id = #{themeId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeUserId)">and b.userId = #{themeUserId}</if>
+    	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(b.`createdWhen`,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(b.`createdWhen`,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+    </select>
+    
+    <!--分享统计-总计-->
+    <select id="sumShare" resultType="long" useCache="false">
+		SELECT COUNT(DISTINCT CONCAT(theme_id,imei,share_type))
+		FROM `emoji_resource_share` a LEFT JOIN `emoji_theme` b ON a.theme_id = b.`id` 
+		WHERE a.theme_id IS NOT NULL AND a.use_type =1 
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeId)">and a.theme_id = #{themeId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeUserId)">and b.userId = #{themeUserId}</if>
+    	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(b.`createdWhen`,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(b.`createdWhen`,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(other)">
+          and a.createdWhen &lt;=  DATE_ADD(b.`createdWhen`,INTERVAL 1 MONTH) AND `share_type` IN (1,3,4,6,8) 
+          </if>
+    </select>
+    
+    <!--分享统计-->	
+	<select id="countNum" resultType="long" useCache="false">
+		SELECT COUNT(DISTINCT CONCAT(imei,share_type)) FROM `emoji_resource_share` a LEFT JOIN emoji_theme b ON a.theme_id = b.`id`  WHERE 
+	    a.createdWhen &lt;=  DATE_ADD(b.`createdWhen`,INTERVAL 1 MONTH) AND `share_type` IN (1,3,4,6,8) AND a.`theme_id` = #{themeId}
+    </select>
+
+ 	<!--每日活跃-->	
+	<select id="userCount" parameterType="map" resultType="cn.temobi.complex.dto.PUserDto" useCache="false">
+		SELECT DATE_FORMAT(`created_when`,'%Y-%m-%d') as time,COUNT(DISTINCT client_id) as userNum FROM `emoji_start_statistics` 
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+		   		 created_when   BETWEEN #{startDate} AND #{endDate}
+		    </if>
+		</where>
+		GROUP BY DATE_FORMAT(`created_when`,'%Y-%m-%d')
+    </select>
+    
+    <!--每日悬赏-->	
+	<select id="pDayCount" parameterType="map" resultType="cn.temobi.complex.dto.PUserDto" useCache="false">
+		SELECT DATE_FORMAT(`join_time`,'%Y-%m-%d') as time,SUM(price) as totalPrice,COUNT(*) as priceUserNum,MAX(price) maxPrice,MIN(price) minPrice,AVG(price) avgPrice FROM `pm_topic_join_products` 
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">
+		  AND  STATUS=1
+		  </if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)">
+		  AND price > 0
+		  </if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicId)">
+		  AND topic_id = #{topicId}
+		  </if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+		            <![CDATA[
+		                 AND DATE_FORMAT(join_time,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+		            ]]>
+		         </if>
+		         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+		             <![CDATA[
+		                 AND DATE_FORMAT(join_time,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+		            ]]>
+		         </if>
+		</where>
+		GROUP BY DATE_FORMAT(`join_time`,'%Y-%m-%d')
+    </select>
+    
+     <!--每日彩绘-->	
+	<select id="cDayCount" parameterType="map" resultType="cn.temobi.complex.dto.PUserDto" useCache="false">
+		SELECT DATE_FORMAT(`join_time`,'%Y-%m-%d') AS TIME,SUM(b.price)/100 AS totalPrice,COUNT(*) AS priceUserNum FROM `pm_topic_join_products` a LEFT JOIN `pm_commodity_info` b ON a.join_type = b.id 
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">
+		  AND a.STATUS=1
+		  </if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)">
+		  AND price > 0
+		  </if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicId)">
+		  AND topic_id = #{topicId}
+		  </if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+		            <![CDATA[
+		                 AND DATE_FORMAT(join_time,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+		            ]]>
+		         </if>
+		         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+		             <![CDATA[
+		                 AND DATE_FORMAT(join_time,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+		            ]]>
+		         </if>
+		</where>
+		GROUP BY DATE_FORMAT(`join_time`,'%Y-%m-%d')
+    </select>
+    
+    
+    <select id="countUserP" parameterType="map" resultType="cn.temobi.complex.dto.PUserDto" useCache="false">
+		SELECT DATE_FORMAT(`ps_time`,'%Y-%m-%d') AS time,COUNT(DISTINCT `ps_user_id`) AS countUserP FROM `pm_topic_ps_products`
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+		            <![CDATA[
+		                 AND DATE_FORMAT(ps_time,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+		            ]]>
+		         </if>
+		         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+		             <![CDATA[
+		                 AND DATE_FORMAT(ps_time,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+		            ]]>
+		         </if>
+		</where>
+		GROUP BY DATE_FORMAT(`ps_time`,'%Y-%m-%d')
+	 </select>
+</mapper>

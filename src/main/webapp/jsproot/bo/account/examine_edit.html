@@ -1,0 +1,55 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#topicForm').validate({	 
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/account/examineSave', $("#topicForm").serialize(), function(data) {
+					$("#userForm").submit();
+				});	
+		 	},	
+			 rules:{
+		          financeStatus:{
+		            required: true
+		          }
+	          },
+	          messages:{
+	               financeStatus:{
+		            required: "审核状态不能为空"
+		          }
+	            }
+			});	
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置： 账户管理 > 提现审核</div>
+      <form action="/diys/Bo/account/examineSave" method="post" id="topicForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">审核状态</td>
+	     		<td>
+	     		<select style="width: 150px" id="financeStatus" name="financeStatus" class="select-style">
+ 					<option value="">请选择审核状态</option>
+   						<option <#if "${(entity.financeStatus)!''}"== "2">selected="selected"</#if> value="2">已打款</option>
+   						<option <#if "${(entity.financeStatus)!''}"== "3">selected="selected"</#if> value="3">退会</option>
+   						<option <#if "${(entity.financeStatus)!''}"== "4">selected="selected"</#if> value="4">失败</option>
+			      </select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+     			<td align="right">备注 </td>
+	     		<td>
+		     		<textarea name="remark" style="width: 400px;height: 200px">${entity.remark!''}</textarea>
+		     	</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

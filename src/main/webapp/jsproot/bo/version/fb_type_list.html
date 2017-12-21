@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>反馈类型列表</title>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：客户端管理 > 反馈类型列表</div>
+      <form id="classifyForm" action="/diys/Bo/client/fb_type_list" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+      		<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('client/fbTedit')"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="10%" >名称</th>
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity)!''}
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-delete" onclick="del_('client/fbTdel','${entity}')">删除</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

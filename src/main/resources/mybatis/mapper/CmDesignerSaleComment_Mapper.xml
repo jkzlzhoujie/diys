@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.CmDesignerSaleComment">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap type="CmDesignerSaleComment" id="sql_resultMap">
+		<id property="id" column="id" />
+		<result property="orderNO" column="orderNO" />
+		<result property="conformityLevel" column="conformityLevel" />
+		<result property="priceLevel" column="priceLevel" />
+		<result property="sendLevel" column="sendLevel" />
+		<result property="totalLevel" column="totalLevel" />
+		<result property="anonymous" column="anonymous" />
+		<result property="commentText" column="commentText" />
+	</resultMap>
+	
+	<sql id="sql_selectAll">
+		select * from cm_designer_sale_comment
+	</sql>
+	
+	<sql id="sql_where">
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and  id = #{id}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNO)">and  orderNO = #{orderNO}</if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="Long" useCache="false">
+		select count(1) from cm_designer_sale_comment 
+		<include refid="sql_where"></include>
+	</select>
+	
+	<select id="getById" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"></include>
+		where id=#{id}
+	</select>
+	
+	<select id="findByPage" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(totalLevel)">and  totalLevel = #{totalLevel}</if>
+		order by id desc
+		limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+	</select>
+	
+	<select id="findAll" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		insert into cm_designer_sale_comment(orderNO,conformityLevel,serviceLevel,priceLevel,sendLevel,totalLevel,anonymous,commentText) 
+		 values(#{orderNO},#{conformityLevel},#{serviceLevel},#{priceLevel},#{sendLevel},#{totalLevel},#{anonymous},#{commentText})
+	</insert>
+	
+	 <insert id="insertBatch" parameterType="java.util.List">  
+       insert into cm_designer_sale_comment(orderNO,conformityLevel,serviceLevel,priceLevel,sendLevel,totalLevel,anonymous,commentText) values  
+       <foreach collection="list" item="item" index="index" separator=",">  
+           ( #{orderNO},#{conformityLevel},#{serviceLevel},#{priceLevel},#{sendLevel},#{totalLevel},#{anonymous},#{commentText} )  
+       </foreach>  
+     </insert>  
+	
+	<update id="update" >
+		update cm_designer_sale_comment
+		<set>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNO)">orderNO=#{orderNO},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(conformityLevel)">conformityLevel=#{conformityLevel},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(serviceLevel)">serviceLevel=#{serviceLevel},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(priceLevel)">priceLevel=#{priceLevel},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sendLevel)">sendLevel=#{sendLevel},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(totalLevel)">totalLevel=#{totalLevel},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(anonymous)">anonymous=#{anonymous},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(commentText)">commentText=#{commentText},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="delete" flushCache="true">
+		delete from cm_designer_sale_comment where id=#{id}
+	</delete>
+	
+</mapper>

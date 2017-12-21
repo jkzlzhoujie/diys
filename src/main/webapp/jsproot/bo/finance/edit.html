@@ -1,0 +1,64 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#topicForm').validate({	 
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/finance/save', $("#topicForm").serialize(), function(data) {
+					$("#orderForm").submit();
+				});	
+		 	},	
+			 rules:{
+		          balancePrice:{
+		            required: true
+		          },
+	              status:{
+		            required: true
+	              }
+	          },
+	          messages:{
+	               balancePrice:{
+		            required: "结算金额不能为空"
+		          },
+	                status:{
+		            required: "审核状态不能为空"
+	              }
+	            }
+			});	
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置： 财务管理 > 对账编辑</div>
+      <form action="/diys/Bo/finance/save" method="post" id="topicForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">彩绘ID</td>
+	     		<td>
+	     		${(joinId)!''}
+	     		<input type="hidden" id="joinId" name="joinId" value="${(joinId)!''}"  class="inputtext"/></td>
+	     		<input type="hidden" id="accountBuyId" name="accountBuyId" value="${(accountBuyId)!''}"  class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">结算金额</td>
+	     		<td><input type="text" id="balancePrice" name="balancePrice" value="${(entity.balancePrice)!''}"  class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+     			<td align="right">审核状态 </td>
+	     		<td>
+		     		<select id="status" name="status" class="selectOpt w164">
+	   					<option <#if "${(entity.status)!0}"== "0">selected="selected"</#if> value="0">未审核</option>
+	   					<option <#if "${(entity.status)!0}"== "1">selected="selected"</#if> value="1">已审核</option>
+          			</select>
+		     	</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

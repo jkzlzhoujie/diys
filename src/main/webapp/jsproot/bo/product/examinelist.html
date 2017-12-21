@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>未审核作品列表</title>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("a[rel=example_group]").fancybox({
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'titlePosition' 	: 'over',
+				'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+				}
+			});
+			
+			 $("#checkAll").click(function() {
+          $('input[name="subBox"]').attr("checked",this.checked);
+      });
+      var $subBox = $("input[name='subBox']");
+      $subBox.click(function(){
+          $("#checkAll").attr("checked",$subBox.length == $("input[name='subBox']:checked").length ? true : false);
+      });
+	});
+	
+	function updateStatus(status) {
+		var i = 0;
+		var j=0;
+		var arr = new Array();
+		var m = document.getElementsByName('subBox');
+		for ( var i = 0; i < m.length; i++) {
+			if (m[i].checked == true) {
+				arr[j] = $.trim(m[i].value);
+				j+=1;
+			}
+		}
+		if(j<=0)
+		{
+			myAlert("至少选择一个");
+		}else{
+			$.post('/diys/Bo/product/batchExamine', {
+			ids : arr.toString(),
+			status:status,
+		}, function() {
+			$('#loadingimg').jqmHide();
+			$("#userForm").submit();
+		})
+		}
+	}
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：作品管理 > 未审核列表</div>
+      <form id="userForm" action="/diys/Bo/product/examinelist" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <input type="button" id="goOffline" value="审核通过"  class="btn-submit" onclick="updateStatus(1)"/>
+      <div class="table-search">
+        </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="1%" align="center"><input type="checkbox" id="checkAll" /></th>
+              <th width="5%">昵称</th>
+              <th width="5%">头像</th>
+              <th width="5%">图片</th>
+              <th width="10%" >类型</th>
+              <th width="10%" >时间</th>
+              <th width="10%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td align="center">
+							<input value="${(entity.productId)!''}" type="checkbox" name="subBox" class="subBox">
+						</td>
+						<td >
+							${(entity.nickName)!''}
+						</td>
+						<td >
+							<img width="50px" height="50px" src="${(entity.headImageUrl)!''}">
+						</td>
+						<td>
+								<#if entity?? && entity.url??>
+						<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.url!''}" title=""><img  width="60" height="80" src="${entity.url!''}" /></a>
+						</#if>
+						</td>
+						<td>
+						<#if  entity?? && entity.isPublic == 1>
+						大厅作品
+						<#else>
+						<#if  entity?? && entity.createType == 0>
+						神p原图
+						<#else>
+						神pP图
+						</#if>
+						</#if>
+						</td>
+						<td>
+							${entity.createdWhen!''}
+						</td>
+						<td>
+							<a class="btn btn-look" href="javascript:;" onclick="del_new('/diys/Bo/product/examineupdate?id=${entity.productId}&status=1','你确定要审核通过？','userForm')">审核通过</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

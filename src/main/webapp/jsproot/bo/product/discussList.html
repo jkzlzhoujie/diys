@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>评论列表</title>
+
+    <meta  charset=UTF-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+	<script type="text/javascript">
+	     	function selectReset(){
+    		$("#id").val("");
+    		$("#productId").val("");
+    		$("#userId").val("");
+    		$("#discussUserId").val("");
+    		$("#parentDiscussId").val("");
+    		$("#content").val("");
+    	}
+    	
+  function selectInfo() {
+  	$("#pageNo").val("1"); 
+  	$("#discussForm").submit();
+  	
+  }
+	</script>
+  </head>
+  
+  <body>
+    <div id="main">
+    	<div class="breadcrumb">当前位置： 作品管理 > 作品评论</div>
+		<form action="/diys/Bo/product/discussList"  id="discussForm" method="post">
+			<input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+			<div class="table-show-content">
+				<div class="table-search">
+					<div style="display:inline">
+						评论id：<input type="text" id="id" name="id" value="${id!''}" class="input-style"/>
+						作品id：<input type="text" id="productId" name="productId" value="${productId!''}" class="input-style"/>
+						作品用户id：<input type="text" id="userId" name="userId" value="${userId!''}" class="input-style"/>
+						评论用户id：<input type="text" id="discussUserId" name="discussUserId" value="${discussUserId!''}" class="input-style"/>
+					</div>
+					<div style="margin-top: 10px">
+					<div style="display:inline">
+						上级评论id：<input type="text" id="parentDiscussId" name="parentDiscussId" value="${parentDiscussId!''}" class="input-style"/>
+						内容：<input type="text" id="content" name="content" value="${content!''}" class="input-style"/>
+					</div>
+					<div style="width:10%;display: inline;float: right"><input type="button" id="btn1" value="重置" class="btn-submit" onclick="selectReset()" /></div>
+					<div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()" id="btn1"  class="btn-submit" value="查询"  /></div>
+					</div>
+				</div>
+				 <div class="all-group"> 
+		           <span class="left check-all">
+		          <input type="checkbox"  onclick="checkBox()"/>
+		              </span> <span>
+		              <input type="button" onclick="deleteBySelectIdsTo('/diys/Bo/product/discussDelete');" class="btn btn-delete left" value="删除" >
+		              </span> 
+		            </div>
+				<table class="table-show">
+					<tr class="list_title">
+						<th width="1%"></th>
+						<th width="4%">评论id</th>
+						<th width="5%">作品id</th>
+						<th width="5%">作品用户id</th>
+						<th width="5%">评论用户id</th>
+						<th width="10%">内容</th>
+						<th width="5%">上级评论id</th>
+						<th width="4%">点赞数</th>
+						<th width="4%">回复数</th>
+					</tr>
+					<#if list??>
+						<#list list as entity>
+							<tr>
+								<td><input type="checkbox" value="#{(entity.id)!0}" name="subBox" id="subBox"></td>
+								<td>${(entity.id)!''}</td>
+								<td>${(entity.productId)!''}</td>
+								<td>${(entity.userId)!''}</td>
+								<td>${(entity.discussUserId)!''}</td>
+								<td>${(entity.content)!''}</td>
+								<td>${(entity.parentDiscussId)!''}</td>
+								<td>${(entity.praises)!''}</td>
+								<td>${(entity.replys)!''}</td>
+							</tr>
+						</#list>
+					</#if>
+				</table>
+			</div>
+		<#include "/bo/page.html">
+		</form>
+	</div>
+	<div id="editor" class="jqmWindow"></div>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+
+<body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#editForm').validate({	
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/client/fb_save', $("#editForm").serialize(), function(data) {
+					$("#userForm").submit();
+				});	
+		 	}
+			});	
+});	
+</script>
+    <div>
+    	<input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+     	<div class="breadcrumb">当前位置：客户端管理 > 反馈页编辑</div>
+      	<form action="/diys/Bo/client/fb_save" method="post" id="editForm">
+            <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      	<div class="table-show-content">
+        <table class="table-show" >
+        	<tr>
+        		<td align="right">备注</td>
+        		<td width="35%"><textarea id="remark" name="remark" style="width: 250px;height: 100px;resize: none;">${(entity.remark)!''}</textarea>
+        	</tr>
+        	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td width="40%"></td>
+	     	</tr>
+	     </table>
+	     </div>
+	     </form>
+    </div>
+</body>
+

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.SysPrivilegeContentType">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap type="SysPrivilegeContentType" id="sql_resultMap">
+		<id property="id" column="id" />
+		<result property="content" column="content" />
+		<result property="typeCode" column="typeCode" />
+		<result property="status" column="status" />
+		<result property="note" column="note" />
+		<result property="imageUrl" column="imageUrl" />
+		<result property="creatWhen" column="creatWhen" />
+		<result property="updateWhen" column="updateWhen" />
+	</resultMap>
+	
+	<sql id="sql_selectAll">
+		select * from sys_privilege_content_type 
+	</sql>
+	
+	<sql id="sql_where">
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(typeCode)">and typeCode like "%"#{typeCode}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(content)">and content like "%"#{content}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and status = #{status}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(privilegeId)">
+				and id in (SELECT spc.contentTypeId FROM sys_privilege_content spc WHERE spc.privilegeId= #{privilegeId} )
+			</if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="Long" useCache="false">
+		select count(*) from sys_privilege_content_type
+		<include refid="sql_where"></include>
+	</select>
+	
+	<select id="getById" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"></include>
+		where id=#{id}
+	</select>
+	
+	<select id="findByPage" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+		order by id limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+	</select>
+	
+	<select id="findAll" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_privilege_content_type(content,typeCode,imageUrl,status,note,creatWhen,updateWhen) 
+		 values(#{content},#{typeCode},#{imageUrl},#{status},#{note},NOW(),#{updateWhen} )
+	</insert>
+	
+	<update id="update" >
+		update sys_privilege_content_type
+		<set>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(typeCode)">typeCode=#{typeCode},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(content)">content=#{content},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(imageUrl)">imageUrl=#{imageUrl},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">status=#{status},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(note)">note=#{note},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(updateWhen)">updateWhen=#{updateWhen},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="delete" flushCache="true">
+		delete from sys_privilege_content_type where id=#{id}
+	</delete>
+	
+</mapper>

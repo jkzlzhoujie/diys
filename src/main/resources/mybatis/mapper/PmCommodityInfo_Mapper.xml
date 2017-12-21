@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.PmCommodityInfo">
+		<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+		<resultMap type="PmCommodityInfo" id="sql_resuleMap">
+			<id property="id" column="id"/>
+			<result property="name" column="name"/>
+			<result property="originalPrice" column="originalPrice"/>
+			<result property="price" column="price"/>
+			<result property="addTime" column="addTime"/>
+			<result property="commodityId" column="commodityId"/>
+			<result property="status" column="status"/>
+			<result property="isNeedReceive" column="isNeedReceive"/>
+			<result property="maxAmount" column="maxAmount"/>
+		</resultMap>
+		
+		<sql id="sql_selectAll">
+			SELECT * FROM pm_commodity_info
+		</sql>
+		
+		<sql id="sql_where">
+			<where>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(commodityId)">and commodityId = #{commodityId}</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and status = #{status}</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isNeedReceive)">and isNeedReceive = #{isNeedReceive}</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(maxAmount)">and maxAmount = #{maxAmount}</if>
+        	</where>
+		</sql>
+		
+		<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+			<include refid="sql_selectAll"/>
+			<include refid="sql_where"/>
+			ORDER BY addTime desc
+		</select>
+		
+		<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+			<include refid="sql_selectAll"/>
+			 where id=#{id}
+		</select>
+		
+		<select id="getDtoById" parameterType="Long" resultType="cn.temobi.complex.dto.OrderDto" useCache="false">
+		SELECT a.name as commodityType,b.detail as commodityName,b.thumbnail as commodityThumbnail FROM `pm_commodity_info` a LEFT JOIN `pm_commodity` b ON a.`commodityId` = b.id WHERE a.id =#{id}
+		</select>
+	
+		<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+			<include refid="sql_selectAll"/>
+			<include refid="sql_where"/>
+			ORDER BY addTime desc
+		</select>
+	
+		<select id="findByPage" parameterType="PmCommodityInfo" resultMap="sql_resuleMap" useCache="false">
+			<include refid="sql_selectAll"/>
+			<include refid="sql_where"/>
+			ORDER BY addTime desc limit #{limit} offset #{offset}
+		</select>
+		
+		<select id="count" resultType="Long" useCache="false">
+			select count(*) from pm_commodity_info
+			<include refid="sql_where"></include>
+		</select>
+		
+		<insert id="insert" parameterType="PmCommodityInfo" useGeneratedKeys="true" keyProperty="id">
+			insert into pm_commodity_info(name,originalPrice,price,commodityId,status,addTime,isNeedReceive,maxAmount) 
+			values(#{name},#{originalPrice},#{price},#{commodityId},#{status},now(),#{isNeedReceive},#{maxAmount})
+		</insert>
+		
+		<update id="update" parameterType="PmCommodityInfo" >
+			update pm_commodity_info 
+			<set>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">name=#{name},</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(originalPrice)">originalPrice=#{originalPrice},</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)">price=#{price},</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">status=#{status},</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(maxAmount)">maxAmount=#{maxAmount},</if>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isNeedReceive)">isNeedReceive=#{isNeedReceive},</if>
+			</set>
+			<where>
+				<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">id=#{id}</if>
+			</where>
+		</update>
+		
+		<delete id="delete" parameterType="Long" flushCache="true">
+			delete from pm_commodity_info where id = #{id}
+		</delete>
+</mapper>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.CmCircleProduct">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+		<resultMap id="sql_resuleMap" type="CmCircleProduct">
+			<id property="id" column="id" />
+			<result property="sort" column="sort" />
+			<result property="productId" column="productId" />
+			<result property="circleId" column="circleId" />
+			<result property="addTime" column="addTime" />
+			<result property="flag" column="flag" />
+			<result property="name" column="name" />
+			<result property="url" column="url" />
+			<result property="thumbnail" column="thumbnail" />
+	</resultMap>
+	
+		<resultMap id="PmProductInfoMap" type="PmProductInfo">
+			<result property="id" column="product_id" />
+			<result property="clientId" column="client_id" />
+			<result property="userId" column="user_id" />
+			<result property="url" column="url" />
+			<result property="thumbnail" column="thumbnail" />
+			<result property="resourceId" column="resource_id" />
+			<result property="createdWhen" column="createdWhen" />
+			<result property="createType" column="create_type" />
+			<result property="createFrom" column="create_from" />
+			<result property="srcProductId" column="src_product_id" />
+			<result property="hotScore" column="hot_score" />
+			<result property="magicScore" column="magic_score" />
+			<result property="hotSystemScore" column="hot_system_score" />
+			<result property="magicSystemScore" column="magic_system_score" />
+			<result property="searchCount" column="search_count" />
+			<result property="praiseCount" column="praise_count" />
+			<result property="downloadCount" column="download_count" />
+			<result property="shareCount" column="share_count" />
+			<result property="discussCount" column="discuss_count" />
+			<result property="editCount" column="edit_count" />
+			<result property="psCount" column="ps_count" />
+			<result property="stampCount" column="stamp_count" />
+			<result property="productLabel" column="product_label" />
+			<result property="productName" column="product_name" />
+			<result property="description" column="description" />
+			<result property="audit" column="audit" />
+			<result property="isPublic" column="is_public" />
+			<result property="typeId" column="type_id" />
+			<result property="createLocation" column="create_location" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from cm_circle_product
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)">and a.flag = #{flag}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)">and circleId = #{circleId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and b.userId = #{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and name like "%"#{name}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">and productId=#{productId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.addTime,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+       		</if>
+          	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            	<![CDATA[
+                 	AND DATE_FORMAT(a.addTime,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+          	  ]]>
+        	</if>
+        </where>
+	</sql>
+	
+	<select id="check" resultType="Long" useCache="false">
+		SELECT count(1) FROM cm_circle_product where productId=#{productId} and circleId=#{circleId}
+	</select>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY addTime desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	SELECT a.*,b.name,c.`url`,c.thumbnail FROM cm_circle_product a LEFT JOIN `cm_circle` b ON a.`circleId`=b.`id` LEFT JOIN `pm_product_info` c ON c.`product_id`=a.`productId`
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)">and b.flag = #{flag} and a.flag = #{flag}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)">and circleId = #{circleId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and b.userId = #{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and name like "%"#{name}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">and productId=#{productId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.addTime,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+       		</if>
+          	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            	<![CDATA[
+                 	AND DATE_FORMAT(a.addTime,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+          	  ]]>
+        	</if>
+        </where>
+	ORDER BY addTime desc
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(limit)">limit #{limit}</if>
+	</select>
+	
+	<select id="findPruduct" parameterType="map" resultMap="PmProductInfoMap" useCache="false">
+	SELECT b.* FROM cm_circle_product a LEFT JOIN `pm_product_info` b ON b.`product_id`=a.`productId`
+	<include refid="sql_where"/>
+	ORDER BY createdwhen desc  limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findProductId" parameterType="map" resultType="Long" useCache="false">
+	SELECT `productId` FROM cm_circle_product a
+	<include refid="sql_where"/>
+	<choose>   
+   			<when test="@cn.temobi.core.util.StringUtil@isNotEmpty(searchAll)"> </when>   
+   			<when test="@cn.temobi.core.util.StringUtil@isNotEmpty(searchId)"> 
+   				 ORDER BY id desc limit #{limit} offset #{offset}
+   			</when>   
+            <otherwise>   
+       		 limit #{limit} offset #{offset}
+            </otherwise>   
+        </choose>
+	</select>
+	
+	<select id="countPruduct" resultType="long" useCache="false">
+		SELECT count(1) FROM cm_circle_product a LEFT JOIN `pm_product_info` b ON b.`product_id`=a.`productId`
+	<include refid="sql_where"/>
+    </select>
+	
+	
+	<select id="findByPage" parameterType="CmCircleProduct" resultMap="sql_resuleMap" useCache="false">
+	SELECT a.*,b.name,c.`url` FROM cm_circle_product a LEFT JOIN `cm_circle` b ON a.`circleId`=b.`id` LEFT JOIN `pm_product_info` c ON c.`product_id`=a.`productId`
+	<include refid="sql_where"/>
+	ORDER BY addTime desc  limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(1) FROM cm_circle_product a
+		LEFT JOIN `cm_circle` b ON a.`circleId`=b.`id` 
+		LEFT JOIN `pm_product_info` c ON c.`product_id`=a.`productId`
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="CmCircleProduct" useGeneratedKeys="true" keyProperty="id">
+	insert into cm_circle_product(circleId,sort,productId,addTime) values(#{circleId},#{sort},#{productId},now())
+	</insert>
+	
+	<insert id="insertList" useGeneratedKeys="true" parameterType="map">  
+     	insert ignore into cm_circle_product(circleId,productId,addTime)
+		values
+       <foreach collection="list" item="item" index="index" separator="," >  
+           (#{circleId},#{item},now())
+       </foreach>  
+    </insert>  
+	
+	<update id="update" parameterType="CmCircleProduct">
+	  UPDATE cm_circle_product
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)"> circleId = #{circleId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sort)"> sort = #{sort},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)"> productId = #{productId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)"> flag = #{flag},</if>
+		</set>
+         where id=#{id}
+	</update>
+	
+	<update id="upByCircleId" >
+	  UPDATE cm_circle_product
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)"> flag = #{flag},</if>
+		</set>
+         where circleId = #{circleId}
+	</update>
+	
+	<delete id="delete" parameterType="CmCircleProduct" flushCache="true">
+		delete from cm_circle_product where id = #{id}
+	</delete>
+	
+	<delete id="deleteByMap" parameterType="map" flushCache="true">
+		delete from cm_circle_product where flag = #{map}
+	</delete>
+	
+	<delete id="delBycircleId" parameterType="map" flushCache="true">
+		delete from cm_circle_product
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)">and flag = #{flag}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circleId)">and circleId = #{circleId}</if>
+        </where>
+	</delete>
+</mapper>

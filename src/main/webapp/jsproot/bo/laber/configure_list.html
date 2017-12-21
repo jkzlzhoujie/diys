@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>标签配置列表</title>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：素材管理 > 标签配置列表</div>
+      <form id="classifyForm" action="/diys/Bo/laber/configure_list" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+      		<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('laber/configure_edit')"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+             <th width="10%" >主标签</th>
+             <th width="60%" >小标签</th>
+             <th width="10%" >排序</th>
+             <th width="10%" >类型</th>
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.laberTotal)!''}
+						</td>
+						<td >
+							${(entity.laberSmall)!''}
+						</td>
+						<td >
+							${(entity.sort)!''}
+						</td>
+						<td >
+							<#if entity.type??>
+								<#if "${entity.type}" == "1">贴图
+									<#elseif "${entity.type}" == "2">颜文字
+									<#elseif "${entity.type}" == "3">表情
+									<#elseif "${entity.type}" == "4">个人
+									<#else>未知
+								</#if>
+							</#if>
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('laber/configure_edit','#{(entity.id)!0}')">编辑</a>
+							<a class="btn btn-delete" onclick="del_('laber/configure_del','#{(entity.id)!0}')">删除</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </br>
+      </br>
+      </br>
+      </br>
+      </br>
+      <div style="font-size: 20px;font-weight: bold">24小时热搜标签</div>
+      <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="10%" >标签名称</th>
+              <th width="10%" >操作</th>
+            </tr>
+				<tr>
+					<td >
+						${hotLaber!''}
+					</td>
+					<td  style="display: table">
+						<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('laber/hotedit','')">编辑</a>
+					</td>
+				</tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#editForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/circle/usersave',$("#editForm").serialize(),function(data){
+					if(data == 1)
+					{
+						myAlert("该用户已存在");
+					}else if(data == 2){
+						myAlert("该圈子不存在");
+					}else{
+						$("#circleForm").submit();
+					}	
+				})
+			},
+			 rules:{
+	              userId:{
+		             required:true
+	              },
+	              circleId:{
+		             required:true
+	              }
+	          }
+			});	
+		})
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：兴趣圈管理> 圈子用户列表> 圈子用户编辑</div>
+    	<form action="/diys/Bo/circle/usersave" method="post" id="editForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<#if (entity??)==false>
+    			<tr>
+    				<td align="right">圈子id</td><td><input type="text" id="circleId" name="circleId" value="${(entity.circleId)!''}"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">用户id</td><td><input type="text" id="userId" name="userId" value="${(entity.userId)!''}"/></td>
+    			</tr>
+    			<#elseif entity??>
+					<input readonly="readonly" type="hidden" id="circleId" name="circleId" value="${(entity.circleId)!''}"/>
+					<input readonly="readonly" type="hidden" id="userId" name="userId" value="${(entity.userId)!''}"/>
+    			</#if>
+    			<#if entity?? && entity.id??>
+    			<tr>
+    				<td align="right">状态</td>
+    				<td>
+    				<select id="flag" name="flag" class="selectOpt w164">
+             			<option  value="">请选择类型</option>
+             			<option <#if "${(entity.flag)!''}"== "0">selected="selected"</#if> value="0">正常</option>
+	   					<option <#if "${(entity.flag)!''}"== "2">selected="selected"</#if> value="2">管理员删除</option>	   					
+          			</select>
+    				</td>
+    			</tr>
+    			</#if>
+    			<tr>
+    				<td align="right"><input type="submit" class="btn-submit" value="提交"/></td><td><input type="reset" class="btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+

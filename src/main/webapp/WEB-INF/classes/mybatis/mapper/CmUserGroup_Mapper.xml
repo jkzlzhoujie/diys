@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.CmUserGroup">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+		<resultMap id="sql_resuleMap" type="CmUserGroup">
+			<id property="id" column="id" />
+			<result property="remark" column="remark" />
+			<result property="name" column="name" />
+			<result property="userId" column="user_id" />
+			<result property="createWhen" column="create_when" />
+			<result property="groupId" column="group_id" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from cm_user_group a
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remark)">and remark like "%"#{remark}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and name=#{name}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(groupId)">and a.group_id =#{groupId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and a.user_id =#{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(create_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+       		</if>
+          	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            	<![CDATA[
+                 	AND DATE_FORMAT(create_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+          	  ]]>
+        	</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY create_when desc
+	</select>
+	
+	<select id="getById" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY create_when desc
+	</select>
+	
+	<select id="findByPage" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>	
+	<include refid="sql_where"/>
+	ORDER BY create_when desc  limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findByPageDto"  resultType="cn.temobi.complex.dto.CmUserGroupDto" useCache="false">
+	SELECT a.id,a.name,a.user_id userId,a.create_when createWhen,a.remark,`nick_name` nickName FROM cm_user_group a LEFT JOIN `cm_user_info` b ON a.`user_id`=b.`user_id`	
+	<include refid="sql_where"/>
+	ORDER BY create_when desc  limit #{limit} offset #{offset}
+	</select>
+    
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM cm_user_group a
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert"  useGeneratedKeys="true" keyProperty="id">
+	insert into cm_user_group(name,remark,user_id,group_id,create_when) values(#{name},#{remark},#{userId},#{groupId},now())
+	</insert>
+	
+	<update id="update" >
+	  UPDATE cm_user_group
+        <set>
+         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(groupId)"> group_id = #{groupId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)"> name = #{name},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remark)"> remark = #{remark},</if>
+		</set>
+         where id=#{id}
+	</update>
+	
+	<update id="updateByGroupId" >
+	  UPDATE cm_user_group
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)"> name = #{name},</if>
+		</set>
+         where group_id = #{groupId}
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from cm_user_group where id = #{id}
+	</delete>
+
+	
+	<delete id="deleteByGroupId" parameterType="Long" flushCache="true">
+		delete from cm_user_group where group_id = #{groupId}
+	</delete>
+
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.StartStatistics">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="StartStatistics">
+			<id property="id" column="statistis_id" />
+			<result property="startIp" column="start_ip" />
+			<result property="version" column="version" />
+			<result property="userId" column="user_id" />
+			<result property="channelId" column="channel_id" />
+			<result property="clientId" column="client_id" />
+			<result property="sourceId" column="source_id" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select statistis_id,start_ip,version,user_id,channel_id,client_id,source_id,
+		created_when from emoji_start_statistics
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNumber(id)">and statistis_id = #{id}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startIp)">and start_ip = #{startIp}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(version)">and version = #{version}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and user_id = #{userId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channelId)">and channel_id = #{channelId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)">and client_id = #{clientId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sourceId)">and source_id = #{sourceId}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where statistis_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findMaxTime" parameterType="map" resultType="java.lang.String" useCache="false">
+	SELECT MAX(`created_when`) FROM `emoji_start_statistics`
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findByPage" parameterType="StartStatistics" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM emoji_start_statistics 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="StartStatistics" useGeneratedKeys="true" keyProperty="id">
+	insert into emoji_start_statistics(start_ip,version,user_id,channel_id,client_id,source_id,created_when) 
+	values(#{startIp},#{version},#{userId},#{channelId},#{clientId},#{sourceId},now())
+	</insert>
+	
+	<update id="update" parameterType="StartStatistics">
+	  UPDATE emoji_start_statistics
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startIp)"> start_ip = #{startIp},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(version)"> version = #{version},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> user_id = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channelId)"> channel_id = #{channelId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)"> client_id = #{clientId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sourceId)"> source_id = #{sourceId},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                statistis_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from emoji_start_statistics where statistis_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM emoji_start_statistics
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+
+</mapper>

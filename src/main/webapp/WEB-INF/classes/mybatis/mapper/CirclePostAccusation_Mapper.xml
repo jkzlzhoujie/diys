@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.CirclePostAccusation">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resultMap" type="CirclePostAccusation">
+			<id property="id" column="accusationId" />
+			<result property="circlePostId" column="circlePostId" />
+			<result property="circlePostText" column="circlePostText" />
+			<result property="circlePostTitle" column="circlePostTitle" />
+			
+			<result property="circlePostDiscId" column="circlePostDiscId" />
+			<result property="circlePostDiscText" column="circlePostDiscText" />
+			
+			<result property="userId" column="userId" />
+			<result property="userNick" column="userNick" />
+			
+			<result property="accusationUserId" column="accusationUserId" />
+			<result property="accusationUserNick" column="accusationUserNick" />
+			<result property="type" column="type" />
+			<result property="isDistort" column="isDistort" />
+			<result property="createdWhen" column="createdWhen" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		  select cpa.*,cp.text AS circlePostText,cp.title AS circlePostTitle,cpd.text AS circlePostDiscText,
+		  cui.nick_name AS userNick ,cui2.nick_name AS accusationUserNick
+		  from circlePostAccusation cpa 
+		  LEFT JOIN circlepost cp ON cp.id = cpa.circlepostid
+		  LEFT JOIN circlepostdisc cpd ON cpa.circlepostdiscid = cpd.id
+		  LEFT JOIN cm_user_info cui ON cpa.userid = cui.user_id
+		  LEFT JOIN cm_user_info cui2 ON cpa.accusationuserid = cui2.user_id
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		   <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accusationNickName)">and cui2.`nick_name` like "%"#{accusationNickName}"%"</if>
+		   <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and cui.`nick_name` like "%"#{nickName}"%"</if>
+		   <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accusationUserId)">and cpa.accusationUserId = #{accusationUserId}</if>
+		    <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circlePostDiscId)">and cpa.circlePostDiscId = #{circlePostDiscId}</if>
+		   <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circlePostId)">and cpa.circlePostId = #{circlePostId}</if>
+		   <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isDistort)">and isDistort = #{isDistort}</if>
+		   <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isDistortTo)">and isDistort in (0,2)</if>
+		   <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and cpa.userId = #{userId}</if>
+           <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.`createdWhen`,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+           </if>
+           <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(a.`createdWhen`,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+           </if>
+        </where>
+	</sql>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		 where accusationId=#{id}
+	</select>
+	
+	<select id="findByPage" parameterType="CirclePostAccusation" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+		ORDER BY cpa.createdWhen desc limit #{limit} offset #{offset}
+	</select>
+
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(1) FROM circlePostAccusation cpa
+		<include refid="sql_where"/>
+    </select>
+    
+    <select id="findByMap" parameterType="map" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+	</select>
+    
+	<insert id="insert" parameterType="CirclePostAccusation" useGeneratedKeys="true" keyProperty="id">
+		insert into circlePostAccusation(circlePostId,circlePostDiscId,userId,isDistort,accusationUserId,type,createdWhen)
+		values(#{circlePostId},#{circlePostDiscId},#{userId},#{isDistort},#{accusationUserId},#{type},now())
+	</insert>
+	
+	<update id="update" parameterType="CirclePostAccusation">
+	  UPDATE circlePostAccusation
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circlePostId)"> circlePostId = #{circlePostId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> userId = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accusationUserId)"> accusationUserId = #{accusationUserId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isDistort)"> isDistort = #{isDistort},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circlePostDiscId)"> circlePostDiscId = #{circlePostDiscId},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                accusationId=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from circlePostAccusation where accusationId = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM circlePostAccusation
+		<where>
+				accusationId in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

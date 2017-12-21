@@ -1,0 +1,64 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(form){
+				$.post('/diys/Bo/product/prsave',$("#editForm").serialize(),function(data){
+					if(data == 0)
+					{
+						myAlert("已存在推荐列表");
+					}else{
+						$("#userForm").submit();
+					}
+				});
+				
+			},
+			rules:{
+				recommendSeq:{
+					required:true,
+					digits:true
+				
+				}
+			}
+		});
+	})
+</script>
+    <div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：作品管理> 推荐作品</div>
+      
+      <form action="/diys/Bo/product/prsave" method="post" id="editForm">
+            <input type="hidden" id="id" name="id" value="${(entity.id)!''}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="25%" align="right">作品id</td>
+	     		<td width="35%"><input type="text" id="productId" name="productId" value="${(entity.productId)!''}"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td width="25%" align="right">推荐类型</td>
+	     		<td width="35%">
+	     		<select id="type" name="type" class="selectOpt w164">
+             			<option  value="">请选择</option>
+             			<#if columnlist??>
+             			<#list columnlist as column>
+             			<option <#if "${(entity.type)!0}"== "${column.id}">selected="selected"</#if> value="${column.id}">${column.name}</option>
+             			</#list>
+             			</#if> 
+          			</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="25%" align="right">排序</td>
+		     	<td width="35%"><input type="text" id="recommendSeq" name="recommendSeq" value="${(entity.recommendSeq)!''}"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+</body>
+

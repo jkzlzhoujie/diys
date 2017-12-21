@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta HTTP-EQUIV="pragma" CONTENT="no-cache">
+<meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
+<meta HTTP-EQUIV="expires" CONTENT="0">
+<title>资源管理</title>
+<script type="text/javascript">
+	function goBack(status){
+		$("#expForm").attr("action","/diys/Bo/rs/pk_list?status="+status);
+		$("#expForm").submit();
+	}
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：资源管理 > 商用素材 > 表情列表</div>
+      <form id="expForm" action="/diys/Bo/rs/exp_list" method="post">
+      <input type="hidden" id="pkId" name="pkId" value="${(pkId)!''}"/>
+      <input type="hidden" id="id" name="id" value=""/>
+      <input type="hidden" id="status" name="status" value="${(status)!''}"/>
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+      			<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('rs/edit_exp?pkId=${(pkId)!''}&status=${(status)!''}&')"/></div>
+      	<div style="display: inline;float: right"><input type="button" id="btn" value="返回"  class="btn-submit" onclick="goBack(${(status)!''})"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="10%" >表情名称</th>
+              <th width="10%">文件名称</th>
+              <th width="15%">图片</th>
+              <th width="15%" >创建时间</th>
+          <!--     <#if status??>
+     			<#if "${(status)!''}" == "2">
+              		<th width="10%" >操作</th>
+              	</#if>
+              </#if>-->
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.name)!''}
+						</td>
+						<td>
+							${(entity.imageName)!''}
+						</td>
+						<td>
+							<img src="${(entity.imageUrl)!''}?rc=${.now?long}" style="width: 80px;height: 80px">
+						</td>
+						<td>
+							${(entity.createdWhen?datetime)!''}
+						</td>
+			<!--  			 <#if status??>
+     						<#if "${(status)!''}" == "2">
+								<td  style="display: table">
+									<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('rs/edit_exp','${(entity.id)!0}&pkId=${(pkId)!''}&status=${(status)!''}&')">编辑</a>
+									<a class="btn btn-delete" onclick="del_('rs/exp_del','${(entity.id)!0}&pkId=${(pkId)!''}&status=${(status)!''}&')">删除</a>
+									</td>
+							</#if>-->
+							<td  style="display: table">
+									<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('rs/edit_exp','${(entity.id)!0}&pkId=${(pkId)!''}&status=${(status)!''}&')">编辑</a>
+									<a class="btn btn-delete" onclick="del_('rs/exp_del','${(entity.id)!0}&pkId=${(pkId)!''}&status=${(status)!''}&')">删除</a>
+									</td>
+    					</#if>
+						</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

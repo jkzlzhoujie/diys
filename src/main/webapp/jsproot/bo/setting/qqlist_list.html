@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>QQ群</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript">
+    	
+    	function selectOne(){
+    		$("#pageNo").val("1");
+    		$("#qqlistForm").submit();
+    	}
+    	
+    	function selectReset(){
+    		$("#qqName").val("");
+    		$("#qqId").val("");
+
+    	}
+    </script>
+
+  </head>
+  
+  <body>
+     <div id="main">
+      <div class="breadcrumb">当前位置：系统管理 > QQ群</div>
+      <form id="qqlistForm" action="/diys/Bo/setting/qqlist" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-search">
+		<div style="display:inline">
+		   qq名称：<input type="text" id="qqName" name="qqName" value="${qqName!''}" class="input-style" />
+		   qq号码：<input type="text" id="qqId" name="qqId" value="${qqId!''}" class="input-style" />
+		</div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1" value="重置" class="btn-submit" onclick="selectReset()" /></div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1"  class="btn-submit" value="查询" onclick="selectOne()" /></div>
+	  </div>
+	<div style="padding-bottom: 5px">
+		<div style="display: inline">
+			<input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('setting/qqlistEdit')"/>
+		</div>
+	</div>    
+      <div class="table-show-content">
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+             <th width="15%">QQ群号码</th>
+              <th width="15%">QQ群名称</th>
+              <th width="10%" >状态</th>
+              <th width="10%" >操作</th>
+            </tr>
+	        <#if list??>
+		    	<#list list as entity>
+					<tr>
+					  <td >
+						${(entity.qqId)!''}
+					  </td>
+					  <td >
+						${(entity.qqName)!''}
+					  </td>
+					  <td >
+						<#if entity.status?? && entity.status == 1>
+						有效
+						<#else>
+						无效
+						</#if>
+					  </td>
+					  <td>
+						<a class="btn btn-look" href="javascript:;" onclick="edit('setting/qqlistEdit','${(entity.id)!''}')">修改</a>
+					  </td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$('#registForm').validate({	 
+			 rules:{
+		         username:{
+		            	required:true,
+		            	maxlength:10,
+		            	filterCharacter:true,
+		                remote: {
+								    url: "/diys/Bo/user_verify",     //后台处理程序
+								    type: "post",                //数据发送方式
+								    data: {                     //要传递的数据
+							        	username: function() {
+							            	return $("#username").val();
+							        	}
+								   }
+								}
+		                },
+	              password:{required:true,minlength:6,filterCharacter:true},
+	              repassword:{equalTo:'#password',required:true}
+	            },
+	          messages:{
+	                username:{
+		                required:"由英文、数字或下划线组成",
+		                maxlength:"不得超过十位",
+		                remote:"该账号已被占用"
+	                },
+	                password:{
+		                required:"密码不能为空",
+		                minlength:"最小长度为六位"
+		            },
+	              	repassword:{
+		              	required:"重复密码不能为空",
+		              	equalTo:"两次密码不一致"
+		            }
+	            }
+			});	
+	 	});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：后台用户管理> 编辑用户</div>
+      <form action="/diys/Bo/user_save" method="post" id="registForm">
+       <input type="hidden" name="id" value="#{(user.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+     			<td width="40%" align="right">真实姓名</td>
+	     		<td width="40%"><input type="text" name="realName" value="${(user.realName)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	 <#if user??>
+		     	
+		     <#else>
+		     	<tr>
+		     		<td align="right">用户账号</td>
+		     		<td><input type="text" name="username" id="username" class="inputtext" autocomplete="off"/></td>
+		     	</tr>
+		     	<tr>
+		     		<td align="right">用户密码</td>
+		     		<td><input type="password" name="password" id="password" class="inputtext" autocomplete="off"/></td>
+		     	</tr>
+		     	<tr>
+		     		<td align="right">确认密码</td>
+		     		<td><input type="password" name="repassword" id="repassword" class="inputtext"/></td>
+		     	</tr>
+		     </#if>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" id="btnSub" name="btnSub" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

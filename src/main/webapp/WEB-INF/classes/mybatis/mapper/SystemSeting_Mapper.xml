@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.SystemSeting">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="SystemSeting">
+			<result property="themeNum" column="themeNum" />
+			<result property="classifyNum" column="classifyNum" />
+			<result property="productDesc" column="productDesc" />
+			<result property="downUrl" column="downUrl" />
+			<result property="shopUrl" column="shopUrl" />
+			<result property="shareUrl" column="shareUrl" />
+			<result property="shareImage" column="shareImage" />
+			<result property="shareTitle" column="shareTitle" />
+			<result property="shareContent" column="shareContent" />
+			<result property="feedbackType" column="feedbackType" />
+			<result property="hotLaber" column="hotLaber" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from emoji_system
+	</sql>
+
+	<sql id="sql_where">
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findByPage" parameterType="SystemSeting" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM emoji_system 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="SystemSeting" useGeneratedKeys="true" keyProperty="id">
+	insert into emoji_system(themeNum,classifyNum,productDesc,downUrl,shopUrl,shareUrl,shareImage,shareTitle,shareContent,feedbackType,hotLaber)
+	values(#{themeNum},#{classifyNum},#{productDesc},#{downUrl},#{shopUrl},#{shareUrl},#{shareImage},#{shareTitle},#{shareContent},#{feedbackType},#{hotLaber})
+	</insert>
+	
+	<update id="update" parameterType="SystemSeting">
+	  UPDATE emoji_system
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeNum)"> themeNum = #{themeNum},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(classifyNum)"> classifyNum = #{classifyNum},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productDesc)"> productDesc = #{productDesc},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(downUrl)"> downUrl = #{downUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(shopUrl)"> shopUrl = #{shopUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(shareUrl)"> shareUrl = #{shareUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(shareImage)"> shareImage = #{shareImage},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(shareTitle)"> shareTitle = #{shareTitle},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(shareContent)"> shareContent = #{shareContent},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(hotLaber)"> hotLaber = #{hotLaber},</if>
+		 feedbackType = #{feedbackType},
+		 </set>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from emoji_system 
+	</delete>
+	
+</mapper>

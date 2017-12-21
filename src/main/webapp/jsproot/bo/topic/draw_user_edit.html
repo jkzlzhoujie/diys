@@ -1,0 +1,232 @@
+<body>
+<script type="text/javascript">
+	function removeSpan(which) {
+		$(which).parent().remove();
+	}
+
+	$(function(){
+		$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#headImageUrl").attr("value",domainName+data);
+				$("#headImageUrl").next().hide();
+				document.getElementById("previewPoster").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		$('#uploadCover').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#coverThumbnail").attr("value",domainName+data);
+				$("#coverThumbnail").next().hide();
+				document.getElementById("previewCover").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+		
+		$('#fileName').uploadify({
+		'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+		'method' : 'post',
+		'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+		'width' : '70',
+		'height' : '22',
+		'fileTypeDesc' : '支持的格式：',
+		'fileTypeExts' : '*.jpg;*.jpge;*.gif;*.png',
+		fileObjName:'fileName',
+		'fileSizeLimit' : '0.15MB',
+		'removeTimeOut'  : 1,
+		'multi' : true,
+		'progressData' : 'percentage',
+		'buttonText' : '点击上传',
+		// 检测FLASH失败调用
+		'onFallback' : function() {
+			alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+		},
+		'onUploadSuccess':function(file, data, response){
+				 var a = "<span><input type='hidden' name='images' value='"+data+"'/><img src="+data+" width='30' height='30' /> <a onclick='removeSpan(this);'>删除</a></span>"
+			$("#images").append(a);
+		},
+		'onSelectError':function(file, errorCode, errorMsg) {
+			 switch(errorCode) {
+			  	case -110:
+			  	$("#appIcon").next().html("文件大小不大于15K");
+			  	 $("#appIcon").next().show();
+                  break
+               case -120:
+                   alert("文件 ["+file.name+"] 大小异常！");
+                   break;
+               case -130:
+                   alert("文件 ["+file.name+"] 类型不正确！");
+                   break;
+           }
+		}
+	});
+		});	
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：专题管理> 新增作家</div>
+      <form action="/diys/Bo/topic/drawUserSave" method="post" id="packetForm">
+            <input type="hidden" name="id" value="${(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">简介</td>
+	     		<td width="35%">
+	     		<textarea id="signature" name="signature" style="width: 250px;height: 60px;resize: none;">${(cmUserExtendInfo.signature)!''}</textarea>
+	     		</td>
+	     		<td width="15%" align="right">详细</td>
+	     		<td width="35%">
+	     		<textarea id="introduce" name="introduce" style="width: 250px;height: 60px;resize: none;">${(cmUserExtendInfo.introduce)!''}</textarea>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     	<td width="15%" align="right">头像</td>
+	     		<td width="35%">
+	     			<input type="file" id="uploadPoster" name="uploadPoster"/> 
+			   			<input type="hidden" id="headImageUrl" name="headImageUrl" value="${(entity.headImageUrl)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewPoster" src="${(entity.headImageUrl)!''}" width="60" height="60" /></span>
+	     		</td>
+	     		<td width="15%" align="right">封面</td>
+	     		<td width="35%">
+	     			<input type="file" id="uploadCover" name="uploadPoster"/> 
+			   			<input type="hidden" id="coverThumbnail" name="coverThumbnail" value="${(cmUserExtendInfo.coverThumbnail)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewCover" src="${(cmUserExtendInfo.coverThumbnail)!''}" width="60" height="60" /></span>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right">昵称</td>
+	     		<td width="35%"><input type="text" id="nickName" name="nickName" value="${(entity.nickName)!''}" class="inputtext" /></td>
+	     		<td width="15%" align="right">身份信息</td>
+	     		<td width="35%"><input type="text" id="identityInfo" name="identityInfo" value="${(cmUserExtendInfo.identityInfo)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	 	<tr>
+	     		<td width="15%" align="right">性别</td>
+	     		<td width="35%">
+	     		<select id="sex" name="sex" class="inputtext">
+	              		<option  value="0">请选择类型</option>
+   						<option <#if "${(entity.sex)!''}"== "1">selected="selected"</#if>  value="1">男</option>
+   						<option <#if "${(entity.sex)!''}"== "0">selected="selected"</#if> value="0">女</option>
+           			</select>
+	     		</td>
+	     		<td width="15%" align="right">生日</td>
+	     		<td width="35%">
+	     		<input style="height:25px;width:100px;"  class="Wdate"  type="text" id="birth" name="birth" size="20" value="${(entity.birth)!''}"  
+						onClick="WdatePicker({dateFmt:'yyyy-MM-dd',readOnly:true})" />
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right">城市</td>
+	     		<td width="35%"><input type="text" id="city" name="city" value="${(entity.city)!''}" class="inputtext" /></td>
+	     		<td width="15%" align="right">行业</td>
+	     		<td width="35%">
+	     		<select id="career" name="career" class="inputtext">
+   						<#if infList ??>
+   						<#list infList as sysIndustryInfo>
+   						<option <#if "${(cmUserExtendInfo.career)!''}"== "${sysIndustryInfo.name}">selected="selected"</#if> value="${sysIndustryInfo.name}">${sysIndustryInfo.name}</option>
+   						</#list>
+   						</#if>
+           			</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right">作品范围</td>
+	     		<td width="35%" colspan="3" >
+	     		<#if typelist ??>
+   						<#list typelist as allTypeDto>
+   						<input  <#if bslist ??><#list bslist as bs><#if "${(allTypeDto.id)!0}"== "${(bs.typeId)!0}">checked="checked"</#if></#list></#if> type="checkbox" name="typeId" value="${(allTypeDto.id)!''}">${(allTypeDto.name)!''}
+   						</#list>
+   						</#if>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right">证书</td>
+	     		<td width="35%" colspan="3" >
+	     		<input type="file" id="fileName" name="fileName"/> 
+			   			<div id="images">
+			   			<#if imagelist??>
+			   			<#list imagelist as images>
+			   			<span><input type='hidden' name='images' value="${images.imageUrl }" /> <img src="${images.imageUrl }" width='30' height='30' /> <a onclick='removeSpan(this);'>删除</a> </span>
+			   			</#list>
+			   			</#if>
+					</div>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

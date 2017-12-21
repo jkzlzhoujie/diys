@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.Province">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="Province">
+			<id property="segment" column="segment" />
+			<result property="provinceId" column="province_id" />
+			<result property="provinceName" column="province_name" />
+			<result property="cityId" column="city_id" />
+			<result property="cityName" column="city_name" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select segment,province_id,province_name,city_id,city_name from province
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNumber(id)">and segment = #{id}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(provinceId)">and province_id = #{provinceId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(provinceName)">and province_name = #{provinceName}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(cityId)">and city_id = #{cityId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(cityName)">and city_name = #{cityName}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where segment=#{segment}
+	</select>
+	
+	<select id="getBySegment" parameterType="String" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where segment=#{segment}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findByPage" parameterType="Province" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM province 
+		<include refid="sql_where"/>
+    </select>
+    
+</mapper>

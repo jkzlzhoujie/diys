@@ -1,0 +1,100 @@
+<body>
+<script type="text/javascript">
+
+	var editor;
+	$(function() {
+		editor = KindEditor.create('textarea[name="jumpContent1"]', {
+		   resizeType : 0,
+		   uploadJson : domainName+'/diys/upload/kindEditor',
+		   formatUploadUrl:false,
+		   width : '620',
+		   height : '340',
+		   afterBlur: function(){this.sync();},
+		   items : [
+				'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+				'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+				'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
+		});
+	});
+
+		$(function(){
+			$('#editForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/product/jumpSave',$("#editForm").serialize(),function(data){
+					$("#userForm").submit();
+				})
+			},
+			 rules:{
+	              jumpType:{
+		             required:true
+	              }
+	          },
+	           messages:{
+	                "jumpType":{required:"类型不能为空"}
+	            }
+			});	
+			
+			$("#jumpType").change(function(){
+			changePlatform();
+			});
+	
+		changePlatform();
+		})
+		
+	function changePlatform()
+    {
+   		var jumpType =  $("#jumpType").find("option:selected").val();
+    	$(".typeT").hide();
+    	if(jumpType != "")
+    	{
+    		if(jumpType == 1)
+    		{
+    			$(".type1").show();
+    		}
+    		else if(jumpType == 2)
+    		{
+    			$(".type2").show();
+    		}else if(jumpType == 3)
+    		{
+    			$(".type3").show();
+    		}
+    	}
+    }
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：作品管理 > 修改跳转类型</div>
+    	<form action="/diys/Bo/product/jumpSave" method="post" id="editForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<tr><td align="right">类型 </td>
+	     		<td>
+		     		<select id="jumpType" name="jumpType" class="selectOpt w164">
+             			<option  value="">请选择</option>
+	   					<option <#if "${(entity.jumpType)!0}"== "0">selected="selected"</#if> value="0">详情页</option>
+	   					<option <#if "${(entity.jumpType)!0}"== "1">selected="selected"</#if> value="1">H5页面</option>
+	   					<option <#if "${(entity.jumpType)!0}"== "2">selected="selected"</#if> value="2">url链接</option>
+	   					<option <#if "${(entity.jumpType)!0}"== "3">selected="selected"</#if> value="3">下载链接</option>
+          			</select>
+    			<tr class="typeT type1">
+    				<td align="right">内容</td><td  colspan="3"><textarea id="jumpContent1" name="jumpContent1" style="width: 250px;height: 100px;resize: none;">${(jumpContent1)!''}</textarea></td>
+    			</tr>
+    			<tr  class="typeT type2">
+    				<td align="right">内容</td><td><input type="text" id="jumpContent2" name="jumpContent2" value="${(jumpContent2)!''}" class="inputtext" /></td>
+    			</tr>
+    			<tr  class="typeT type3">
+    				<td align="right">内容</td><td><input type="text" id="jumpContent2" name="jumpContent3" value="${(jumpContent3)!''}" class="inputtext" /></td>
+    			</tr>
+    			<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td></td>
+	     	</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+

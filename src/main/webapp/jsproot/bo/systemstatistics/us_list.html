@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>客户端用户列表</title>
+<script type="text/javascript">
+function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：统计管理 > 客户端用户列表</div>
+      <form id="userForm" action="/diys/Bo/st/us_list" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+			    <div style="width:100%;padding-top: 10px">
+ 					<div style="display: inline"> 渠道：
+ 					<select style="width: 150px" id="channel" name="channel" class="select-style">
+ 					<option value="">请选择渠道</option>
+ 					<#if changeList??>
+   						<#list changeList as change>
+   						<option <#if "${(channel)!''}"== "${change.enParamName}">selected="selected"</#if> value="${change.enParamName}">${change.paramValue}</option>
+   						</#list>
+   						</#if>
+			      </select>
+			      </div>
+			      <div style="display: inline"> 系统：
+ 					<select style="width: 150px" id="os" name="os" class="select-style">
+ 					<option value="">请选择系统</option>
+   						<option <#if "${(os)!''}"== "0">selected="selected"</#if> value="0">苹果</option>
+   						<option <#if "${(os)!''}"== "1">selected="selected"</#if> value="1">安卓</option>
+			      </select>
+			      </div>
+			       <div style="display: inline">
+          			渠道： <input type="text" name="channel1" value="${channel1!''}" class="inputtext"  style="width: 50px"/>
+          			</div>
+			      <div style="display: inline">
+          			imei： <input type="text" name="imei" value="${imei!''}" class="inputtext"  style="width: 150px"/>
+          			</div>
+          			  <div style="display: inline">
+          			版本号： <input type="text" name="osVersion" value="${osVersion!''}" class="inputtext"  style="width: 50px"/>
+          			</div>
+          		</div>
+          		  <div style="width:100%;padding-top: 10px">
+          			<div style="display: inline">
+          			创建时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+	                 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()" id="btn" value="查询"  class="btn-submit"/></div>
+          		</div>
+          </div>
+          </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">imsi</th>
+              <th width="5%">imei</th>
+               <th width="5%">机型</th>
+                <th width="5%">ip</th>
+                 <th width="5%">版本号</th>
+                <th width="5%">系统</th>
+                <th width="5%">渠道</th>
+              <th width="10%" >创建时间</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.imsi)!''}
+						</td>
+						<td >
+							${(entity.imei)!''}
+						</td>
+						<td >
+							${(entity.machine)!''}
+						</td>
+						<td >
+							${(entity.ip)!''}
+						</td>
+						<td >
+							${(entity.osVersion)!''}
+						</td>
+						<td>
+						 <#if entity.os??>
+     						<#if "${(entity.os)!''}" == "1">
+							安卓
+							<#elseif "${(entity.os)!''}" == "0">
+							苹果
+							</#if>
+							</#if>
+						</td>
+						<td >
+							${(entity.channel)!''}
+						</td>
+						<td>
+							${entity.createdWhen!''}
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+</body>
+</html>

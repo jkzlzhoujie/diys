@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.CmUserSign">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="CmUserSign">
+			<id property="id" column="id" />
+			<result property="userId" column="userId" />
+			<result property="monthNum" column="monthNum" />
+			<result property="totalNum" column="totalNum" />
+			<result property="totalIntegral" column="totalIntegral" />
+			<result property="monthIntegral" column="monthIntegral" />
+			<result property="continuityNum" column="continuityNum" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from cm_user_sign
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and userId = #{userId}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where userId=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findByPage" parameterType="CmUserSign" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM cm_user_sign 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="CmUserSign" useGeneratedKeys="true" keyProperty="id">
+	insert into cm_user_sign(userId,monthNum,totalNum,totalIntegral,monthIntegral,continuityNum)
+	values(#{userId},#{monthNum},#{totalNum},#{totalIntegral},#{monthIntegral},#{continuityNum})
+	</insert>
+	
+	<update id="update" parameterType="CmUserSign">
+	  UPDATE cm_user_sign
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(continuityNum)"> continuityNum = #{continuityNum},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(totalNum)"> totalNum = #{totalNum},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> userId = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(monthNum)"> monthNum = #{monthNum},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(totalIntegral)"> totalIntegral = #{totalIntegral},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(monthIntegral)"> monthIntegral = #{monthIntegral},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from cm_user_sign where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM cm_user_sign
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

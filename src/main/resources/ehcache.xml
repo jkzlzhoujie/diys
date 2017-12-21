@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+
+    <diskStore path="java.io.tmpdir/mybatis/netools"/>
+
+    <!-- DefaultCache setting. -->
+    <defaultCache maxElementsInMemory="1000" memoryStoreEvictionPolicy="LRU" eternal="false"
+                  timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true" diskPersistent="false"/>
+    <cache name="applicationCache" overflowToDisk="false" eternal="false" diskPersistent="false" timeToLiveSeconds="300"
+           timeToIdleSeconds="300" maxElementsInMemory="10000" memoryStoreEvictionPolicy="LRU"/>
+    <!-- Special objects setting. -->
+    <!-- 
+    <cache name="com.haobx.bid.entity.Customer" maxElementsInMemory="1000" eternal="false"
+           timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true" memoryStoreEvictionPolicy="LRU"/>
+     -->
+</ehcache>

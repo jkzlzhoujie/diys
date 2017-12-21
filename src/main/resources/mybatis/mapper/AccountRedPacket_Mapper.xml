@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.AccountRedPacket">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="AccountRedPacket">
+			<id property="id" column="id" />
+			<result property="userId" column="userId" />
+			<result property="price" column="price" />
+			<result property="addTime" column="addTime" />
+			<result property="updateTime" column="updateTime" />
+			<result property="redpacketLog" column="redpacketLog" />
+			<result property="joinId" column="joinId" />
+			<result property="num" column="num" />
+			<result property="status" column="status" />
+			<result property="flag" column="flag" />
+			<result property="type" column="type" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from account_redPacket
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and status = #{status}</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and userId = #{userId}</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinId)">and joinId = #{joinId}</if>
+  		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(time)">
+             <![CDATA[
+                 AND DATE_FORMAT(updateTime,'%Y-%m-%d')=Date_FORMAT(#{time},'%Y-%m-%d')
+            ]]>
+          </if>
+           <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(addTimeWuYi)">
+             <![CDATA[
+                 AND DATE_FORMAT(addTime,'%Y-%m-%d') < Date_FORMAT(#{addTimeWuYi},'%Y-%m-%d')
+            ]]>
+          </if>
+         
+         and flag='0'
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY num 
+	</select>
+	
+	<select id="findAllJoin" resultType="long" useCache="false">
+	select distinct(joinId) from account_redpacket
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY num 
+	</select>
+	
+	<select id="findByPage" parameterType="AccountRedPacket" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY num limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM account_redPacket 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="AccountRedPacket" useGeneratedKeys="true" keyProperty="id">
+	insert into account_redPacket(userId,price,updateTime,joinId,redpacketLog,num,status,flag,type,clientId,imei,imsi,addTime)
+	values(#{userId},#{price},#{updateTime},#{joinId},#{redpacketLog},#{num},#{status},#{flag},#{type},#{clientId},#{imei},#{imsi},now())
+	</insert>
+	
+	<update id="update" parameterType="AccountRedPacket">
+	  UPDATE account_redPacket
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> userId = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)"> price = #{price},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(updateTime)"> updateTime = #{updateTime},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinId)"> joinId = #{joinId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(redpacketLog)"> redpacketLog = #{redpacketLog},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(num)"> num = #{num},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)"> status = #{status},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(flag)"> flag = #{flag},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)"> clientId = #{clientId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(imei)"> imei = #{imei},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(imsi)"> imsi = #{imsi},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from account_redPacket where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM account_redPacket
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

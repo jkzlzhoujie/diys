@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.CirclePostDiscPraises">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="CirclePostDiscPraises">
+			<id property="id" column="praise_id" />
+			<result property="circlePostDiscId" column="circlePostDiscId" />
+			<result property="type" column="type" />
+			<result property="userId" column="userId" />
+			<result property="remark" column="remark" />
+			<result property="createdWhen" column="createdWhen" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from circlePostDiscPraises
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circlePostDiscId)">and circlePostDiscId = #{circlePostDiscId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and userId = #{userId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and type = #{type}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY createdWhen desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		 where Id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+		ORDER BY createdWhen desc
+	</select>
+	
+	<select id="findIdList" parameterType="map" resultType="long" useCache="false">
+		SELECT userId FROM circlePostDiscPraises WHERE circlePostDiscId = #{circlePostDiscId} AND type=#{type} AND userId IS NOT NULL 
+		order by createdWhen desc
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(limit)">limit #{limit}</if>
+	</select>
+	
+	<select id="findByPage" parameterType="circlePostDiscPraises" resultMap="sql_resuleMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+		ORDER BY createdWhen desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM circlePostDiscPraises 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="circlePostDiscPraises" useGeneratedKeys="true" keyProperty="id">
+		insert into circlePostDiscPraises(circlePostDiscId,type,userId,remark,createdWhen)
+		values(#{circlePostDiscId},#{type},#{userId},#{remark},now())
+	</insert>
+	
+	<update id="update" parameterType="circlePostDiscPraises">
+	    UPDATE circlePostDiscPraises
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(circlePostDiscId)"> circlePostDiscId = #{circlePostDiscId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> userId = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remark)"> remark = #{remark},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                Id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from circlePostDiscPraises where Id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM circlePostDiscPraises
+		<where>
+				Id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+	<insert id="insertList" useGeneratedKeys="true" parameterType="list">  
+     	insert into circlePostDiscPraises(circlePostDiscId,type,userId,remark,createdWhen)
+	values
+       <foreach collection="list" item="item" index="index" separator="," >  
+           (#{item.circlePostDiscId},#{item.type},#{item.userId},#{item.remark},now())
+       </foreach>  
+    </insert>  
+</mapper>

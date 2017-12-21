@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.PmTopicInfo">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="PmTopicInfo">
+			<id property="id" column="topic_id" />
+			<result property="topicName" column="topic_name" />
+			<result property="bannerUrl" column="banner_url" />
+			<result property="topicType" column="topic_type" />
+			<result property="productLimit" column="product_limit" />
+			<result property="lookCount" column="look_count" />
+			<result property="praiseCount" column="praise_count" />
+			<result property="shareCount" column="share_count" />
+			<result property="discussCount" column="discuss_count" />
+			<result property="joinUsers" column="join_users" />
+			<result property="joinProducts" column="join_products" />
+			<result property="psProducts" column="ps_products" />
+			<result property="operatorUsers" column="operator_users" />
+			<result property="operatorProducts" column="operator_products" />
+			<result property="operatorPsProducts" column="operator_ps_products" />
+			<result property="remark" column="remark" />
+			<result property="createdWhen" column="created_when" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from pm_topic_info
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicType)">and topic_type = #{topicType}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where topic_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="findByPage" parameterType="PmTopicInfo" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM pm_topic_info 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="PmTopicInfo" useGeneratedKeys="true" keyProperty="id">
+	insert into pm_topic_info(topic_name,banner_url,topic_type,product_limit,look_count,praise_count,share_count,discuss_count,join_users,join_products,ps_products,operator_users,operator_products,operator_ps_products,remark,created_when)
+	values(#{topicName},#{bannerUrl},#{topicType},#{productLimit},#{lookCount},#{praiseCount},#{shareCount},#{discussCount},#{joinUsers},#{joinProducts},#{psProducts},#{operatorUsers},#{operatorProducts},#{operatorPsProducts},#{remark},now())
+	</insert>
+	
+	<update id="update" parameterType="PmTopicInfo">
+	  UPDATE pm_topic_info
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicName)"> topic_name = #{topicName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(bannerUrl)"> banner_url = #{bannerUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicType)"> topic_type = #{topicType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productLimit)"> product_limit = #{productLimit},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(lookCount)"> look_count = #{lookCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(praiseCount)"> praise_count = #{praiseCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(shareCount)"> share_count = #{shareCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(discussCount)"> discuss_count = #{discussCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinUsers)"> join_users = #{joinUsers},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinProducts)"> join_products = #{joinProducts},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(psProducts)"> ps_products = #{psProducts},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(operatorUsers)"> operator_users = #{operatorUsers},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(operatorProducts)"> operator_products = #{operatorProducts},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(operatorPsProducts)"> operator_ps_products = #{operatorPsProducts},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remark)"> remark = #{remark},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                topic_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from pm_topic_info where topic_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM pm_topic_info
+		<where>
+				topic_id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

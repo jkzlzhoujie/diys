@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.OrderFinance">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="OrderFinance">
+			<id property="id" column="id" />
+			<result property="orderNo" column="order_no" />
+			<result property="balancePrice" column="balance_price" />
+			<result property="status" column="status" />
+			<result property="joinId" column="joinId" />
+			<result property="accountBuyId" column="accountBuyId" />
+	</resultMap>
+	
+	<resultMap id="sql_resuleMapDto" type="cn.temobi.complex.dto.OrderFinanceDto">
+			<id property="id" column="id" />
+			<result property="balancePrice" column="balance_price" />
+			<result property="status" column="status" />
+			<result property="price" column="price" />
+			<result property="addTime" column="join_time" />
+			<result property="userId" column="user_id" />
+			<result property="payType" column="payType" />
+			<result property="remark" column="accept_remark" />
+			<result property="joinId" column="join_id" />
+			<result property="accountBuyId" column="id" />
+			<result property="designUrl" column="design_url" />
+			<result property="acceptUserId" column="accept_user_id" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from sys_order_finance 
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinId)">and joinId = #{joinId}</if>
+        </where>
+	</sql>
+	
+	<sql id="sql_whereDto">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicId)">and c.topic_id = #{topicId} and c.orderNo IS NOT NULL</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinId)">and c.join_id = #{joinId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accountBuyId)">and b.id = #{accountBuyId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(acceptUserId)">and c.accept_user_id = #{acceptUserId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and c.status = #{status}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(payType)">and b.payType = #{payType}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(exStatus)">
+				<if test="exStatus == '0'.toString()">
+					and (a.status = #{exStatus} or a.status is null)
+				</if>
+				<if test="exStatus == '1'.toString()">
+					and a.status = #{exStatus}
+				</if>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientChannel)">and client_channel = #{clientChannel}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and b.userId = #{userId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(balancePrice)">and a.balance_price = #{balancePrice}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)">and b.price = #{price}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remark)">and b.remark like "%"#{remark}"%"</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	
+	<select id="findByPage" parameterType="map" resultMap="sql_resuleMapDto" useCache="false">
+	SELECT c.accept_remark,b.payType,c.user_id,c.join_time,a.`balance_price`,a.`status`,b.`price`,c.`accept_user_id`,c.`design_url`,b.id,c.join_id
+FROM pm_topic_join_products c LEFT JOIN account_user_buy b ON b.`retionId` = c.`join_id` 
+LEFT JOIN `sys_order_finance` a ON c.join_id = a.joinId 
+	<include refid="sql_whereDto"/>
+	order by c.join_time desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+	SELECT count(*) FROM pm_topic_join_products c LEFT JOIN account_user_buy b ON b.`retionId` = c.`join_id` 
+LEFT JOIN `sys_order_finance` a ON c.join_id = a.joinId 
+		<include refid="sql_whereDto"/>
+    </select>
+	
+	<insert id="insert" parameterType="OrderFinance" useGeneratedKeys="true" keyProperty="id">
+	insert into sys_order_finance(order_no,balance_price,status,joinId,accountBuyId)
+	values(#{orderNo},#{balancePrice},#{status},#{joinId},#{accountBuyId})
+	</insert>
+	
+	<select id="sum" resultType="Double" useCache="false">
+	SELECT IFNULL(sum(b.price),0) FROM pm_topic_join_products c LEFT JOIN account_user_buy b ON b.`retionId` = c.`join_id` 
+LEFT JOIN `sys_order_finance` a ON c.join_id = a.joinId 
+		<include refid="sql_whereDto"/>
+	</select>
+	
+	<update id="update" parameterType="OrderFinance">
+	  UPDATE sys_order_finance
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNo)"> order_no = #{orderNo},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(balancePrice)"> balance_price = #{balancePrice},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)"> status = #{status},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinId)"> joinId = #{joinId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accountBuyId)"> accountBuyId = #{accountBuyId},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from sys_order_finance where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM sys_order_finance
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

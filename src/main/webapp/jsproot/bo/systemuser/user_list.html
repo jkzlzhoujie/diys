@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>角色账号</title>
+<script type="text/javascript">
+	function assign(id) {
+		$("#userForm").attr("action","/diys/Bo/rh/assign");
+		$("#id").val(id);
+		$("#userForm").submit();
+	}
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：角色配置 > 角色账号</div>
+      <form id="userForm" action="/diys/Bo/user_list" method="post" >
+      <input type="hidden" id="id" name="id" value="" />
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('edit_user')"/>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">账号</th>
+              <th width="5%">真实姓名</th>
+              <th width="10%" >创建时间</th>
+              <th width="13%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.username)!''}
+						</td>
+						<td >
+							${(entity.realName)!''}
+						</td>
+						<td>
+							${entity.createdWhen!''}
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="assign(${(entity.id)!''})">分配权限</a>
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('edit_user','#{(entity.id)!0}')">编辑</a>
+							<a class="btn btn-delete" onclick="del_('user_del','#{(entity.id)!0}')">删除</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

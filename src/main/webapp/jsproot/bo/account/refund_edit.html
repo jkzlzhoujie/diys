@@ -1,0 +1,43 @@
+ <body>
+    
+	<script type="text/javascript">
+				
+	$('#pushForm').validate({	
+			 submitHandler: function(form) { 
+	    		 $.post('/diys/Bo/account/refund', $("#pushForm").serialize(), function(data) {
+					$("#userForm").submit();
+				});	
+		 	},		
+			 rules:{
+	              content:{required:true}
+
+	            },
+	          messages:{
+	                content:{required:"内容不能为空"}
+	            }
+			});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：账户管理> 提现</div>
+      <form action="/diys/Bo/account/refund" method="post" id="pushForm">
+      <input type="hidden" id="id" name="id" value="${(id)!''}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">备注</td>
+	     		<td width="35%">
+	     		<textarea id="content" name="content" style="width: 450px;height: 100px;resize: none;"></textarea>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+    
+  </body>
+

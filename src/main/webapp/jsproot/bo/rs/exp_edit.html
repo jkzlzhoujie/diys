@@ -1,0 +1,124 @@
+<body>
+<script type="text/javascript">
+var editor;
+	$(function() {
+		editor = KindEditor.create('textarea[name="content"]', {
+		   resizeType : 0,
+		   uploadJson : domainName+'/diys/upload/kindEditor',
+		   formatUploadUrl:false,
+		   width : '620',
+		   height : '150',
+		   afterBlur: function(){this.sync();},
+		   items : [
+				'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+				'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+				'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
+		});
+	});
+		$(function(){
+			$('#resourceForm').validate({	 
+			 rules:{
+			  	  name:{
+		          	  required: true   
+		          },
+		          imageUrl:{
+		          	  required: true
+		          }
+	          },
+	          messages:{
+	              name:{
+		          	  required: "请输入表情名名称"   
+		          },
+		          staticUrl:{
+		          	  required: "请上传图片"
+		          }
+	            }
+			});	
+		
+			$('#uploadStatic').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#imageUrl").attr("value",data);
+				$("#imageUrl").next().hide();
+				document.getElementById("previewStatic").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#staticUrl").next().html("文件大小不大于10M");
+				  	 	$("#staticUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+	           }
+			}
+		});
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：资源管理 > 商用素材 > 表情列表 >新增表情</div>
+      <form action="/diys/Bo/rs/exp_save" method="post" id="resourceForm">
+            <input type="hidden" name="id" value="${(entity.id)!0}" />
+            <input type="hidden" id="pkId" name="pkId" value="${(pkId)!''}"/>
+            <input type="hidden" id="status" name="status" value="${(status)!''}"/>
+      	<div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">表情名称</td>
+	     		<td ><input type="text" id="name" name="name" value="${(entity.name)!''}" class="inputtext" /></td>
+	     		<td align="right">标签</td>
+	     		<td ><input type="text" id="laberName" name="laberName" value="${(entity.laberName)!''}" class="inputtext" /></td>
+	     	<tr>
+     			<td align="right">图片</td>
+	     		<td>
+	     			<input type="file" id="uploadStatic" name="uploadStatic"/> 
+		   			<input type="hidden" id="imageUrl" name="imageUrl" value="${(entity.imageUrl)!''}" class="inputtext" />
+		            <span class="note" style="color: red;"></span>
+		            <span class="tp"><img id="previewStatic" src="${(entity.imageUrl)!''}?rc=${.now?long}" width="50" height="50" /></span></div>
+	     		</td>
+	     	</tr>
+	     	 	<tr>
+	     		<td align="right">商家点击类型 </td>
+	     		<td>
+		     		<select id="type" name="type" class="selectOpt w164">
+             			<option  value="">请选择</option>
+	   					<option <#if "${(entity.type)!0}"== "1">selected="selected"</#if> value="1">H5页面</option>
+	   					<option <#if "${(entity.type)!0}"== "2">selected="selected"</#if> value="2">url链接</option>
+          			</select>
+		     	</td>
+    			<td align="right">商家点击链接</td><td><input type="text" id="url" name="url" value="${(entity.url)!''}"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">商家点击内容</td><td  colspan="3"><textarea id="content" name="content" style="width: 250px;height: 50px;resize: none;">${(entity.content)!''}</textarea></td>
+    			</tr>
+		    <tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

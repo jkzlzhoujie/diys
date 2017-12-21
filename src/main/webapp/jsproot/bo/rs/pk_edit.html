@@ -1,0 +1,270 @@
+<body>
+<script type="text/javascript">
+	var editor;
+	$(function() {
+		editor = KindEditor.create('textarea[name="businessContent"]', {
+		   resizeType : 0,
+		   uploadJson : domainName+'/diys/upload/kindEditor',
+		   formatUploadUrl:false,
+		   width : '620',
+		   height : '150',
+		   afterBlur: function(){this.sync();},
+		   items : [
+				'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+				'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+				'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
+		});
+	});
+	
+
+		$(function(){
+			$('#packetEditForm').validate({	 
+			 submitHandler: function(form) { 
+	    		  $.post('/diys/Bo/rs/pk_save', $("#packetEditForm").serialize(), function(data) {
+					$("#pkForm").submit();
+				});	
+		 	},		
+			 rules:{
+			  	  name:{
+		          	  required: true   
+		          },
+		          downUrl:{
+		          	  required: true
+		          },
+		          thumbnailUrl:{
+		          	  required: true
+		          },
+		          price:{
+		          	  required: true,
+		          	  number:true
+		          },
+	              type:{
+	              	 required: true,
+		             digits:true
+	              },
+	              desc:{
+	              	 required: true
+	              }
+	          },
+	          messages:{
+	              name:{
+		          	  required: "请输入表情包名"   
+		          },
+		          downUrl:{
+		          	  required: "请上传表情包"
+		          },
+		          thumbnailUrl:{
+		          	  required: "请上传缩略图"
+		          },
+		          price:{
+		          	  required: "请输入表情包价格",
+		          	  number: "价格必须是数字"
+		          },
+	              type:{
+	              	 required: "请选择内容类型",
+		             digits:"内容类型必须填数字"
+	              },
+	              desc:{
+	              	 required: "请输入表情简介"
+	              }
+	            }
+			});	
+		});
+
+		$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#thumbnailUrl").attr("value",data);
+				$("#thumbnailUrl").next().hide();
+				document.getElementById("previewPoster").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		$('#uploadZip').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/zip',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.zip;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#downUrl").attr("value",data);
+				$("#zipdesc").html("上传成功");
+				var j = Math.round(file.size / 1024);
+				var o = "KB";
+				if (j > 1000) {
+					j = Math.round(j / 1000);
+					o = "MB";
+				}
+				var l = j.toString().split(".");
+				j = l[0];
+				if (l.length > 1) {
+					j += "." + l[1].substr(0, 2);
+				}
+				j += o;
+				$("#size").val(j);
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#zipdesc").next().html("文件大小不大于10M");
+				  	 	$("#zipdesc").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+	           }
+			}
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：资源管理> 新增素材</div>
+      <form action="/diys/Bo/rs/pk_save" method="post" id="packetEditForm">
+            <input type="hidden" name="id" value="${(entity.id)!0}" />
+            <input type="hidden" name="mStatus" value="${status!''}" />
+             <input type="hidden" name="size" id="size" value="${(entity.size)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">名称</td>
+	     		<td width="35%"><input type="text" id="name" name="name" value="${(entity.name)!''}" class="inputtext" /></td>
+	     		<td align="right">价格</td>
+	     		<td><input type="text" id="price" name="price" value="${(entity.price)!''}" class="inputtext" /></td>
+	     	</tr>
+		     	<tr>
+	     			<td align="right">广告图片 </td>
+		     		<td>
+		     		 	<input type="file" id="uploadPoster" name="uploadPoster"/> 
+			   			<input type="hidden" id="thumbnailUrl" name="thumbnailUrl" value="${(entity.thumbnailUrl)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewPoster" src="${(entity.thumbnailUrl)!''}" width="180" height="80" /></span>
+			     	</td>
+			     	<td width="15%" align="right">简介</td>
+		     	<td width="35%"><textarea id="desc" name="desc" style="width: 250px;height: 100px;resize: none;">${(entity.desc)!''}</textarea></td>
+	     		</tr>
+	     		<tr>
+	     			<#if status?? && "${status!''}" =='1'>
+		     		<td align="right">排序值</td>
+		     		<td>
+		     			<input type="text" value="${(entity.sort)!''}" id="sort" name="sort"/> 
+		     		</td>
+		     		</#if>
+		     			<#if entity??>
+			     	<#else>
+		     		<td align="right">上传素材</td>
+		     		<td>
+		     			<input type="file" id="uploadZip" name="uploadZip"/> 
+			   			<input type="hidden" id="downUrl" name="downUrl" value="${(entity.downUrl)!''}" class="inputtext" />
+			            <span id="zipdesc" class="note" style="color: red;"></span>
+			             <div id="downImage">
+			            <#if "4"=="${(entity.type)!''}" || "3"=="${(entity.type)!''}" || "2"=="${(entity.type)!''}">
+			           	 <span class="tp"><img  src="${(entity.downUrl)!''}" width="180" height="80" /></span>
+			           	 <#elseif "1"=="${(entity.type)!''}">
+			           	 <a  title="贴图下载" href="${(entity.downUrl)!''}" >贴图下载</a>
+			            </#if> 
+			            </div>
+		     		</td>
+		     		</#if>
+	     		</tr>
+	     		<tr>
+	     		<td align="right">内容类型</td>
+	     		<td>
+	     			<select id="type" name="type" class="inputtext">
+	              		<option  value="">请选择类型</option>
+   						<option 
+   							<#if "1"=="${(entity.type)!''}">selected="selected"</#if> value="1">贴图
+   						</option>
+   						<option 
+   							<#if "2"=="${(entity.type)!''}">selected="selected"</#if> value="2">颜文字
+   						</option>
+   						<option 
+   							<#if "3"=="${(entity.type)!''}">selected="selected"</#if> value="3">表情
+   						</option>
+           			</select>
+	     		</td>
+	     		<td align="right">商家名称</td><td><input type="text" id="business" name="business" value="${(entity.business)!''}"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">商家点击类型 </td>
+	     		<td>
+		     		<select id="type" name="businessType" class="selectOpt w164">
+             			<option  value="">请选择</option>
+	   					<option <#if "${(entity.businessType)!0}"== "1">selected="selected"</#if> value="1">H5页面</option>
+	   					<option <#if "${(entity.businessType)!0}"== "2">selected="selected"</#if> value="2">url链接</option>
+          			</select>
+		     	</td>
+    			<td align="right">商家点击链接</td><td><input type="text" id="businessUrl" name="businessUrl" value="${(entity.businessUrl)!''}"/></td>
+    			</tr>
+    			<tr>
+	     		<td align="right">商品状态</td>
+	     		<td>
+	     			<select id="commodityStatus" name="commodityStatus" class="inputtext">
+   						<option 
+   							<#if "1"=="${(entity.commodityStatus)!''}">selected="selected"</#if> value="1">正常
+   						</option>
+   						<option 
+   							<#if "2"=="${(entity.commodityStatus)!''}">selected="selected"</#if> value="2">热卖
+   						</option>
+           			</select>
+	     		</td>
+	     	</tr>
+    			<tr>
+    				<td align="right">商家点击内容</td><td  colspan="3"><textarea id="businessContent" name="businessContent" style="width: 250px;height: 50px;resize: none;">${(entity.businessContent)!''}</textarea></td>
+    			</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

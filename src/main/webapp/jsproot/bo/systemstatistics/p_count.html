@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>每日P图统计</title>
+<script type="text/javascript">
+function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：统计管理 > 每日P图统计</div>
+      <form id="userForm" action="/diys/Bo/st/pCount" method="post" >
+      <div class="table-show-content">
+      <div class="table-search">
+			    <div style="width:100%;padding-top: 10px">
+          			<div style="display: inline">
+          			时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+	                 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()" id="btn" value="查询"  class="btn-submit"/></div>
+          		</div>
+          </div>
+          </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="8%">时间</th>
+              <th width="8%">活跃用户数</th>
+               <th width="8%">悬赏人数</th>
+               <th width="8%">参与P图人数</th>
+              <th width="8%">付费悬赏数</th>
+              <th width="8%">付费率</th>
+              <th width="8%">悬赏总金额</th>
+              <th width="8%">最高悬赏金额</th>
+              <th width="8%">最低悬赏金额</th>
+              <th width="8%">平均悬赏金额</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.time)!''}
+						</td>
+						<td >
+							${(entity.userNum)!'0'}
+						</td>
+						<td >
+							${(entity.pUserNum)!'0'}
+						</td>
+						<td >
+							${(entity.countUserP)!'0'}
+						</td>
+						<td >
+							${(entity.priceUserNum)!'0'}
+						</td>
+						<td >
+							${(entity.priceRate)!'0'}%
+						</td>
+						<td >
+							${(entity.totalPrice)!'0'}
+						</td>
+						<td >
+							${(entity.maxPrice)!'0'}
+						</td>
+						<td >
+							${(entity.minPrice)!'0'}
+						</td>
+						<td >
+							${(entity.avgPrice)!'0'}
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      </form>
+    </div>
+</body>
+</html>

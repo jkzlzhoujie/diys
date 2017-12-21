@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.ProductRecommend">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap type="ProductRecommend" id="sql_resultMap">
+		<id property="id" column="recommend_id"/>
+		<result property="productId" column="product_id"/>
+		<result property="recommendSeq" column="recommend_seq"/>
+		<result property="type" column="type"/>
+		<result property="remark" column="remark"/>
+		<result property="createdWhen" column="created_when"/>
+		<result property="hotScore" column="hot_score" />
+		<result property="magicScore" column="magic_score" />
+		<result property="url" column="url" />
+		<result property="nickName" column="nick_name" />
+		<result property="searchCount" column="search_count" />
+		<result property="praiseCount" column="praise_count" />
+		<result property="headImageUrl" column="head_image_url" />
+		<result property="discussCount" column="discuss_count" />
+	</resultMap>
+	
+	<sql id="selectAll">
+		select*from pm_product_recommend
+	</sql>
+	
+	<sql id="sql_where">
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">and product_id=#{productId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and type=#{type}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and recommend_id!=#{id}</if>
+		</where>
+	</sql>
+	
+	<select id="getById" useCache="false" resultMap="sql_resultMap">
+		<include refid="selectAll"></include>
+		where recommend_id=#{id}
+	</select>
+	
+	<select id="findByPage" useCache="false" resultMap="sql_resultMap">
+		SELECT c.*,a.hot_score,a.magic_score,a.product_id,thumbnail,url,search_count,praise_count,
+		a.discuss_count,head_image_url,city,nick_name FROM pm_product_recommend c LEFT JOIN 
+		`pm_product_info` a ON a.`product_id` = c.`product_id`  LEFT 
+		JOIN `cm_user_info` b ON a.`user_id` = b.`user_id`
+		<include refid="sql_where"></include>
+		ORDER BY recommend_seq desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findAll" useCache="false" resultMap="sql_resultMap">
+		<include refid="selectAll"></include>
+		order by recommend_seq desc
+	</select>
+	
+	<select id="findByMap" useCache="false" parameterType="map" resultMap="sql_resultMap">
+		<include refid="selectAll"></include>
+		<include refid="sql_where"></include>
+		order by recommend_seq desc
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(limit)">
+        	 limit #{limit} offset #{offset}
+       	</if>
+	</select>
+	
+	<select id="count" resultType="Long" useCache="false" >
+		select count(*) from pm_product_recommend
+		<include refid="sql_where"></include>
+	</select>
+	
+	<update id="update">
+	update pm_product_recommend
+		<set>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">product_id=#{productId},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(recommendSeq)">recommend_seq=#{recommendSeq},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remark)">remark=#{remark},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">type=#{type},</if>
+		</set>
+		where recommend_id=#{id}
+	</update>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		insert into pm_product_recommend(product_id,recommend_seq,remark,type,created_when) values(#{productId},#{recommendSeq},#{remark},#{type},now())
+	</insert>
+	
+	<delete id="delete" flushCache="true">
+		delete from pm_product_recommend where recommend_id=#{id}
+	</delete>
+</mapper>

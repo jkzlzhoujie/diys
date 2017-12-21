@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="diys"
+  id="myeclipse.1463647052877"
+  context-root="/diys"
+  j2ee-spec="5.0"
+  archive="diys.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.PmCommodity">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="PmCommodity">
+			<id property="id" column="id" />
+			<result property="url" column="url" />
+			<result property="thumbnail" column="thumbnail" />
+			<result property="detail" column="detail" />
+			<result property="name" column="name" />
+			<result property="originalPrice" column="originalPrice" />
+			<result property="price" column="price" />
+			<result property="addTime" column="addTime" />
+			<result property="priceRange" column="priceRange" />
+			<result property="originalRange" column="originalRange" />
+			<result property="content" column="content" />
+			<result property="orderNum" column="orderNum" />
+			<result property="sort" column="sort" />
+			<result property="status" column="status" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from pm_commodity
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+						<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and status = #{status}</if>
+						<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and name like "%"#{name}"%"</if>
+						<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)">and price = #{price}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY sort desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY sort desc
+	</select>
+	
+	<select id="findByPage" parameterType="PmCommodity" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY sort desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM pm_commodity 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="PmCommodity" useGeneratedKeys="true" keyProperty="id">
+	insert into pm_commodity(url,thumbnail,sort,detail,name,originalPrice,price,priceRange,originalRange,content,orderNum,status,addTime)
+	values(#{url},#{thumbnail},#{sort},#{detail},#{name},#{originalPrice},#{price},#{priceRange},#{originalRange},#{content},#{orderNum},#{status},now())
+	</insert>
+	
+	<update id="update" parameterType="PmCommodity">
+	  UPDATE pm_commodity
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(url)"> url = #{url},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(thumbnail)"> thumbnail = #{thumbnail},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(detail)"> detail = #{detail},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)"> name = #{name},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(originalPrice)"> originalPrice = #{originalPrice},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)"> price = #{price},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(priceRange)"> priceRange = #{priceRange},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(originalRange)"> originalRange = #{originalRange},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(content)"> content = #{content},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNum)"> orderNum = #{orderNum},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">status=#{status},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sort)">sort=#{sort},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from pm_commodity where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM pm_commodity
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

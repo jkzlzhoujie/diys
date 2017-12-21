@@ -1,0 +1,107 @@
+<body>
+<script type="text/javascript">
+		
+		$(function(){
+			$('#classifyAddForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/operate/levelSave',$("#classifyAddForm").serialize(),function(data){
+					$("#orderForm").submit();
+				})
+			},
+			 rules:{
+		           paramValue:{
+		              required:true
+		          },
+		          enParamName:{
+		              required:true
+		          }
+	          },
+	          messages:{
+	                  paramValue:{
+		                required:"图标不能为空"
+	                },
+	                enParamName:{
+		                required:"类型不能为空"
+	                }
+	            }			});	
+			
+			$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/uploadImage',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				var myObject = eval('(' + data + ')');
+				$("#logo").attr("value",myObject.url);
+				$("#logo").next().hide();
+				document.getElementById("previewPoster").src=myObject.url;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		})
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：新增等级</div>
+      <form action="/diys/Bo/operate/levelSave" method="post" id="classifyAddForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">类型</td>
+	     		<td>
+	     		<select id="enParamName" name="enParamName" >
+	     		<option value="">请选择类型</option>
+	     		<#if typeList??>
+				<#list typeList as type>
+					   <option <#if entity?? && "${entity.enParamName}" ==  "${type.code}"> selected="selected"</#if> value="${type.code}">${type.name}</option>
+				</#list>
+				</#if>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">图标</td>
+    				<td>
+    					<input type="file" id="uploadPoster" name="uploadPoster"/> 
+			   			<input type="hidden" id="logo" name="paramValue" value="${(entity.paramValue)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewPoster" src="${(entity.paramValue)!''}" width="40" height="40" /></span>
+    				</td>
+	     	</tr>
+	     	<tr>	     		
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

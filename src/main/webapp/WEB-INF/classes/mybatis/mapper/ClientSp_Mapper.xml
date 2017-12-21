@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.ClientSp">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="ClientSp">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="imageUrl" column="image_url" />
+			<result property="type" column="type" />
+			<result property="clientChannel" column="client_channel" />
+			<result property="versionCode" column="version_code" />
+			<result property="createdWhen" column="created_when" />
+			<result property="startTime" column="startTime" />
+			<result property="endTime" column="endTime" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from emoji_client_sp
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(currentDate)">
+            <![CDATA[
+                  AND DATE_FORMAT(startTime,'%Y-%m-%d') <= Date_FORMAT(#{currentDate},'%Y-%m-%d')
+                  AND DATE_FORMAT(endTime,'%Y-%m-%d') >= Date_FORMAT(#{currentDate},'%Y-%m-%d')
+            ]]>
+         </if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNumber(id)">and id = #{id}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and name like "%"#{name}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and type = #{type}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(versionCode)">and version_code = #{versionCode}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientChannel)">and client_channel = #{clientChannel}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and client_channel = ""</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit 0,1
+	</select>
+	
+	<select id="findByPage" parameterType="ClientSp" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM emoji_client_sp 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="ClientSp" useGeneratedKeys="true" keyProperty="id">
+	insert into emoji_client_sp(name,image_url,type,version_code,client_channel,startTime,endTime,created_when) 
+	values(#{name},#{imageUrl},#{type},#{versionCode},#{clientChannel},#{startTime},#{endTime},now())
+	</insert>
+	
+	<update id="update" parameterType="ClientSp">
+	  UPDATE emoji_client_sp
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)"> name = #{name},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(imageUrl)"> image_url = #{imageUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(versionCode)"> version_code = #{versionCode},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientChannel)"> client_channel = #{clientChannel},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startTime)"> startTime = #{startTime},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endTime)"> endTime = #{endTime},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from emoji_client_sp where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM emoji_client_sp
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

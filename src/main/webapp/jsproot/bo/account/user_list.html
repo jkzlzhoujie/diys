@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>用户账户列表</title>
+<style type="text/css">  
+.sort_able{cursor:pointer;padding:0 28px;background:#f0f5f7 url(/diyroot/images/small.gif) no-repeat right center !important;}
+.asc{background:#f0f5f7 url(/diyroot/images/asc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+.desc{background:#f0f5f7 url(/diyroot/images/desc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+</style> 
+<script type="text/javascript">
+	$(document).ready(function() {
+		var orderFried = $("#orderFried").val();	
+		var sequence = $("#sequence").val();	
+		if(orderFried != '' && sequence != '')
+		{
+			$("#"+orderFried).attr('class',sequence);
+		}
+	});
+	
+	function sort(obj)
+	{
+		var sortType = "asc";
+		var className = $(obj).attr('class');
+		var id = $(obj).attr('id');
+		if(className == "asc"){
+			sortType = "desc";
+		}else if(className == "desc")
+		{
+			sortType = "asc";
+		}
+		$("#orderFried").val(id);
+		$("#sequence").val(sortType);
+		$(this).attr('class',sortType);
+		$("#userForm").submit();
+	}
+
+	function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：账户管理 > 用户账户列表</div>
+      <form id="userForm" action="/diys/Bo/account/list" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+         <input type="hidden" id="orderFried" name="orderFried" value="${(orderFried)!''}" />
+      <input type="hidden" id="sequence" name="sequence" value="${(sequence)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+      <div style="width:100%;padding-top: 10px">
+			      <div style="display: inline">
+          			手机号： <input type="text" name="mobile" value="${mobile!''}" class="inputtext"  style="width: 100px"/>
+          			</div>
+          			<div style="display: inline">
+          			用户id： <input type="text" name="id" value="${id!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          			  <div style="display: inline">
+          			昵称： <input type="text" name="nickName" value="${nickName!''}" class="inputtext"  style="width: 80px"/>
+          			</div>
+          			  <div style="display: inline">
+          			   渠道：<input type="text" name="channel" value="${channel!''}" class="inputtext"  style="width: 80px"/>
+			       </div>
+			      <div style="display: inline"> 系统：
+ 					<select style="width: 150px" id="os" name="os" class="select-style">
+ 					<option value="">请选择系统</option>
+   						<option <#if "${(os)!''}"== "0">selected="selected"</#if> value="0">苹果</option>
+   						<option <#if "${(os)!''}"== "1">selected="selected"</#if> value="1">安卓</option>
+			      </select>
+			      </div>
+        </div>
+        <div style="padding-bottom: 5px">
+      		<div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()"  id="btn" value="查询"  class="btn-submit"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="5%">用户ID</th>
+              <th width="5%">手机号</th>
+              <th width="5%">昵称</th>
+              <th width="5%">头像</th>
+              <th width="5%">等级</th>
+              <th width="5%">积分</th>
+              <th width="5%">经验</th>
+              <th width="5%">红包余额</th>
+              <th width="5%">钱包余额</th>
+              <th width="5%" >渠道</th>
+              <th width="5%" >系统</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.userId)!''}
+						</td>
+						<td >
+							${(entity.mobile)!''}
+						</td>
+						<td >
+							${(entity.nickName)!''}
+						</td>
+					<td>
+						<img width="50px" height="50px" src="${(entity.headImageUrl)!''}">
+						</td>
+						<td >
+							${(entity.level)!''}
+						</td>
+						<td >
+							${(entity.score)!''}
+						</td>
+						<td >
+							${(entity.experience)!''}
+						</td>
+						<td >
+							${(entity.redPacket)!''}
+						</td>
+						<td >
+							${(entity.wallet)!''}
+						</td>
+						<td >
+							${(entity.channel)!''}
+							${(entity.os)!''}
+						</td>
+						<td >
+							<#if entity.os?? && "${entity.os}"=="0">ios
+										<#elseif entity.os?? && "${entity.os}"=="1">android
+										</#if>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+     <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

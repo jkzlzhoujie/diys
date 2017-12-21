@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>设计师列表</title>
+		
+		<script type="text/javascript">
+		
+			function selectInfo() {
+		  		$("#designerForm").submit();
+		  }
+			function selectReset(){
+	    		$("#userId").val("");
+	    		$("#realName").val("");
+	    		$("#userId").val("");
+				$("#status").val("");
+	    	}
+			
+			$(function(){
+				$("a[rel=example_group]").fancybox({
+					'transitionIn'		: 'none',
+					'transitionOut'		: 'fade',
+					'titlePosition' 	: 'over',
+					'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+						return '<span id="fancybox-title-over" style="z-index: 9999">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+					}
+				});
+			})
+		</script>
+		<style type="text/css">
+			.dginputstyle{width:100px;height:22px}
+		</style>
+	
+	</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：设计师管理> 设计师信息</div>
+      <form id="designerForm" action="/diys/Bo/designer/designerList" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <input type="hidden" id="userID" name="userID" value="${(entity.userID)!''}" />
+      
+      <div class="table-show-content">
+      <div class="table-search">
+          <div>		
+				    <div style="display: inline">
+				  	 用户ID：<input id="userId" name="userId" type="text" value="${userId!''}" class="dginputstyle"/>
+				  	设计师姓名：<input id="realName" name="realName" type="text" value="${realName!''}" class="dginputstyle"/>
+				   	设计师状态：<select id="status" name="status" class="inputtext">
+	              		<option  value="">请选择类型</option>
+   						<option 
+   							<#if "0"=="${status!''}">selected="selected"</#if> value="0">待审核
+   						</option>
+   						<option 
+   							<#if "1"=="${status!''}">selected="selected"</#if> value="1">审核中
+   						</option>
+   						<option 
+   							<#if "2"=="${status!''}">selected="selected"</#if> value="2">通过
+   						</option>
+           			</select>
+           			
+				  </div>
+          		  <div style="display: inline;float: right">
+          		  	<input type="button" id="btn1" value="查询"  class="btn-submit" onclick="selectInfo()"/>
+          		  	<input type="button" id="btn2" value="重置"  class="btn-submit" onclick="selectReset()"/>
+          		  </div>
+			</div>
+			<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('designer/designerEdit')"/></div>
+        </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+            
+              <th width="4%">设计师<br>编号</th>
+              <th width="4%">用户ID</th>
+              <th width="4%">姓名</th>
+              <th width="5%">技能标签</th>
+              <th width="5%">生活照</th>
+              <th width="5%" >毕业院校</th>
+              <th width="5%" >毕业时间</th>
+              <th width="5%" >毕业照</th>
+              <th width="4%" >身份证号</th>
+              <th width="20%" >身份证图</th>
+              <th width="4%" >获得荣誉</th>
+              <th width="4%" >9张<br>作品</th>
+              <th width="5%" >创建时间</th>
+              <th width="4%" >设计师状态</th>
+              <th width="4%" >店铺<br>状态</th>
+              <th width="5%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.userId)!''}
+						</td>
+						<td >
+							${(entity.realName)!''}
+						</td>
+						<td >
+							${(entity.labels)!''}
+						</td>
+						<td >
+							<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.lifeImageUrl!''}" title="">
+							<img  width="80px" height="80px" src="${entity.lifeImageUrl!''}" /></a>
+						</td>
+						<td >
+							${(entity.school)!''}
+						</td>
+						<td >
+							${(entity.finishSchoolTime)!''}
+						</td>
+						<td >
+							<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.finishSchoolPhoto!''}" title="">
+							<img  width="80px" height="80px" src="${entity.finishSchoolPhoto!''}" /></a>
+						</td>
+						
+						<td >
+							${(entity.idCardNum)!''}
+						</td>
+						<td >
+							<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.idCardUrl1!''}" title="">
+							<img  width="80px" height="80px" src="${entity.idCardUrl1!''}" /></a>
+							<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.idCardUrl2!''}" title="">
+							<img  width="80px" height="80px" src="${entity.idCardUrl2!''}" /></a>
+						</td>
+						<td >
+							<a class="btn btn-look" href="javascript:;" style="color: blue" onclick="edit('designer/designerHonorEdit','${(entity.id)!''}')">获得荣誉</a>
+						</td>
+						<td>
+							<a class="btn btn-look" href="javascript:;" style="color: blue" onclick="edit('designer/designerInfoPicEdit','${(entity.id)!''}')">查看作品</a>
+						</td>
+						<td>
+							${(entity.createTime)!''}
+						</td>
+						
+						<td>
+							<#if "${entity.status!''}" == "0" >待审核</#if>
+							<#if "${entity.status!''}" == "1" >审核中</#if>
+							<#if "${entity.status!''}" == "2" >通过</#if>
+						</td>
+						<td>
+							<#if "${entity.shopStatus!''}" == "0" >关闭</#if>
+							<#if "${entity.shopStatus!''}" == "1" >正常<br>营业</#if>
+						</td>
+						<td>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('designer/designerEdit','${(entity.id)!''}')">编辑</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+        <#include "/bo/page.html">
+      </form>
+    </div>
+        <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>渠道列表</title>
+<script type="text/javascript">
+   $(function() {	
+   
+     $("#checkAll").click(function() {
+          $('input[name="subBox"]').attr("checked",this.checked);
+      });
+      var $subBox = $("input[name='subBox']");
+      $subBox.click(function(){
+          $("#checkAll").attr("checked",$subBox.length == $("input[name='subBox']:checked").length ? true : false);
+      });
+      
+   });    
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：系统管理 > 渠道列表</div>
+      <form id="classifyForm" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+      		<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('setting/changeedit')"/></div>
+      		<div style="display: inline"><input type="button" id="btn" value="批量编辑"  class="btn-submit" onclick="editBatch('setting/changeAlledit')"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+             <th width="5%" align="center"><input type="checkbox" id="checkAll" /></th>
+              <th width="10%" >渠道编码</th>
+              <th width="10%" >渠道名</th>
+              <th width="10%" >是否可更新</th>
+              <th width="10%" >是否展示开屏广告</th>
+              <th width="10%" >是否展示玩广告</th>
+              <th width="10%" >是否展示秀广告</th>
+              <th width="10%" >是否展示兴趣圈广告</th>
+               <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+					<td align="center">
+							<input value="${(entity.id)!''}" type="checkbox" name="subBox" class="subBox">
+						</td>
+						<td >
+							${(entity.enParamName)!''}
+						</td>
+						<td >
+							${(entity.paramValue)!''}
+						</td>
+						<td>
+							<#if "1"=="${(entity.status)!''}">是
+							<#elseif "2"=="${(entity.status)!''}">否
+							</#if>
+						</td>
+						<td>
+							<#if "1"=="${(entity.flag)!''}">是
+							<#elseif "2"=="${(entity.flag)!''}">否
+							</#if>
+						</td>
+						<td>
+							<#if "1"=="${(entity.expand1)!''}">是
+							<#elseif "2"=="${(entity.expand1)!''}">否
+							</#if>
+						</td>
+						<td>
+							<#if "1"=="${(entity.expand2)!''}">是
+							<#elseif "2"=="${(entity.expand2)!''}">否
+							</#if>
+						</td>
+						<td>
+							<#if "1"=="${(entity.expand3)!''}">是
+							<#elseif "2"=="${(entity.expand3)!''}">否
+							</#if>
+						</td>
+						<td >
+						<a class="btn btn-look agentClaim2" href="javascript:;" onclick="editNew('setting/changeedit?key=${(entity.enParamName)!''}')">编辑</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

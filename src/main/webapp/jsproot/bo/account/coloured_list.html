@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>彩绘订单</title>
+<style type="text/css">  
+.sort_able{cursor:pointer;padding:0 28px;background:#f0f5f7 url(/diyroot/images/small.gif) no-repeat right center !important;}
+.asc{background:#f0f5f7 url(/diyroot/images/asc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+.desc{background:#f0f5f7 url(/diyroot/images/desc.png) no-repeat right center !important;cursor:pointer;padding:0 28px;}
+</style> 
+
+<script type="text/javascript">
+$(document).ready(function() {
+$("a[rel=example_group]").fancybox({
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'titlePosition' 	: 'over',
+				'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+				}
+			});
+		$("a[rel=example_group1]").fancybox({
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'titlePosition' 	: 'over',
+				'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+					return '<span id="fancybox-title-over">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+				}
+			});
+			
+			
+			 var orderFried = $("#orderFried").val();	
+		var sequence = $("#sequence").val();	
+		if(orderFried != '' && sequence != '')
+		{
+			$("#"+orderFried).attr('class',sequence);
+		}
+	});
+ function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+	if($("#checkbox").val()=="true"){
+  		if($("#remakFilter").val() == ""){
+  			myAlert("请输入要过滤的词");
+  			return false;
+  			}
+  	}else {
+  		$("#remakFilter").val("");
+  	 }
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#bannerForm").submit();
+  		}
+  	}else {
+  		$("#bannerForm").submit();
+  	}
+  }
+  
+  function selectReset() {
+  	 $("#startDate").val("");
+  	 $("#endDate").val("");
+  	 $("#joinType").val("");
+  	 $("#contact").val("");
+  	 $("#nickName").val("");
+  	 $("#acceptUserId").val("");
+  	 $("#acceptRemark").val("");
+  	 $("#remakFilter").val("");
+  	 $("#qqContact").val("");
+  	 $("#id").val("");
+  }
+  
+  function sort(obj)
+	{
+		var sortType = "asc";
+		var className = $(obj).attr('class');
+		var id = $(obj).attr('id');
+		if(className == "asc"){
+			sortType = "desc";
+		}else if(className == "desc")
+		{
+			sortType = "asc";
+		}
+		$("#orderFried").val(id);
+		$("#sequence").val(sortType);
+		$(this).attr('class',sortType);
+		$("#bannerForm").submit();
+	}
+	
+ function downList() {
+  		$('#bannerForm').attr("action","/diys/Bo/account/exportColouredListExcel");
+		$('#bannerForm').submit();
+		$('#bannerForm').attr("action","/diys/Bo/account/colouredList");
+  }
+ function refreshCache() {
+	 	$('#loadingimg').jqmShow();
+		$.post('/diys/Bo/topic/refreshCache',function(data){
+			myAlert("成功");
+			$('#loadingimg').jqmHide();
+		});
+}
+
+function sendIm(userId) {
+		$("#imUserId").val("heh"+userId);
+		$(".imUserId").html(userId);
+		$('#editor2').jqm({
+					overlay : 30,
+					overlayClass : 'whiteOverlay'
+		}).draggable();
+		$('#editor2').jqmShow();
+}
+
+</script>
+</head>
+<body>
+   <div id="main">
+     <div class="breadcrumb">当前位置：专题管理 > 彩绘订单</div>
+      <form id="bannerForm" action="/diys/Bo/account/colouredList" method="post">
+      <input type="hidden" id="orderFried" name="orderFried" value="${(orderFried)!''}" />
+      <input type="hidden" id="sequence" name="sequence" value="${(sequence)!''}" />
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <input type="hidden" id="topicType" name="topicType" value="${(topicType)!''}" />
+      <div class="table-show-content">
+      	     <div class="table-search">
+            <div>
+            	 <div style="display: inline">
+				  		用户id：<input name="userId" id="userId" type="text" value="${(userId)!''}"class="inputtext"  style="width: 70px">&nbsp;&nbsp;
+				  </div>
+				  <div style="display: inline">
+				  		用户昵称：<input name="nickName" id="nickName" type="text" value="${(nickName)!''}"class="inputtext"  style="width: 100px">&nbsp;&nbsp;
+				  </div>
+				  <div style="display: inline">
+				  		手机号：<input name="contact" id="contact" type="text" value="${(contact)!''}" class="inputtext"  style="width: 100px">&nbsp;&nbsp;
+				  </div>
+				   <div style="display: inline">
+				  		qq号：<input name="qqContact" id="qqContact" type="text" value="${(qqContact)!''}" class="inputtext"  style="width: 100px">&nbsp;&nbsp;
+				  </div>
+				 <div style="display: inline">
+				  		需求类型：<select id="joinType" name="joinType" class="inputtext">
+	              		<option  value="">请选择类型</option>
+	              		<#if infolist ??>
+   							<#list infolist as info>
+   								<option <#if "${(joinType)!0}"== "${info.id}">selected="selected"</#if> value="${info.id}">${info.name}</option>
+   							</#list>
+   						</#if>
+           			</select>&nbsp;&nbsp;
+				  </div>
+				  <div style="display: inline">
+				  		设计师：<select id="acceptUserId" name="acceptUserId" class="inputtext">&nbsp;&nbsp;
+	              		<option  value="">请选择设计师</option>
+   						<#if cmUserList ??>
+   							<#list cmUserList as cmUser>
+   								<option <#if "${(acceptUserId)!0}"== "${cmUser.id}">selected="selected"</#if> value="${cmUser.id}">${cmUser.nickName}</option>
+   							</#list>
+   						</#if>
+           			</select>
+				  </div>
+				   <br>
+				  <div style="display: inline">
+				  		购买Id：<input name="accountBuyId" id="accountBuyId" type="text" value="${(accountBuyId)!''}" class="inputtext"  style="width: 70px">&nbsp;&nbsp;
+				  </div>
+				   <div style="display: inline">
+				  		彩绘Id：<input name="joinId" id="joinId" type="text" value="${(joinId)!''}" class="inputtext"  style="width: 100px">&nbsp;&nbsp;
+				  </div>
+				 	 <div style="display: inline">
+          				创建时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+	                	 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()">&nbsp;&nbsp;
+          		 	 </div>
+          		 	 <div style="display: inline">
+				  		备注：<input <#if remakFilter??> checked="checked"</#if> type="checkbox" name="remakFilter" id="checkbox"/><input name="acceptRemark" id="acceptRemark" type="text" value="${(acceptRemark)!''}" class="input-style" style="width: 100px">
+				  	</div>
+				  	
+				  	  <div style="display: inline">
+				  		支付状态：<select id="status" name="status" class="inputtext">
+	              		<option  value="">请选择</option>
+   						<option <#if "${(status)!''}"== "0">selected="selected"</#if> value="0">未支付</option>
+   						<option <#if "${(status)!''}"== "1">selected="selected"</#if> value="1">已支付</option>
+   						<option <#if "${(status)!''}"== "2">selected="selected"</#if> value="2">支付失败</option>
+   						<option <#if "${(status)!''}"== "3">selected="selected"</#if> value="3">已取消</option>
+   						<option <#if "${(status)!''}"== "4">selected="selected"</#if> value="4">已删除</option>
+           				<option <#if "${(status)!''}"== "5">selected="selected"</#if> value="5">已退款</option>
+           			</select>
+				  </div>
+				  <div>
+				   <div style="display: inline">
+				  		渠道：<input name="channel" id="channel" type="text" value="${(channel)!''}" class="inputtext"  style="width: 100px">
+				  </div>
+				 	<div style="width:10%;display: inline;float: right">  
+				 	<a href="../../jsproot/web-im-1.1.2/index.html" target="_blank"><input type="button" id="btn" value="登录环信"  class="btn-submit"/></a></div>
+					<div style="width:10%;display: inline;float: right"><input type="button" id="btn" value="刷新设计师缓存"  class="btn-submit" onclick="refreshCache()"/></div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn" value="导出execl"  class="btn-submit" onclick="downList()"/></div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn1" value="重置" class="btn-submit" onclick="selectReset()"></div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/></div>
+					</div>
+				</div>
+			</div>
+		</div>
+        <table class="table-show" >
+          <tbody>
+            <tr  class="list_title" >
+			  <th width="3%" >彩绘Id</th>
+			  <th width="3%" >用户Id</th>
+              <th width="3%" >用户昵称</th>
+             <!--  <th width="3%">用户头像</th> -->
+			  <th width="5%">设计稿</th> 
+              <th width="5%">作品</th>
+			  <th width="5%">需求类型</th>
+              <th width="5%" >设计师</th>
+              <th width="5%" >派单人</th>
+              <th width="10%">需求</th>
+              <th width="4%">手机号</th>
+              <th width="4%">手机型号</th>
+              <th width="4%">QQ号</th>
+              <th width="4%">收货人</th>
+              <th width="4%">收货地址</th>
+              <th width="3%" >备注</th>
+              <th width="5%" >购买ID</th>
+              <th width="5%" >状态</th>
+              <th width="3%" >渠道</th>
+              <th width="5%" >时间</th>
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.userId)!''}
+						</td>
+						<td >
+							${(entity.nickName)!''}
+						</td>
+					 <!-- 	<td>
+							<img src="${(entity.headImageUrl)!''}"  style="width: 60px;height: 60px"/>
+						</td>-->
+					 	<td>
+						 <a title="Lorem ipsum dolor sit amet" rel="example_group1" href="${(entity.designUrl)!''}" title=""><img  width="60" height="80" src="${(entity.designUrl)!''}" /></a>
+						</td>
+						 <td>
+						 <a title="Lorem ipsum dolor sit amet" rel="example_group" href="${(entity.url)!''}" title=""><img  width="60" height="80" src="${(entity.url)!''}" /></a>
+						</td>
+						<td>
+							${(entity.joinType)!''}
+						</td>
+						<td>
+							<#if cmUserList ??>
+   								<#list cmUserList as cmUser>
+   									<#if "${(entity.acceptUserId)!0}"== "${cmUser.id}">${cmUser.nickName}</#if> 
+   								</#list>
+   							</#if>
+						</td>
+						<td>
+							${(entity.distributeUser)!''}
+						</td>
+						<td>
+						<a href="javascript:void(0)" style="TEXT-DECORATION:none;" title="${(entity.description)!''}">
+						<#if entity?? && entity.description?? && entity.description?length gt 60>
+						${entity.description?substring(0, 60)}...
+						<#else>
+						${(entity.description)!''}
+						</#if>
+						</a>
+						</td>
+						<td>
+							${(entity.contact)!''}
+						</td>
+						<td>
+							${(entity.phoneShell)!''}
+						</td>
+						<td>
+							${(entity.qqContact)!''}
+						</td>
+						<td>
+							${(entity.receivePerson)!''}
+						</td>
+						<td>
+							${(entity.receiveAddress)!''}
+						</td>
+						<td>
+							${(entity.acceptRemark)!''}
+						</td>
+						<td>
+							${(entity.accountBuyId)!''}
+						</td>
+						<td>
+							<#if entity.status??>
+								<#if "${entity.status}" == "0">未支付
+								<#elseif "${entity.status}" == "1">已支付
+								<#elseif "${entity.status}" == "2">支付失败
+								<#elseif "${entity.status}" == "3">已取消
+								<#elseif "${entity.status}" == "4">已删除
+								<#elseif "${entity.status}" == "5">已退款
+								</#if>
+							</#if>
+						</td>
+						<td>
+							${(entity.channel)!''}
+						</td>
+						 <td>
+							${(entity.joinTime)!''}
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('topic/customEdit','${(entity.id)!0}&topicType=${(topicType)!''}')">编辑</a>	
+							<a class="btn btn-delete" onclick="del_('topic/customDelete','#{(entity.id)!0}&topicType=${(topicType)!''}')">删除</a>
+							<a class="btn btn-look " href="javascript:;" onclick="sendIm('${(entity.userId)!''}')">发送环信消息</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+    
+    
+     <div id="editor2" class="jqmWindow">
+		<script type="text/javascript" src="../../jsproot/im/strophe.js"></script>
+		<script type="text/javascript" src="../../jsproot/im/websdk-1.1.2.js"></script>
+		<script type="text/javascript" src="../../jsproot/im/webim.config.js"></script>
+		<script type="text/javascript" src="../../jsproot/im/colourIm.js"> </script>
+		<script type="text/javascript" src="../../jsproot/im/websdk.shim.js"></script>
+		     	
+	    <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      	<div class="breadcrumb">当前位置： 专题管理 > 彩绘订单 - 发送环信消息</div>
+	    <input type="hidden" id="imUserId" value="heh${(userId)!''}" />
+		<div class="table-show-content">
+	        <table class="table-show" >
+	       		 <tr>
+		     		<td  align="right">用户ID</td>
+		     		<td><span  class="imUserId"  ></span></td>
+		     	</tr>
+		     	<tr>
+		     		<td  align="right">环信用户</td>
+		     		<td>heh<span  class="imUserId"  ></td>
+		     	</tr>
+		     	<tr id="loginUserName">
+		     		<td  align="right">环信账号</td>
+		     		<td><input type="text" id="userName" /></td>
+		     	</tr>
+		     	<tr id="loginPassword">
+		     		<td  align="right">密码</td>
+		     		<td><input type="password" id="password" /></td>
+		     	</tr>
+		     	<tr id="loginIm">
+		     		<td width="50%">&nbsp;</td>
+		     		<td align="left"><button id="login" class="btn-submit">登录</button></td>
+		     	</tr>
+		     	<tr id="sendText">
+		     		<td  align="right">文本内容</td>
+		     		<td><textarea id="textMess" style="width: 250px;"></textarea></td>
+		     	</tr>
+		     	<tr id="sendPic">
+	     			<td align="right">图片 </td>
+		     		<td> <input type="file" id="pictureInputMess"/></td>
+		     	</tr>
+		     	<tr id="sendIm">
+		     		<td width="50%">&nbsp;</td>
+		     		<td align="left"><button id="send" class="btn-submit">发送</button></td>
+		     	</tr>
+	        </table>
+	     </div>
+     </div>
+    
+    
+    
+</body>
+</html>

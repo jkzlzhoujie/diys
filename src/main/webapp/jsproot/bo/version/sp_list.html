@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>资源管理</title>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <script type="text/javascript">
+    	
+    	function selectOne(){
+    		$("#pageNo").val("1");
+    		$("#bannerForm").submit();
+    	}
+
+    </script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：客户端管理 > 启动页列表</div>
+      <form id="bannerForm" action="/diys/Bo/client/sp_list" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-search">
+		<div style="display:inline">
+			名称：<input type="text" id="name" name="name" class="input-style" />
+		          版 本：<input type="text" id="versionCode" name="versionCode" class="input-style" />
+			类型：<select id="type" name="type" class="selectOpt w164">
+             			<option  value="">请选择</option>
+             			<option <#if "${type!''}" ==  "1">selected="selected"</#if> value="1">安卓</option>
+             			<option <#if "${type!''}" ==  "2">selected="selected"</#if> value="2">ios</option>
+	          	</select>
+			
+		</div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1"  class="btn-submit" value="查询" onclick="selectOne()" /></div>
+	  </div>
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+      		<div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('client/edit_sp')"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="10%" >名称</th>
+              <th width="10%">地址</th>
+              <th width="10%">版本</th>
+              <th width="10%">渠道</th>
+              <th width="5%">类型</th>
+              <th width="5%">开始日期</th>
+              <th width="5%">结束日期</th>
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.name)!''}
+						</td>
+						<td>
+							<img src="${(entity.imageUrl)!''}"  style="width: 120px;height: 60px"/>
+						</td>
+						<td >
+							${(entity.versionCode)!''}
+						</td>
+						<td >
+							${(entity.clientChannel)!''}
+						</td>
+						<td >
+							<#if entity.type??>
+								<#if "${entity.type}" == "1">android
+								<#elseif "${entity.type}" == "0">ios
+								<#elseif "${entity.type}" == "3">默认
+								</#if>
+							</#if>
+						</td>
+						<td>
+							${(entity.startTime?date)!''}
+						</td>
+						<td>
+							${(entity.endTime?date)!''}
+						</td>
+						<td>
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('client/edit_sp','#{(entity.id)!0}')">编辑</a>
+							<#if entity.type??>
+								<#if "${entity.type}" != "3">
+								<a class="btn btn-look agentClaim2" href="javascript:;" onclick="del_('client/sp_del','#{(entity.id)!0}')">删除</a>
+								</#if>
+							</#if>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

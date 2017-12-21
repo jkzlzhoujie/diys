@@ -1,0 +1,21 @@
+<#if totalItems?? && totalItems gt pageSize>
+<div class="list_bottom">
+	<span class="right" style="_padding-top: 5px"> 
+		<input name="" type="submit" value="" class="btn-first btn_r2" onclick="return updatePageNo(1)" />
+	<#if pageNo?? && pageNo==1>
+		<input name="" type="submit" value="" class="btn-back btn_r2" onclick="return updatePageNo(1)" />
+	<#else> 
+		<input name="" type="submit" value="" class="btn-back btn_r2" onclick="return updatePageNo(${pageNo-1})" />
+	</#if> 
+	<#if pageNo?? && totalPages?? && pageNo==totalPages> 
+		<input name="" type="submit" value="" class="btn-next btn_r2" onclick="return updatePageNo(${totalPages})" /> 
+	<#else> 
+		<input name="" type="submit" value="" class="btn-next btn_r2" onclick="return updatePageNo(${pageNo+1})" /> 
+	</#if> <input name="" type="submit" value="" class="btn-last btn_r2" onclick="return updatePageNo(${totalPages})" /> 
+	<span>转到第<input onkeypress="return submitStop(event);" name="pageNumber" id="pageNumber" type="text" size="4" style="width: 20px; border: 1px solid #999999;" value="${(pageNo)!''}" />页</span>&nbsp; 
+	<input name="" type="submit" value="" class="btn-go btn_r2" onclick="return updatePageNo2()" /> </span>
+	<input type="hidden" id="totalPagesSub" value="${totalPages}">
+	<input type="hidden" id="pageNoSub" value="${pageNo}">
+	<span>共有 <span><#if totalItems?? && totalItems==0>0<#else>${totalItems!0}</#if></span> 条记录，每页显示<span name="pageSize" id="pageSize">${(pageSize)!''}</span>条记录，当前第 #{pageNo!0}/${totalPages!0} 页</span>
+</div>
+</#if>

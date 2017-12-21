@@ -1,0 +1,69 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(){
+				$.post('/diys/Bo/setting/scoresave',$("#editForm").serialize(),function(data){
+					$("#scoreForm").submit();
+				}  )
+			},
+			rules:{
+				integral:{required:true,number:true},
+				experience:{required:true,number:true},
+				charm:{required:true,number:true},
+				originality:{required:true,number:true},
+				credit:{required:true,number:true}
+			}
+		})
+	})
+</script>
+    <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+    <div class="breadcrumb">当前位置： 系统管理 > 用户分值> 分值编辑</div>
+    <form action="/diys/Bo/setting/scoresave" method="post" id="editForm">
+        <input type="hidden" name="id" value="#{(entity.id)!0}" />
+        <input type="hidden" name="flag" value="${flag}" />
+        <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">名称</td>
+	     		<td><input type="text" id="name" name="name" value="${(entity.name)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">类型</td>
+	     		<td><input type="text" id="type" name="type" value="${(entity.type)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">积分</td>
+	     		<td><input type="text" id="integral" name="integral" value="${(entity.integral)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<#if flag?? && flag =="1">
+	     	<tr>
+	     		<td  align="right">每日次数</td>
+	     		<td><input type="text" id="dayNum" name="dayNum" value="${(entity.dayNum)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	</#if>
+	     	<tr>
+	     		<td  align="right">经验</td>
+	     		<td><input type="text" id="experience" name="experience" value="${(entity.experience)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">魅力</td>
+	     		<td><input type="text" id="charm" name="charm" value="${(entity.charm)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">创意</td>
+	     		<td><input type="text" id="originality" name="originality" value="${(entity.originality)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">信用</td>
+	     		<td><input type="text" id="credit" name="credit" value="${(entity.credit)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     	</tr>
+	     </table>	
+	     </div>
+    </form>
+</body>
+

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.ClientLogin">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="ClientLogin">
+			<id property="id" column="login_id" />
+			<result property="clientUserId" column="client_user_id" />
+			<result property="clientId" column="client_id" />
+			<result property="remoteIp" column="login_remote_ip" />
+			<result property="channel" column="login_channel" />
+			<result property="netEnvironment" column="login_netEnvironment" />
+			<result property="version" column="login_version" />
+			<result property="duration" column="login_duration" />
+			<result property="createdWhen" column="created_when" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select login_id,client_user_id,client_id,login_remote_ip,login_version,login_netEnvironment,login_version,
+		login_duration,created_when from emoji_client_login
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNumber(id)">and login_id = #{id}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientUserId)">and client_user_id = #{clientUserId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)">and client_id = #{clientId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remoteIp)">and login_remote_ip = #{remoteIp}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and login_channel = #{channel}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(netEnvironment)">and login_netEnvironment = #{netEnvironment}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(version)">and login_version = #{version}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(duration)">and login_duration = #{duration}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where login_id=#{id}
+	</select>
+	
+	<select id="getOrder" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findByPage" parameterType="ClientLogin" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM emoji_client_login 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="ClientLogin" useGeneratedKeys="true" keyProperty="id">
+	insert into emoji_client_login(client_user_id,client_id,login_remote_ip,login_channel,login_netEnvironment,login_version,login_duration,created_when) 
+	values(#{clientUserId},#{clientId},#{remoteIp},#{channel},#{netEnvironment},#{version},#{duration},now())
+	</insert>
+	
+	<update id="update" parameterType="ClientLogin">
+	  UPDATE emoji_client_login
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientUserId)"> client_user_id = #{clientUserId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)"> client_id = #{clientId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remoteIp)"> login_remote_ip = #{remoteIp},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)"> login_channel = #{channel},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(netEnvironment)"> login_netEnvironment = #{netEnvironment},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(version)"> login_version = #{version},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(duration)"> login_duration = #{duration},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                login_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from emoji_client_login where login_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM emoji_client_login
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

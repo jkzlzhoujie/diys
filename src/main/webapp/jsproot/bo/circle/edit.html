@@ -1,0 +1,155 @@
+<body>
+<script type="text/javascript">
+	
+	$(function(){
+		$('#editForm').validate({
+			submitHandler:function(){
+				$.post('/diys/Bo/circle/save',$("#editForm").serialize(),function(data){
+					if(data == 1)
+					{
+						myAlert("该圈子已存在");
+					}else if(data == 2)
+					{
+						myAlert("用户ID不存在");
+					}else{
+						$("#circleForm").submit();
+					}
+				})
+			},
+			rules:{
+				name:{required:true},
+				userId:{required:true},
+				depict:{required:true}
+			}
+		})
+	})
+	
+	$(function(){
+		var isRecommend = $("#isRecommend").val();
+  		if(isRecommend == "1"){
+  			$("#placeRecommend").show();
+  		}else{
+  			$("#placeRecommend").hide();
+  		}
+   });
+	$("#isRecommend").change(function(){
+	  	var isRecommend = $("#isRecommend").val();
+  		if(isRecommend == "1"){
+  			$("#placeRecommend").show();
+  		}else{
+  			$("#placeRecommend").hide();
+  		}
+	});
+	
+	
+	$('#uploadPoster').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/uploadImage',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.gif;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				var myObject = eval('(' + data + ')');
+				$("#logo").attr("value",myObject.url);
+				$("#thumbnail").attr("value",myObject.thumbnail);
+				$("#logo").next().hide();
+				document.getElementById("previewPoster").src=myObject.thumbnail;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#thumbnailUrl").next().html("文件大小不大于10M");
+				  	 	$("#thumbnailUrl").next().show();
+				  	 	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：兴趣圈管理> 圈子列表> 圈子编辑</div>
+    	<form action="/diys/Bo/circle/save" method="post" id="editForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<#if (entity??)==false>
+    			<tr>
+    				<td align="right">用户id</td><td><input type="text" id="userId" name="userId" value="${(entity.userId)!''}"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">圈名</td><td><input type="text" id="name" name="name" value="${(entity.name)!''}"/></td>
+    			</tr>
+    			<#elseif entity??>
+    				<tr>
+    					<td align="right">用户id</td><td>${(entity.userId)!''}</td>
+    				</tr>
+    				<input type="hidden" id="name" name="name" value="${(entity.name)!''}"/>
+    			</#if>
+    			<tr>
+    				<td align="right">封面</td>
+    				<td>
+    					<input type="file" id="uploadPoster" name="uploadPoster"/> 
+			   			<input type="hidden" id="thumbnail" name="thumbnail" value="${(entity.thumbnail)!''}" class="inputtext" />
+			   			<input type="hidden" id="logo" name="logo" value="${(entity.logo)!''}" class="inputtext" />
+			            <span class="note" style="color: red;"></span>
+			            <span class="tp"><img id="previewPoster" src="${(entity.logo)!''}" width="80" height="80" /></span>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td align="right">简介</td><td><textarea id="depict" name="depict" style="width: 250px;height: 100px;resize: none;">${(entity.depict)!''}</textarea></td>
+    			</tr>
+    			<#if entity?? && entity.id??>
+    			<tr>
+    				<td align="right">状态</td>
+    				<td>
+    				<select id="flag" name="flag" class="selectOpt w164">
+             			<option  value="">请选择类型</option>
+             			<option <#if "${(entity.flag)!''}"== "0">selected="selected"</#if> value="0">正常</option>
+	   					<option <#if "${(entity.flag)!''}"== "2">selected="selected"</#if> value="2">管理员删除</option>
+          			</select>
+    				</td>
+    			</tr>
+    			</#if>
+    			
+    			<tr>
+    				<td align="right">是否推荐</td>
+    				<td>
+    				<select id="isRecommend" name="isRecommend" class="selectOpt w164">
+             			<option  value="">请选择是否推荐</option>
+             			<option <#if "${(entity.isRecommend)!''}"== "0">selected="selected"</#if> value="0">不推荐</option>
+	   					<option <#if "${(entity.isRecommend)!''}"== "1">selected="selected"</#if> value="1">推荐</option>
+          			</select>
+    				</td>
+    			</tr>
+    			<tr id="placeRecommend">
+    				<td align="right">推荐排序值</td><td><input type="text"  name="placeRecommend" value="${(entity.placeRecommend)!''}"/></td>
+    			</tr>
+    			
+    			<tr>
+    				<td align="right"><input type="submit" class="btn-submit" value="提交"/></td><td><input type="reset" class="btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+

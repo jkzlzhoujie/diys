@@ -1,0 +1,203 @@
+<head>
+<meta charset="utf-8" />
+<title>商品编辑</title>
+<script type="text/javascript">
+var editor;
+		$(function() {
+			editor = KindEditor.create('textarea[name="content"]', {
+			   resizeType : 0,
+				uploadJson : domainName+'/diys/upload/kindEditor',
+				allowImageUpload : true,
+				formatUploadUrl:false,
+				width : '620',
+				height : '340',
+			   afterBlur: function(){this.sync();},
+			   items : [
+					'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+					'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+					'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
+		});
+});
+
+		function removeSpan(which) {
+		$(which).parent().remove();
+		}
+
+		$(function(){
+			$('#topicForm').validate({	 
+			 rules:{
+		          topicName:{required: true},
+		          orderNum:{required: true,number:true},
+		          sort:{required: true,number:true},
+	              banner:{ required: true }
+	          },
+	          messages:{
+	               topicName:{
+		            required: "名称不能为空"
+		          },
+	                banner:{
+		            required: "banner不能为空"
+	              }
+	            }
+			});	
+			
+					$('#uploadBanner').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.png;*.jpg;',
+			'fileSizeLimit' : '10MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#thumbnail").attr("value",data);
+				$("#thumbnail").next().hide();
+				document.getElementById("srcProductUrlBanner").src=data;
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  	alert("文件大小不大于10M");
+	                  break;
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		
+			$('#fileName').uploadify({
+		'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/banner',
+		'method' : 'post',
+		'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+		'width' : '70',
+		'height' : '22',
+		'fileTypeDesc' : '支持的格式：',
+		'fileTypeExts' : '*.jpg;*.jpge;*.gif;*.png',
+		fileObjName:'fileName',
+		'fileSizeLimit' : '0.10MB',
+		'removeTimeOut'  : 1,
+		'multi' : true,
+		'progressData' : 'percentage',
+		'buttonText' : '点击上传',
+		// 检测FLASH失败调用
+		'onFallback' : function() {
+			alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+		},
+		'onUploadSuccess':function(file, data, response){
+				 var a = "<span><input type='hidden' name='url' value='"+data+"'/><img src="+data+" width='60' height='80' /> <a onclick='removeSpan(this);'>删除</a></span>"
+			$("#images").append(a);
+		},
+		'onSelectError':function(file, errorCode, errorMsg) {
+			 switch(errorCode) {
+			  	case -110:
+			  	$("#appIcon").next().html("文件大小不大于15K");
+			  	 $("#appIcon").next().show();
+			  	 alert("文件大小不大于15K");
+                  break
+               case -120:
+                   alert("文件 ["+file.name+"] 大小异常！");
+                   break;
+               case -130:
+                   alert("文件 ["+file.name+"] 类型不正确！");
+                   break;
+           }
+		}
+	});
+		});
+</script>
+</head>
+<div id="main">
+      <div class="breadcrumb">当前位置：专题管理 > 商品编辑</div>
+      <form action="/diys/Bo/topic/saveCommodity" method="post" id="topicForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+     			<td align="right">名称 </td>
+	     		<td>
+		     		<input type="text" id="name" name="name" value="${(entity.name)!''}" class="inputtext" />
+		     	</td>
+		     	<td width="15%" align="right">描述</td>
+	     		<td width="35%">
+	     		<textarea id="detail" name="detail" style="width: 250px;height: 60px;resize: none;">${(entity.detail)!''}</textarea>
+	     		</td>
+	     	</tr>
+	     	<tr>
+     			<td align="right">原价<span style="color: red;">(单位分)</span></td>
+	     		<td>
+		     		<input type="text" id="originalPrice" name="originalPrice" value="${(entity.originalPrice)!''}" class="inputtext" />
+		     	</td>
+		     	<td width="15%" align="right">X秀价<span style="color: red;">(单位分)</span></td>
+	     		<td width="35%">
+	     			<input type="text" id="price" name="price" value="${(entity.price)!''}" class="inputtext" />
+	     		</td>
+	     	</tr>
+	     	<tr>
+     			<td align="right">原价范围</td>
+	     		<td>
+		     		<input type="text" id="originalRange" name="originalRange" value="${(entity.originalRange)!''}" class="inputtext" />
+		     	</td>
+		     	<td width="15%" align="right">X秀价范围</td>
+	     		<td width="35%">
+	     			<input type="text" id="priceRange" name="priceRange" value="${(entity.priceRange)!''}" class="inputtext" />
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">缩略图<span style="color: red;">(160*200px)</span></td>
+		     	<td>
+		     		<input type="file" id="uploadBanner" name="uploadBanner"/> 
+		     		<input type="hidden" id="thumbnail" name="thumbnail" value="${(entity.thumbnail)!''}" class="inputtext" />
+			        <span class="note" style="color: red;"></span>
+			        <span class="tp"><img id="srcProductUrlBanner" src="${(entity.thumbnail)!''}" width="80" height="80" /></span></div>
+		     	</td>
+		     	<td width="15%" align="right">月订制</td>
+	     		<td width="35%">
+	     			<input type="text" id="orderNum" name="orderNum" value="${(entity.orderNum)!''}" class="inputtext" />
+	     		</td>
+		    </tr>
+	     	<tr>
+	     		<td width="15%" align="right">大图<span style="color: red;">(672*600px)</span></td>
+	     		<td width="35%">
+	     		<input type="file" id="fileName" name="fileName"/> 
+			   			<div id="images">
+			   			<#if imagelist??>
+			   			<#list imagelist as images>
+			   			<span><input type='hidden' name='url' value="${images }" /> <img src="${images}" width='60' height='80' /> <a onclick='removeSpan(this);'>删除</a> </span>
+			   			</#list>
+			   			</#if>
+					</div>
+	     		</td>
+	     		<td width="15%" align="right">排序</td>
+	     		<td width="35%">
+	     			<input type="text" id="sort" name="sort" value="${(entity.sort)!''}" class="inputtext" />
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="15%" align="right">详情</td>
+	     		<td width="35%" colspan="3">
+	     		<textarea id="content" name="content" style="width: 100%;height: 100px;resize: none;">${(entity.content)!''}</textarea>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>

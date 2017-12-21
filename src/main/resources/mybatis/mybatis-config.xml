@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration     PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<typeAlias alias="SystemUser" type="cn.temobi.complex.entity.SystemUser"/>
+		<typeAlias alias="SystemRights" type="cn.temobi.complex.entity.SystemRights"/>
+		<typeAlias alias="Material" type="cn.temobi.complex.entity.Material"/>
+		<typeAlias alias="Banner" type="cn.temobi.complex.entity.Banner"/>
+		<typeAlias alias="Client" type="cn.temobi.complex.entity.Client"/>
+		<typeAlias alias="ClientUser" type="cn.temobi.complex.entity.ClientUser"/>
+		<typeAlias alias="ClientVersion" type="cn.temobi.complex.entity.ClientVersion"/>
+		<typeAlias alias="ClientSp" type="cn.temobi.complex.entity.ClientSp"/>
+		<typeAlias alias="StartStatistics" type="cn.temobi.complex.entity.StartStatistics"/>
+		<typeAlias alias="Statistics" type="cn.temobi.complex.entity.Statistics"/>
+		<typeAlias alias="Province" type="cn.temobi.complex.entity.Province"/>
+		<typeAlias alias="ClientLogin" type="cn.temobi.complex.entity.ClientLogin"/>
+		<typeAlias alias="ResourceShare" type="cn.temobi.complex.entity.ResourceShare"/>
+		<typeAlias alias="PmProductInfo" type="cn.temobi.complex.entity.PmProductInfo"/>
+		<typeAlias alias="MaterialDownload" type="cn.temobi.complex.entity.MaterialDownload"/>
+		<typeAlias alias="Feedback" type="cn.temobi.complex.entity.Feedback"/>
+		<typeAlias alias="Classify" type="cn.temobi.complex.entity.Classify"/>
+		<typeAlias alias="Theme" type="cn.temobi.complex.entity.Theme"/>
+		<typeAlias alias="SystemSeting" type="cn.temobi.complex.entity.SystemSeting"/>
+		<typeAlias alias="ThemeLove" type="cn.temobi.complex.entity.ThemeLove"/>
+		<typeAlias alias="Laber" type="cn.temobi.complex.entity.Laber"/>
+		<typeAlias alias="MaterialResource" type="cn.temobi.complex.entity.MaterialResource"/>
+		<typeAlias alias="LaberSearch" type="cn.temobi.complex.entity.LaberSearch"/>
+		<typeAlias alias="LaberConfigure" type="cn.temobi.complex.entity.LaberConfigure"/>
+		<typeAlias alias="Message" type="cn.temobi.complex.entity.Message"/>
+		<typeAlias alias="ApplicationCount" type="cn.temobi.complex.entity.ApplicationCount"/>
+		<typeAlias alias="Application" type="cn.temobi.complex.entity.Application"/>
+		<typeAlias alias="CmUserInfo" type="cn.temobi.complex.entity.CmUserInfo"/>
+		<typeAlias alias="CmUserFriends" type="cn.temobi.complex.entity.CmUserFriends"/>
+		<typeAlias alias="CmUserFans" type="cn.temobi.complex.entity.CmUserFans"/>
+		<typeAlias alias="CmUserExtendInfo" type="cn.temobi.complex.entity.CmUserExtendInfo"/>
+		<typeAlias alias="CmUserAttentions" type="cn.temobi.complex.entity.CmUserAttentions"/>
+		<typeAlias alias="CmUserAccusation" type="cn.temobi.complex.entity.CmUserAccusation"/>
+		<typeAlias alias="CmFriendsRequest" type="cn.temobi.complex.entity.CmFriendsRequest"/>
+		<typeAlias alias="PmProductAccusation" type="cn.temobi.complex.entity.PmProductAccusation"/>
+		<typeAlias alias="PmProductDiscuss" type="cn.temobi.complex.entity.PmProductDiscuss"/>
+		<typeAlias alias="PmProductPs" type="cn.temobi.complex.entity.PmProductPs"/>
+		<typeAlias alias="PmProductShares" type="cn.temobi.complex.entity.PmProductShares"/>
+		<typeAlias alias="PmProductPraises" type="cn.temobi.complex.entity.PmProductPraises"/>
+		<typeAlias alias="SysConfigParam" type="cn.temobi.complex.entity.SysConfigParam"/>
+		<typeAlias alias="CmTalenInfo" type="cn.temobi.complex.entity.CmTalenInfo"/>
+		<typeAlias alias="SysHotLabels" type="cn.temobi.complex.entity.SysHotLabels"/>
+		<typeAlias alias="CmUserMessage" type="cn.temobi.complex.entity.CmUserMessage"/>
+		<typeAlias alias="SysIndustryInfo" type="cn.temobi.complex.entity.SysIndustryInfo"/>
+		<typeAlias alias="SysBackupLabels" type="cn.temobi.complex.entity.SysBackupLabels"/>
+		<typeAlias alias="SysProductTypeInfo" type="cn.temobi.complex.entity.SysProductTypeInfo"/>
+		<typeAlias alias="PmTopicCase" type="cn.temobi.complex.entity.PmTopicCase"/>
+		<typeAlias alias="PmTopicInfo" type="cn.temobi.complex.entity.PmTopicInfo"/>
+		<typeAlias alias="PmTopicLooks" type="cn.temobi.complex.entity.PmTopicLooks"/>
+		<typeAlias alias="PmTopicPsProducts" type="cn.temobi.complex.entity.PmTopicPsProducts"/>
+		<typeAlias alias="PmTopicJoinProducts" type="cn.temobi.complex.entity.PmTopicJoinProducts"/>
+		<typeAlias alias="CmBusiScope" type="cn.temobi.complex.entity.CmBusiScope"/>
+		<typeAlias alias="CmUserImageIntroduce" type="cn.temobi.complex.entity.CmUserImageIntroduce"/>
+		<typeAlias alias="SysFlowNo" type="cn.temobi.complex.entity.SysFlowNo"/>
+		<typeAlias alias="Order" type="cn.temobi.complex.entity.Order"/>
+		<typeAlias alias="PmCommodity" type="cn.temobi.complex.entity.PmCommodity"/>
+		<typeAlias alias="PmCommodityInfo" type="cn.temobi.complex.entity.PmCommodityInfo"/>
+		<typeAlias alias="Count"  type="cn.temobi.complex.entity.Count"/>
+		<typeAlias alias="SysScore"  type="cn.temobi.complex.entity.SysScore"/>
+		<typeAlias alias="PmScoreLog"  type="cn.temobi.complex.entity.PmScoreLog"/>
+		<typeAlias alias="PmScoreLogSee"  type="cn.temobi.complex.entity.PmScoreLogSee"/>
+		<typeAlias alias="PmScoreLogSeeUser"  type="cn.temobi.complex.entity.PmScoreLogSeeUser"/>
+		<typeAlias alias="PmScoreDisposable"  type="cn.temobi.complex.entity.PmScoreDisposable"/>
+		<typeAlias alias="ProductRecommend"  type="cn.temobi.complex.entity.ProductRecommend"/>
+		<typeAlias alias="BlackListWord"  type="cn.temobi.complex.entity.BlackListWord"/>
+		<typeAlias alias="ThemeUseCount"  type="cn.temobi.complex.entity.ThemeUseCount"/>
+		<typeAlias alias="CmUserRanking"  type="cn.temobi.complex.entity.CmUserRanking"/>
+		<typeAlias alias="CmCircleProduct"  type="cn.temobi.complex.entity.CmCircleProduct"/>
+		<typeAlias alias="CmCircleUser"  type="cn.temobi.complex.entity.CmCircleUser"/>
+		<typeAlias alias="CmCircle"  type="cn.temobi.complex.entity.CmCircle"/>
+		<typeAlias alias="CmCircleUserLog"  type="cn.temobi.complex.entity.CmCircleUserLog"/>
+		<typeAlias alias="CmCircleUserFollow"  type="cn.temobi.complex.entity.CmCircleUserFollow"/>
+		<typeAlias alias="SysAdvert"  type="cn.temobi.complex.entity.SysAdvert"/>
+		<typeAlias alias="SysColumn"  type="cn.temobi.complex.entity.SysColumn"/>
+		<typeAlias alias="WxDiy"  type="cn.temobi.complex.entity.WxDiy"/>
+		<typeAlias alias="MaterialUse"  type="cn.temobi.complex.entity.MaterialUse"/>
+		<typeAlias alias="MaterialCount"  type="cn.temobi.complex.entity.MaterialCount"/>
+		<typeAlias alias="MaterialUseLog"  type="cn.temobi.complex.entity.MaterialUseLog"/>
+		<typeAlias alias="BusinessCount"  type="cn.temobi.complex.entity.BusinessCount"/>
+		<typeAlias alias="CmUserGroup"  type="cn.temobi.complex.entity.CmUserGroup"/>
+		<typeAlias alias="CmGroup"  type="cn.temobi.complex.entity.CmGroup"/>
+		<typeAlias alias="OrderFinance" type="cn.temobi.complex.entity.OrderFinance"/>
+		<typeAlias alias="AccountUser" type="cn.temobi.complex.entity.AccountUser"/>
+		<typeAlias alias="AccountWithdraw" type="cn.temobi.complex.entity.AccountWithdraw"/>
+		<typeAlias alias="AccountWalletLog" type="cn.temobi.complex.entity.AccountWalletLog"/>
+		<typeAlias alias="AccountRedPacketLog" type="cn.temobi.complex.entity.AccountRedPacketLog"/>
+		<typeAlias alias="AccountRedPacket" type="cn.temobi.complex.entity.AccountRedPacket"/>
+		<typeAlias alias="CmUserSignLog" type="cn.temobi.complex.entity.CmUserSignLog"/>
+		<typeAlias alias="CmUserSign" type="cn.temobi.complex.entity.CmUserSign"/>
+		<typeAlias alias="AccountUserLog" type="cn.temobi.complex.entity.AccountUserLog"/>
+		<typeAlias alias="AccountUserBuy" type="cn.temobi.complex.entity.AccountUserBuy"/>
+		<typeAlias alias="SysType" type="cn.temobi.complex.entity.SysType"/>
+		<typeAlias alias="SysTypeTime" type="cn.temobi.complex.entity.SysTypeTime"/>
+		<typeAlias alias="CouponMobile" type="cn.temobi.complex.entity.CouponMobile"/>
+		
+		<typeAlias alias="BlackListNickName"  type="cn.temobi.complex.entity.BlackListNickName"/>
+		<typeAlias alias="BlackListUserEquipment"  type="cn.temobi.complex.entity.BlackListUserEquipment"/>
+		<typeAlias alias="QqList"  type="cn.temobi.complex.entity.QqList"/>
+		<typeAlias alias="CmUserReceive"  type="cn.temobi.complex.entity.CmUserReceive"/>
+		<typeAlias alias="PmProductLabel"  type="cn.temobi.complex.entity.PmProductLabel"/>
+		<typeAlias alias="SysPrivilege"  type="cn.temobi.complex.entity.SysPrivilege"/>
+		<typeAlias alias="SysPackage"  type="cn.temobi.complex.entity.SysPackage"/>
+		<typeAlias alias="SysParameter"  type="cn.temobi.complex.entity.SysParameter"/>
+		<typeAlias alias="SysPrivilegePackage"  type="cn.temobi.complex.entity.SysPrivilegePackage"/>
+		<typeAlias alias="SysPrivilegeContentType"  type="cn.temobi.complex.entity.SysPrivilegeContentType"/>
+		<typeAlias alias="SysPrivilegeContent"  type="cn.temobi.complex.entity.SysPrivilegeContent"/>
+		<typeAlias alias="CmUserPrivilege"  type="cn.temobi.complex.entity.CmUserPrivilege"/>
+		<typeAlias alias="CmUserCollect"  type="cn.temobi.complex.entity.CmUserCollect"/>
+		
+		
+		<typeAlias alias="MenuList"  type="cn.temobi.complex.entity.MenuList"/>
+		<typeAlias alias="CircleType"  type="cn.temobi.complex.entity.CircleType"/>
+		<typeAlias alias="CirclePost"  type="cn.temobi.complex.entity.CirclePost"/>
+		<typeAlias alias="CirclePostPic"  type="cn.temobi.complex.entity.CirclePostPic"/>
+		<typeAlias alias="CirclePostPraises"  type="cn.temobi.complex.entity.CirclePostPraises"/>
+		<typeAlias alias="CirclePostDiscPraises"  type="cn.temobi.complex.entity.CirclePostDiscPraises"/>
+		<typeAlias alias="CirclePostDisc"  type="cn.temobi.complex.entity.CirclePostDisc"/>
+		<typeAlias alias="CirclePostAccusation"  type="cn.temobi.complex.entity.CirclePostAccusation"/>
+		<typeAlias alias="BackgroundPic"  type="cn.temobi.complex.entity.BackgroundPic"/>
+		<typeAlias alias="SysXuanshangSet"  type="cn.temobi.complex.entity.SysXuanshangSet"/>
+		<typeAlias alias="CmDesignerInfo"  type="cn.temobi.complex.entity.CmDesignerInfo"/>
+		<typeAlias alias="PmProductCollectPic"  type="cn.temobi.complex.entity.PmProductCollectPic"/>
+		<typeAlias alias="CmDesignerInfoPic"  type="cn.temobi.complex.entity.CmDesignerInfoPic"/>
+		<typeAlias alias="CmDesignerProductInfo"  type="cn.temobi.complex.entity.CmDesignerProductInfo"/>
+		<typeAlias alias="CmDesignerProductFormat"  type="cn.temobi.complex.entity.CmDesignerProductFormat"/>
+		<typeAlias alias="CmDesignerHonor"  type="cn.temobi.complex.entity.CmDesignerHonor"/>
+		<typeAlias alias="CmDesignerSaleComment"  type="cn.temobi.complex.entity.CmDesignerSaleComment"/>
+
+		
+		
+		
+		
+		
+		
+	</typeAliases>
+</configuration>

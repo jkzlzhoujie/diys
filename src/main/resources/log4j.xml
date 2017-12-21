@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <!-- appender 部分是可用的日志输出方式定义，可以定义多个 -->
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%l %d{yyyy-MM-dd HH:mm:ss.SSS} -- %p -- %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="DEBUG" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="/temp/rcs/webtools_debug.log"/>
+        <param name="Append" value="true"/>
+        <param name="MaxFileSize" value="800MB"/>
+        <param name="MaxBackupIndex" value="100000"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%l  -- %d{yyyy-MM-dd HH:mm:ss.SSS} -- %p -- %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="DEBUG"/>
+            <param name="LevelMax" value="DEBUG"/>
+        </filter>
+    </appender>
+
+    <appender name="INFO" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/temp/rcs/webtools_info.log"/>
+        <param name="Append" value="true"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />  
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%l %d{yyyy-MM-dd HH:mm:ss.SSS} -- %p -- %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+            <param name="LevelMax" value="INFO"/>
+        </filter>
+    </appender>
+
+    <appender name="WARN" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="/temp/rcs/webtools_warn.log"/>
+        <param name="Append" value="true"/>
+        <param name="MaxFileSize" value="800MB"/>
+        <param name="MaxBackupIndex" value="100000"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%l %d{yyyy-MM-dd HH:mm:ss.SSS} -- %p -- %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="WARN"/>
+            <param name="LevelMax" value="WARN"/>
+        </filter>
+    </appender>
+
+    <appender name="ERROR" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="/temp/rcs/webtools_error.log"/>
+        <param name="Append" value="true"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%l %c -- %d{yyyy-MM-dd HH:mm:ss.SSS} -- %p -- %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ERROR"/>
+            <param name="LevelMax" value="ERROR"/>
+        </filter>
+    </appender>
+
+
+    <appender name="TOOLS" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="/temp/rcs/webtools.log"/>
+        <param name="Append" value="true"/>
+        <param name="MaxFileSize" value="10MB"/>
+        <param name="MaxBackupIndex" value="10000"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%l %d{yyyy-MM-dd HH:mm:ss.SSS}  -- %p -- %m%n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="DEBUG"/>
+            <param name="LevelMax" value="DEBUG"/>
+        </filter>
+    </appender>
+
+    <!-- Application Loggers -->
+    <logger name="org.springframework.samples.mvc">
+        <level value="ERROR"/>
+    </logger>
+
+    <!-- 3rdparty Loggers -->
+    <logger name="org.springframework.core">
+        <level value="ERROR"/>
+    </logger>
+
+    <logger name="org.springframework.beans">
+        <level value="ERROR"/>
+    </logger>
+
+    <logger name="org.springframework.context">
+        <level value="ERROR"/>
+    </logger>
+
+    <logger name="org.springframework.http">
+        <level value="ERROR"/>
+    </logger>
+
+    <logger name="org.springframework.web">
+        <level value="ERROR"/>
+    </logger>
+
+
+    <category name="org.apache">
+        <priority value="ERROR"/>
+        <appender-ref ref="ERROR"/>
+    </category>
+
+    <logger name="org.web">
+        <level value="info"/>
+    </logger>
+    
+    <logger name="org.net">
+        <level value="info"/>
+    </logger>
+    
+    <logger name="java.sql.Connection">
+        <level value="debug" />
+    </logger>
+
+    <logger name="java.sql.PreparedStatement">
+        <level value="debug" />
+    </logger>
+
+    <category name="java.sql">
+        <priority value="debug"/>
+    </category>
+
+    <category name="org.apache.ibatis">
+        <priority value="ERROR"/>
+    </category>
+    <!--  root部分定义了log4j的默认输出级别和方式 -->
+    <root>
+        <priority value="ERROR"/>
+        <appender-ref ref="ERROR"/>
+        <appender-ref ref="INFO"/>
+        <appender-ref ref="WARN"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</log4j:configuration>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+       default-lazy-init="true">
+    <context:component-scan base-package="cn.temobi.complex.action.api"/>
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <ref bean="clientApiInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="clientApiInterceptor" class="cn.temobi.complex.interceptor.ClientApiInterceptor">
+     <property name="checkAccessUrls">
+	            <list>
+	                <value>/cmUser/*</value>
+	                <value>/pm/*</value>
+	                <value>/topic/custom</value>
+	                <value>/topic/submitDraw</value>
+	                <value>/topic/helpP</value>
+	                <value>/topic/submitP</value>
+	                <value>/order/getorderinfo</value>
+	                <value>/order/weixinNew</value>
+	                <value>/order/alipayinfo</value>
+	                <value>/order/alipayinfo</value>
+	                <value>/topicNew/uploadImage</value>
+	                <value>/topicNew/orderList</value>
+	                <value>/topicNew/customNew</value>
+	                <value>/topicNew/cancelOrder</value>
+	                <value>/topicNew/delOrder</value>
+	                <value>/topic/myP</value>
+	                <value>/topic/myHelpP</value>
+	                <value>/circle/*</value>
+	            </list>
+	        </property>
+	        <property name="noCheckAccessUrls">
+	            <list>
+	                <value>/cmUser/submitMo</value>
+	                <value>/cmUser/login</value>
+	                <value>/cmUser/getCode</value>
+	                <value>/cmUser/checkMsgCode</value>
+	                <value>/cmUser/getPwd</value>
+	                <value>/cmUser/updateNewPwd</value>
+	                <value>/cmUser/register</value>
+	                <value>/cmUser/thirdLogin</value>
+	                <value>/pm/index</value>
+	                <value>/pm/detail</value>
+	                <value>/pm/moreZ</value>
+	                <value>/pm/getDiscuss</value>
+	                <value>/pm/getAllTwoDiscuss</value>
+	                <value>/pm/getAllDiscuss</value>
+	                <value>/pm/banner</value>
+	                <value>/pm/seeOthers</value>
+	                <value>/pm/allFans</value>
+	                <value>/pm/zProduct</value>
+	                <value>/pm/searchPru</value>
+	                <value>/pm/searchUser</value>
+	                <value>/pm/hotLaber</value>
+	                <value>/circle/getCircleType</value>
+	                <value>/circle/getCircleRecommend</value>
+	                <value>/circle/followUserList</value>
+	                <value>/circle/allProductList</value>
+	                <value>/circle/allUserList</value>
+	                 <value>/circle/productList</value>
+	                <value>/circle/userList</value>
+	                <value>/circle/circleSearch</value>
+	                <value>/circle/getMoreCircleList</value>
+	                <value>/circle/detail</value>
+	                
+	                
+	                
+	                
+	            </list>
+	        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.web.bind.MissingServletRequestParameterException">
+                    /common/error/requiredParameter
+                </prop>
+                <prop key="org.springframework.beans.TypeMismatchException">/common/error/mismatchParameter</prop>
+                <prop key="org.springframework.web.bind.ServletRequestBindingException">
+                    /common/error/bindException
+                </prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="supportedMethods" value="GET,POST,PUT,HEAD"/>
+        <property name="webBindingInitializer">
+            <bean class="cn.temobi.complex.init.BindingInitializer"/>
+        </property>
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <bean class="org.springframework.http.MediaType">
+                    <constructor-arg index="0" value="text"/>
+                    <constructor-arg index="1" value="plain"/>
+                    <constructor-arg index="2" value="UTF-8"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <context:annotation-config/>
+    <mvc:default-servlet-handler/>
+</beans>

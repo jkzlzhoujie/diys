@@ -1,0 +1,39 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#classifyAddForm').validate({	 
+			 rules:{
+		          name:{
+		              required:true
+		          }
+	          },
+	          messages:{
+	                name:{
+		                required:"名称不能为空"
+	                }
+	            }
+			});	
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：客户端管理 > 新增反馈分类</div>
+      <form action="/diys/Bo/client/fbTsave" method="post" id="classifyAddForm">
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">名称</td>
+	     		<td><input type="text" id="name" name="name"  class="inputtext" /></td>
+	     		
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td width="40%"></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

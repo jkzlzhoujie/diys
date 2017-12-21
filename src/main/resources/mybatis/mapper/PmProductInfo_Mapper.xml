@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.PmProductInfo">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="PmProductInfo">
+			<result property="id" column="product_id" />
+			<result property="clientId" column="client_id" />
+			<result property="userId" column="user_id" />
+			<result property="url" column="url" />
+			<result property="thumbnail" column="thumbnail" />
+			<result property="resourceId" column="resource_id" />
+			<result property="createdWhen" column="createdWhen" />
+			<result property="createType" column="create_type" />
+			<result property="createFrom" column="create_from" />
+			<result property="srcProductId" column="src_product_id" />
+			<result property="hotScore" column="hot_score" />
+			<result property="magicScore" column="magic_score" />
+			<result property="hotSystemScore" column="hot_system_score" />
+			<result property="magicSystemScore" column="magic_system_score" />
+			<result property="searchCount" column="search_count" />
+			<result property="praiseCount" column="praise_count" />
+			<result property="downloadCount" column="download_count" />
+			<result property="shareCount" column="share_count" />
+			<result property="discussCount" column="discuss_count" />
+			<result property="editCount" column="edit_count" />
+			<result property="psCount" column="ps_count" />
+			<result property="stampCount" column="stamp_count" />
+			<result property="productLabel" column="product_label" />
+			<result property="productName" column="product_name" />
+			<result property="description" column="description" />
+			<result property="audit" column="audit" />
+			<result property="isPublic" column="is_public" />
+			<result property="typeId" column="type_id" />
+			<result property="createLocation" column="create_location" />
+			<result property="jumpType" column="jumpType" />
+			<result property="jumpText" column="jumpText" />
+			<result property="picCollectFlag" column="pic_collect_flag" />
+			<result property="picCollectCount" column="pic_collect_count" />
+			
+			
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from pm_product_info
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isLaberNoNull)">and product_label is not null</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(resourceId)">and resource_id = #{resourceId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)">and client_id = #{clientId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and user_id = #{userId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(picCollectFlag)">and pic_collect_flag = #{picCollectFlag}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(myaudit)">and audit in(0,1) and is_public in (1,98)</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(drawaudit)">and is_public = 4</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(examineRight)">and is_public in (1,2)</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(description)">and description like "%"#{description}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(laber)">and (product_label like "%"#{laber}"%" || description like "%"#{laber}"%")</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createFrom)">and create_from = #{createFrom}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(createdWhen,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(createdWhen,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(typeList)">
+		and type_id in 
+		<foreach collection="typeList" index="index" item="item" open="(" separator="," close=")">#{item.id}</foreach>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productList)">
+		and product_id in 
+		<foreach collection="productList" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+		</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where product_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	</select>
+	
+	
+	<select id="findNotPraises" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+		SELECT * FROM `pm_product_info` AS t1 JOIN 
+		(SELECT ROUND(RAND() * ((SELECT MAX(`product_id`) FROM `pm_product_info`)-(SELECT MIN(product_id) FROM `pm_product_info`))+(SELECT MIN(product_id) 
+		FROM `pm_product_info`)) AS id) AS t2
+		WHERE t1.product_id >= t2.id 
+	    <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+	  	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createFrom)">and create_from = #{createFrom}</if>
+	 	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+	    <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and `user_id` != #{userId}</if>
+		ORDER BY t1.product_id LIMIT #{limit};
+	</select>
+	
+	<select id="findByPage" parameterType="PmProductInfo" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	
+	</select>
+	
+	<!--作品与主题关联-->
+	<select id="findByPageDto2"  resultType="cn.temobi.complex.dto.ThemeUsedByPdtDto" useCache="false">
+
+	SELECT `imageUrl`,`theme_id` AS themeId,product_label AS productLabel,create_from AS createFrom,a.createdWhen,a.hot_score AS hotScore,a.magic_score AS magicScore,a.product_id AS productId
+
+	,search_count AS searchCount,praise_count AS praiseCount,a.discuss_count AS discussCount ,`url`,`jumpType`
+
+	FROM `pm_product_info` a LEFT JOIN `emoji_resource_share` b ON a.`resource_id`=b.`resource_id` LEFT JOIN `emoji_theme` c ON c.`id`=b.`theme_id`
+
+	<where>
+		audit=1 and is_public=1
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">AND a.product_id = #{productId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeId)">AND theme_id = #{themeId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createFrom)">AND create_from = #{createFrom}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')<=DATE_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+	</where>
+	group by a.product_id
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried)">ORDER BY ${orderFried} DESC</if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried1)">order by ${orderFried1}</if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sequence)"> ${sequence}</if>
+	 LIMIT #{limit} offset #{offset}
+	</select>
+	
+		<!--作品与主题关联-->
+	<select id="countDto2"  resultType="long" useCache="false">
+
+	SELECT COUNT(1) FROM (SELECT c.product_id,create_from,c.createdWhen,b.`theme_id` FROM `pm_product_info` c LEFT JOIN `emoji_resource_share` b ON c.`resource_id`=b.`resource_id` WHERE audit=1 AND is_public=1 GROUP BY c.product_id ORDER BY hot_Score ASC)AS a LEFT JOIN `emoji_theme` d ON d.`id`=a.`theme_id` 
+	<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">AND a.product_id = #{productId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(themeId)">AND theme_id = #{themeId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createFrom)">AND create_from = #{createFrom}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')<=DATE_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')>=DATE_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+	</where>
+	</select>
+	
+	<select id="findByPageDto" parameterType="map" resultType="cn.temobi.complex.dto.PmProductInfoDto" useCache="false">
+	SELECT jumpType,jumpText,description,product_name as productName,create_type as createType,a.user_id as userId,is_public as isPublic,type_id as typeId,product_label as productLabel,create_from as createFrom,a.createdWhen,a.hot_score as hotScore,a.magic_score as magicScore,a.product_id as productId,thumbnail,url,search_count as searchCount,praise_count as praiseCount,a.discuss_count as discussCount,sex,head_image_url as headImageUrl,city,nick_name as nickName FROM `pm_product_info` a LEFT JOIN `cm_user_info` b ON a.`user_id` = b.`user_id`
+	<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and product_id = #{id}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(myaudit)">and audit in(0,1) and is_public in (1,98)</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(drawaudit)">and is_public = 4</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+	    <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(examineRight)">and is_public in (1,2)</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and a.user_id = #{userId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createFrom)">and a.create_from = #{createFrom}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(description)">and description like "%"#{description}"%"</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(laber)">and (product_label like "%"#{laber}"%" || description like "%"#{laber}"%")</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and nick_name like "%"#{nickName}"%"</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(newList)">
+		and a.product_id not in 
+		<foreach collection="newList" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productList)">
+		and a.product_id in 
+		<foreach collection="productList" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+		order by substring_index(#{ids},a.product_id,1)
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(typeList)">
+		and a.type_id in 
+		<foreach collection="typeList" index="index" item="item" open="(" separator="," close=")">#{item.id}</foreach>
+		</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+	</where>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried)">order by ${orderFried} desc</if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried1)">order by ${orderFried1}</if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sequence)"> ${sequence}</if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(limit)"> limit #{limit} offset #{offset}</if>
+	</select>
+	
+	
+	<select id="findNew" parameterType="map" resultType="cn.temobi.complex.dto.PmProductInfoDto" useCache="false">
+		SELECT * FROM (
+	SELECT jumpType,jumpText,a.product_id AS productId,is_public AS isPublic,product_label AS productLabel,create_from AS createFrom,a.createdWhen,
+	a.hot_score AS hotScore,a.magic_score AS magicScore,thumbnail,url,
+	search_count AS searchCount,praise_count AS praiseCount,a.discuss_count AS discussCount,sex,head_image_url AS headImageUrl,
+	city,nick_name AS nickName,a.user_id FROM pm_product_info a LEFT JOIN `cm_user_info` b ON a.`user_id` = b.`user_id` 
+	<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(myaudit)">and audit in(0,1) and is_public in (1,98)</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(drawaudit)">and is_public = 4</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(examineRight)">and is_public in (1,2)</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and a.user_id = #{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createFrom)">and a.create_from = #{createFrom}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(description)">and description like "%"#{description}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and nick_name like "%"#{nickName}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+	             <![CDATA[
+	                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+	          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+	            <![CDATA[
+	                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+	            ]]>
+	         </if>
+		</where>
+		 ORDER BY a.createdwhen DESC 
+	) c
+	GROUP BY c.user_id ORDER BY c.createdwhen DESC 
+	 limit #{limit}
+	</select>
+	
+	<select id="countDto" resultType="long" useCache="false">
+		SELECT count(1) FROM `pm_product_info` a LEFT JOIN `cm_user_info` b ON a.`user_id` = b.`user_id`
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and a.product_id = #{id}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(myaudit)">and audit in(0,1) and is_public in (1,98)</if>
+				 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(drawaudit)">and is_public = 4</if>
+				 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(examineRight)">and is_public in (1,2)</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and a.user_id = #{userId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createFrom)">and a.create_from = #{createFrom}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(description)">and description like "%"#{description}"%"</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and nick_name like "%"#{nickName}"%"</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(laber)">and (product_label like "%"#{laber}"%" || description like "%"#{laber}"%")</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(a.createdWhen,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+		</where>
+    </select>
+	
+	<select id="findIdList" parameterType="map" resultType="long" useCache="false">
+	SELECT DISTINCT user_id FROM `pm_product_info` 
+	<where>
+	and user_id IS NOT NULL 
+	 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+	</where>
+	ORDER BY ${orderFried} DESC  limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findProductIdList" parameterType="map" resultType="long" useCache="false">
+	SELECT product_id FROM pm_product_info
+	<where>
+	 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+	</where>
+	 ORDER BY product_id DESC LIMIT  #{limit}
+	</select>
+	
+	
+	<select id="findNewProductId" parameterType="map" resultType="Long" useCache="false">
+	SELECT product_id FROM pm_product_info
+	<include refid="sql_where"/>
+	ORDER BY RAND() limit #{limit} offset #{offset}
+	</select>
+	
+	
+	<select id="findCircleId" parameterType="map" resultType="long" useCache="false">
+	SELECT product_id FROM `pm_product_info`
+	<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(keyword)">and product_label like "%"#{keyword}"%"</if>
+			and audit = 1 and is_public = 1
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(time)">
+             <![CDATA[
+                 AND DATE_FORMAT(createdWhen,'%Y-%m-%d')=Date_FORMAT(#{time},'%Y-%m-%d')
+            ]]>
+         </if>
+      </where>
+	</select>
+	
+	
+	<select id="findProductList" parameterType="map" resultType="long" useCache="false">
+	SELECT product_id FROM `pm_product_info` 
+	<where>
+	  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+	  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+	  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(laber)">and (product_label like "%"#{laber}"%" || description like "%"#{laber}"%")</if>
+	  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(discussCount)">and discuss_count >= #{discussCount}</if>
+	</where>
+	ORDER BY ${orderFried} DESC 
+	 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(limit)"> limit #{limit}</if>
+	</select>
+	
+	
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(1) FROM pm_product_info 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="PmProductInfo" useGeneratedKeys="true" keyProperty="id">
+	insert into pm_product_info(user_id,resource_id,client_id,url,thumbnail,create_type,create_from,src_product_id,hot_score,
+	magic_score,search_count,praise_count,download_count,share_count,discuss_count,edit_count,ps_count,stamp_count,product_label,
+	create_location,audit,is_public,description,hot_system_score,magic_system_score,type_id,product_name,jumpText,jumpType,pic_collect_flag,pic_collect_count,createdWhen) 
+	values(#{userId},#{resourceId},#{clientId},#{url},#{thumbnail},#{createType},#{createFrom},#{srcProductId},#{hotScore},
+	#{magicScore},#{searchCount},#{praiseCount},#{downloadCount},#{shareCount},#{discussCount},#{editCount},#{psCount},#{stampCount},#{productLabel},
+	#{createLocation},#{audit},#{isPublic},#{description},#{hotSystemScore},#{magicSystemScore},#{typeId},#{productName},#{jumpText},#{jumpType},#{picCollectFlag},#{picCollectCount},now())
+	</insert>
+	
+	
+	 <insert id="insertBatch" parameterType="java.util.List">  
+       insert into pm_product_info(user_id,resource_id,client_id,url,thumbnail,create_type,create_from,src_product_id,hot_score,
+       magic_score,search_count,praise_count,download_count,share_count,discuss_count,edit_count,ps_count,stamp_count,product_label,
+       create_location,audit,is_public,description,hot_system_score,magic_system_score,type_id,product_name,jumpText,jumpType,pic_collect_flag,pic_collect_count,createdWhen) 
+	   values  
+       <foreach collection="list" item="item" index="index" separator=",">  
+          (#{userId},#{resourceId},#{clientId},#{url},#{thumbnail},#{createType},#{createFrom},#{srcProductId},#{hotScore},
+          #{magicScore},#{searchCount},#{praiseCount},#{downloadCount},#{shareCount},#{discussCount},#{editCount},#{psCount},#{stampCount},#{productLabel},
+          #{createLocation},#{audit},#{isPublic},#{description},#{hotSystemScore},#{magicSystemScore},#{typeId},#{productName},#{jumpText},#{jumpType},#{picCollectFlag},#{picCollectCount},now())
+       </foreach>  
+     </insert>  
+	
+	
+	<update id="update" parameterType="PmProductInfo">
+	  UPDATE pm_product_info
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)"> client_id = #{clientId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(url)"> url = #{url},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(thumbnail)"> thumbnail = #{thumbnail},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> user_id = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(resourceId)"> resource_id = #{resourceId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createType)"> create_type = #{createType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createFrom)"> create_from = #{createFrom},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(srcProductId)"> src_product_id = #{srcProductId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(hotScore)"> hot_score = #{hotScore},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(magicScore)"> magic_score = #{magicScore},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(searchCount)"> search_count = #{searchCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(praiseCount)"> praise_count = #{praiseCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(downloadCount)"> download_count = #{downloadCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(shareCount)"> share_count = #{shareCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(discussCount)"> discuss_count = #{discussCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(editCount)"> edit_count = #{editCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(psCount)"> ps_count = #{psCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(stampCount)"> stamp_count = #{stampCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productLabel)"> product_label = #{productLabel},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createLocation)"> create_location = #{createLocation},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)"> audit = #{audit},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)"> is_public = #{isPublic},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(description)"> description = #{description},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(hotSystemScore)"> hot_system_score = #{hotSystemScore},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(magicSystemScore)"> magic_system_score = #{magicSystemScore},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(typeId)"> type_id = #{typeId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productName)"> product_name = #{productName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(jumpText)"> jumpText = #{jumpText},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(jumpType)"> jumpType = #{jumpType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(picCollectFlag)"> pic_collect_flag = #{picCollectFlag},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(picCollectCount)"> pic_collect_count = #{picCollectCount},</if>
+		 </set>
+        <where>
+                product_id=#{id}
+        </where>
+	</update>
+	
+	
+	<update id="updateAll" parameterType="map">
+	 UPDATE `pm_product_info` SET `search_count` = search_count+#{num} WHERE 
+	product_id = #{productId}
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from pm_product_info where product_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM pm_product_info
+		<where>
+				product_id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

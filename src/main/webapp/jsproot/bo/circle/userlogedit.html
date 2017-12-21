@@ -1,0 +1,50 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#editForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/circle/userlogsave',$("#editForm").serialize(),function(data){
+					if(data == 1)
+					{
+						myAlert("该用户已存在");
+					}else{
+						$("#circleForm").submit();
+					}
+				})
+			},
+			 rules:{
+	              userId:{
+		             required:true
+	              },
+	              circleId:{
+		             required:true
+	              }
+	          }
+			});	
+		});
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：兴趣圈管理> 圈子用户访问记录 > 用户访问编辑</div>
+    	<form action="/diys/Bo/circle/userlogsave" method="post" id="editForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<tr>
+    				<td align="right">圈子id</td><td><input type="text" id="circleId" name="circleId" value="${(entity.circleId)!''}"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">用户id</td><td><input type="text" id="userId" name="userId" value="${(entity.userId)!''}"/></td>
+    			</tr>
+    			<tr>
+					<td align="right">客户端id</td><td><input type="text" id="clientId" name="clientId" value="${(entity.clientId)!''}"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right"><input type="submit" class="btn-submit" value="提交"/></td><td><input type="reset" class="btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+

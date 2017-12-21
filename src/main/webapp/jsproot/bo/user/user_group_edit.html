@@ -1,0 +1,64 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#editForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/user/user_group_save',$("#editForm").serialize(),function(data){
+					if(data == 1)
+					{
+						myAlert("该用户已存在该分组");
+					}else{
+						$("#userForm").submit();
+					}		
+				})
+			},
+			 rules:{
+	              name:{
+		             required:true
+	              },
+	              userId:{
+		             required:true
+	              }
+	          }
+			});	
+		})
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：用户管理> 用户分组编辑</div>
+    	<form action="/diys/Bo/user/user_group_save" method="post" id="editForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    		<#if entity?? && entity.id??>
+
+    			<input type="hidden" id="userId" name="userId" value="${(entity.userId)!''}"/>
+    		<#elseif (entity??)==false>
+    			<tr>
+    				<td align="right">用户id</td><td><input type="text" id="userId" name="userId" value="${userId!''}"/></td>
+    			</tr>
+    		</#if>
+    		   <tr>
+    		   <td align="right">组名</td>
+    		       	<td><select id="name" name="name" class="inputtext">&nbsp;&nbsp;
+	              		<option  value="">请选择组名</option>
+   						<#if groupList ??>
+   							<#list groupList as group>
+   								<option <#if "${(entity.name)!''}"== "${group.name}">selected="selected"</#if> value="${group.name}">${group.name}</option>
+   							</#list>
+   						</#if>
+           			</select></td>
+    			</tr>
+    			<tr>
+    				<td align="right">备注</td><td><textarea id="remark" name="remark" style="width: 250px;height: 100px;resize: none;">${(entity.remark)!''}</textarea></td>
+    			</tr>
+
+    			<tr>
+    				<td align="right"><input type="submit" class="btn-submit" value="提交"/></td><td><input type="reset" class="btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+

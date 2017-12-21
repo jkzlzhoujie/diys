@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.Order">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="Order">
+			<id property="id" column="id" />
+			<result property="addTime" column="addTime" />
+			<result property="clientId" column="clientId" />
+			<result property="accountBuyId" column="accountBuyId" />
+			<result property="userId" column="userId" />
+			<result property="amount" column="amount" />
+			<result property="payType" column="payType" />
+			<result property="orderNo" column="orderNo" />
+			<result property="productId" column="productId" />
+			<result property="type" column="type" />
+			<result property="status" column="status" />
+			<result property="nickName" column="nick_name"/>
+			<result property="url" column="url"/>
+			<result property="commodityId" column="commodityId"/>
+			<result property="commodityInfoId" column="commodityInfoId"/>
+			<result property="remark" column="remark"/>
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from sys_order a
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accountBuyId)">and accountBuyId = #{accountBuyId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and a.userId = #{userId}</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and nick_name like "%"#{nickName}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(payType)">and payType = #{payType}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and type = #{type}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and status = #{status}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(statusTo)">and (status != 4 and commodityInfoId is not null)</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNo)">and orderNo like "%"#{orderNo}"%" </if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNoTo)">and orderNo = #{orderNoTo} </if>
+       	 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(addTime,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(addTime,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY addTime desc
+	</select>
+	
+	<select id="sum" resultType="Double" useCache="false">
+		select IFNULL(sum(amount),0) FROM `sys_order` a LEFT JOIN `cm_user_info` b ON a.`userId` = b.`user_id`
+		<include refid="sql_where"/>
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY addTime desc
+	</select>
+	
+	<select id="findByMap2" parameterType="Order" resultMap="sql_resuleMap" useCache="false">
+	SELECT a.*,b.nick_name FROM `sys_order` a LEFT JOIN `cm_user_info` b ON a.`userId` = b.`user_id`
+	<include refid="sql_where"/>
+	</select>
+	
+	<select id="findByPage" parameterType="Order" resultMap="sql_resuleMap" useCache="false">
+	SELECT a.*,b.nick_name FROM `sys_order` a LEFT JOIN `cm_user_info` b ON a.`userId` = b.`user_id`
+	<include refid="sql_where"/>
+	ORDER BY addTime desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+	SELECT count(*) FROM `sys_order` a LEFT JOIN `cm_user_info` b ON a.`userId` = b.`user_id`
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="Order" useGeneratedKeys="true" keyProperty="id">
+	insert into sys_order(addTime,clientId,accountBuyId,userId,amount,payType,orderNo,productId,type,status,commodityId,commodityInfoId,remark)
+	values(now(),#{clientId},#{accountBuyId},#{userId},#{amount},#{payType},#{orderNo},#{productId},#{type},#{status},#{commodityId},#{commodityInfoId},#{remark})
+	</insert>
+	
+	<update id="update" parameterType="Order">
+	  UPDATE sys_order
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)"> clientId = #{clientId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accountBuyId)"> accountBuyId = #{accountBuyId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> userId = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(amount)"> amount = #{amount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(payType)"> payType = #{payType},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNo)"> orderNo = #{orderNo},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)"> productId = #{productId},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)"> status = #{status},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(commodityId)"> commodityId = #{commodityId},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(commodityInfoId)"> commodityInfoId = #{commodityInfoId},</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remark)"> remark = #{remark},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from sys_order where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM sys_order
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

@@ -1,0 +1,105 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#classifyAddForm').validate({	 
+			 rules:{
+		          name:{
+		              required:true
+		          },
+		           key:{
+		              required:true
+		          },
+		          status:{
+		              required:true
+		          },
+		           flag:{
+		              required:true
+		          }
+	          },
+	          messages:{
+	                name:{
+		                required:"渠道名不能为空"
+	                },
+	                  key:{
+		                required:"渠道编码不能为空"
+	                },
+	                status:{
+		                required:"状态不能为空"
+	                },
+	                 flag:{
+		                required:"状态不能为空"
+	                }
+	            }
+			});	
+			
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：新增渠道</div>
+      <form action="/diys/Bo/setting/changesave" method="post" id="classifyAddForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">渠道名称</td>
+	     		<td><input type="text" id="name" name="name" value="${(entity.paramValue)!''}" class="inputtext" /></td>
+	     	</tr>	
+	     	<tr>
+	     		<td  align="right">渠道编码</td>
+	     		<td><input type="text" id="key" name="key" value="${(entity.enParamName)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否可更新</td>
+	     		<td><select id="status" name="status" >
+	     		<option value="">请选择是否可更新</option>
+	     		<option <#if "1"=="${(entity.status)!''}"> selected="selected"</#if> value="1">是</option>
+    			<option <#if "2"=="${(entity.status)!''}"> selected="selected"</#if> value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否展示开屏广告</td>
+	     		<td><select id="flag" name="flag" >
+	     		<option value="">请选择</option>
+	     		<option <#if "1"=="${(entity.flag)!''}"> selected="selected"</#if> value="1">是</option>
+    			<option <#if "2"=="${(entity.flag)!''}"> selected="selected"</#if> value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否展示玩广告</td>
+	     		<td><select id="expand1" name="expand1" >
+	     		<option value="">请选择</option>
+	     		<option <#if "1"=="${(entity.expand1)!''}"> selected="selected"</#if> value="1">是</option>
+    			<option <#if "2"=="${(entity.expand1)!''}"> selected="selected"</#if> value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否展示秀广告</td>
+	     		<td><select id="expand2" name="expand2" >
+	     		<option value="">请选择</option>
+	     		<option <#if "1"=="${(entity.expand2)!''}"> selected="selected"</#if> value="1">是</option>
+    			<option <#if "2"=="${(entity.expand2)!''}"> selected="selected"</#if> value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否展示兴趣圈广告</td>
+	     		<td><select id="expand3" name="expand3" >
+	     		<option value="">请选择</option>
+	     		<option <#if "1"=="${(entity.expand3)!''}"> selected="selected"</#if> value="1">是</option>
+    			<option <#if "2"=="${(entity.expand3)!''}"> selected="selected"</#if> value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>	     		
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

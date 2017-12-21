@@ -1,0 +1,85 @@
+<body>
+<script type="text/javascript">
+
+		$(function(){
+			$('#editForm').validate({	 
+			submitHandler:function(){
+				$.post('/diys/Bo/setting/columnsave',$("#editForm").serialize(),function(data){				
+					$("#columnForm").submit();				
+				})
+			},
+			 rules:{
+	              type:{
+		             maxlength:2
+	              }
+	          }
+			});	
+		});
+</script>
+    <div>
+    	<input type="button" value="关闭"  class="jqmClose btn right btn-delete" />
+    	<div class="breadcrumb">当前位置：系统管理 > 栏目编辑</div>
+    	<form action="/diys/Bo/setting/columnsave" method="post" id="editForm">
+    		<input type="hidden" name="id" value="${(entity.id)!''}"/>
+    		<div class="table-show-content">
+    		<table class="table-show">
+    			<tr>
+    				<td align="right">名称</td><td><input type="text" id="name" name="name" value="${(entity.name)!''}"/></td>
+    			</tr>
+    			<tr>
+    				<td align="right">序号</td><td>${(entity.id)!''}</td>
+    			</tr>
+    			<tr>
+    				<td align="right">类型</td><td><input type="text" id="type" name="type" value="${(entity.type)!''}"/></td>
+    			</tr>
+    			<tr>
+    			<td align="right">发布类型</td><td>
+		     		<select id="releaseType" name="releaseType" class="selectOpt w164">
+             			<option  value="">请选择</option>
+	   					<option <#if "${(entity.releaseType)!0}"== "1">selected="selected"</#if> value="1">自动</option>
+	   					<option <#if "${(entity.releaseType)!0}"== "2">selected="selected"</#if> value="2">手动</option>
+          			</select>
+          			</td>
+		     	</tr>
+    			<tr>
+    				<td align="right">排序</td><td><input type="text" id="sort" name="sort" value="${(entity.sort)!0}"/></td>
+    			</tr>
+    			<tr><td align="right">跳转类型 </td>
+	     		<td>
+		     		<select id="status" name="status" class="selectOpt w164">
+             			<option  value="">请选择</option>
+	   					<option <#if "${(entity.status)!0}"== "1">selected="selected"</#if> value="1">图片详情页</option>
+	   					<option <#if "${(entity.status)!0}"== "2">selected="selected"</#if> value="2">P图详情页</option>
+          			</select>
+		     	</td>
+    			</tr>
+    			<tr>
+    			<td align="right">浏览方式</td><td>
+		     		<select id="browseStyle" name="browseStyle" class="selectOpt w164">
+             			<option  value="">请选择</option>
+	   					<option <#if "${(entity.browseStyle)!0}"== "1">selected="selected"</#if> value="1">九宫格 </option>
+	   					<option <#if "${(entity.browseStyle)!0}"== "2">selected="selected"</#if> value="2">瀑布流 带点赞 </option>
+	   					<option <#if "${(entity.browseStyle)!0}"== "3">selected="selected"</#if> value="3">瀑布流 带底部色彩</option>
+	   					<option <#if "${(entity.browseStyle)!0}"== "4">selected="selected"</#if> value="4">瀑布流 带底部信息</option>
+	   					<option <#if "${(entity.browseStyle)!0}"== "5">selected="selected"</#if> value="5">渐变九宫格</option>
+	   					
+          			</select>
+          			</td>
+		     	</tr>
+    			<tr><td align="right">是否上线 </td>
+	     		<td>
+		     		<select id="isOnline" name="isOnline" class="selectOpt w164">
+	   					<option <#if "${(entity.isOnline)!1}"== "1">selected="selected"</#if> value="1" >上线</option>
+	   					<option <#if "${(entity.isOnline)!1}"== "0">selected="selected"</#if> value="0" >下线</option>
+          			</select>
+		     	</td>
+    			</tr>
+    			<tr>
+    				<td align="right"><input type="submit" class="btn-submit" value="提交"/></td><td><input type="reset" class="btn-submit" value="重置"/></td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>
+

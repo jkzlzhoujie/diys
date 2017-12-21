@@ -1,0 +1,42 @@
+<body>
+
+    <div>
+   	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+   	<div class="breadcrumb">当前位置：贴子列表 > 帖子移动到圈子</div>
+   		<form action="/diys/Bo/boCirclePost/circlePostMoveSave" method="post" >
+   		<input type="hidden" name="id" value="${(entity.id)!''}" />
+   		<input type="hidden" name="status" value="${(entity.status)!''}" >
+   		<div class="table-show-content">
+	   		<table class="table-show" >
+	   			<tr  class="table-show">
+				  	<td align="right">原帖子标题：</td><td><span >${(entity.title)!''}</span></td>
+				</tr>
+				<tr class="table-show" >
+					<td align="right">原帖子名称：</td><td><span >${(entity.circleName)!''}</span></td>
+				</tr>
+				<tr class="table-show" >
+					<td align="right">原帖子所在圈子ID：</td><td><span >${(entity.circleId)!''}</span></td>
+				</tr>
+				<tr class="table-show" >
+					<td align="right">将这个帖子移动到圈子：</td>
+					<td>
+						<select id="circleId" name="circleId" class="inputtext">
+             			<option  value="">请选择类型</option>
+	   					<#if typeList??>
+						<#list typeList as ttype>
+							   <option <#if  entity.circleId?? && "${(entity.circleId)!''}" ==  "${ttype.id}" > selected="selected"</#if> value="${ttype.id}" > ${ttype.name} </option>
+						</#list>
+						</#if>
+          			</select>
+					</td>
+				</tr>
+				
+				<tr>
+    				<td align="right"><input type="submit" value="提交"  class=" btn-submit"/> </td>
+    				<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+    			</tr>
+	   		</table>
+   		</div>
+   		</form>
+     </div>
+ </body>

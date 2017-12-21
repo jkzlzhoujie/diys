@@ -1,0 +1,135 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#versionAddForm').validate({	 
+			 rules:{
+		          name:{
+		          	  required: true   
+		          },
+	              code:{
+	              	 required: true,
+		             digits:true
+	              },
+	              channelId:{
+	              	 required: true
+	              },
+	              desc:{
+		             required: true
+	              },
+	              isForce:{
+		             required: true
+	              },
+	              downUrl:{
+		             required: true
+	              }
+	          },
+	          messages:{
+	                name:{
+		                required:"请输入版本名称"
+	                },
+	                code:{
+	                   required:"请输入版本号",
+		               digits:"版本号必须填整数"
+		            },
+	                channelId:{
+	                   required:"请输入渠道号"
+		            },
+	                desc:{
+		               required:"请输入版本描述"
+		            },
+		            isForce:{
+		               required:"请选择是否强制升级"
+		            },
+	              	downUrl:{
+		             	required:"请上传应用"
+	              	}
+	            }
+			});	
+			$('#uploadApp').uploadify({
+			'swf' : '/diyroot/js/uploadify/uploadify.swf',
+			'uploader' : domainName+'/diys/upload/app',
+			'method' : 'post',
+			'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+			'width' : '70',
+			'height' : '22',
+			'fileTypeDesc' : '支持的格式：',
+			'fileTypeExts' : '*.apk;',
+			'fileSizeLimit' : '100MB',
+			'removeTimeOut'  : 1,
+			'multi' : true,
+			'progressData' : 'percentage',
+			'buttonText' : '点击上传',
+			// 检测FLASH失败调用
+			'onFallback' : function() {
+				alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+			},
+			'onUploadSuccess':function(file, data, response){
+				$("#downUrl").attr("value",data);
+				$("#appdesc").html("上传成功");
+			},
+			'onSelectError':function(file, errorCode, errorMsg) {
+				 switch(errorCode) {
+				  	case -110:
+				  		$("#downUrl").next().html("文件大小不大于100M");
+				  	 	$("#downUrl").next().show();
+				  	 	alert("文件大小不大于100M");
+	                  break
+	               case -120:
+	                   alert("文件 ["+file.name+"] 大小异常！");
+	                   break;
+	               case -130:
+	                   alert("文件 ["+file.name+"] 类型不正确！");
+	                   break;
+          	 	}
+			}
+		});
+		});
+		
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：客户端管理 > 版本编辑</div>
+      <form action="/diys/Bo/client/vs_save" method="post" id="versionAddForm">
+            <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">版本名称</td>
+	     		<td><input type="text" id="name" name="name" value="${(entity.name)!''}" class="inputtext" /></td>
+	     		<td  align="right">版本号</td>
+		     	<td><input type="text" id="code" name="code" value="${(entity.code)!''}" class="inputtext" /></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">渠道ID</td>
+	     		<td><input type="text" id="channelId" name="channelId" value="${(entity.channelId)!''}" class="inputtext" /></td>
+	     		<td align="right">上传应用</td>
+	     		<td>
+	     			<input type="file" id="uploadApp" name="uploadApp"/> 
+	     			<input type="hidden" id="downUrl" name="downUrl" value="${(entity.downUrl)!''}" class="inputtext" />
+				    <span id="appdesc" class="note" style="color: red;"></span>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">版本描述</td>
+	     		<td>
+	     		<textarea id="desc" name="desc" rows="5" cols="50">${(entity.desc)!''}</textarea>
+	     		<td align="right" >是否强制升级 </td>
+	     		<td>
+		     		<select id="isForce" name="isForce" class="inputtext">
+             			<option  value="">请选择类型</option>
+	   					<option <#if "${(entity.isForce)!0}" == "0">selected="selected"</#if> value="0">否</option>
+	   					<option <#if "${(entity.isForce)!0}" == "1">selected="selected"</#if> value="1">是</option>
+          			</select>
+		     	</td>
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="submit" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td width="30%"></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

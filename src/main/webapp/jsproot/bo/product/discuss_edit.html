@@ -1,0 +1,40 @@
+<body>
+<script type="text/javascript">
+				
+	$('#packetForm').validate({	
+			 submitHandler: function(form) { 
+	    		 $.post('/diys/Bo/product/discussSave', $("#packetForm").serialize(), function(data) {
+					$("#userForm").submit();
+				});	
+		 	},		
+			 rules:{
+	              "description":{required:true}
+
+	            },
+	          messages:{
+	                "description":{required:"内容不能为空"}
+	            }
+			});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：作品管理> 评论作品</div>
+      <form action="/diys/Bo/product/discussSave" method="post" id="packetForm">
+      <input type="hidden" id="id" name="id" value="${(id)!''}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td width="15%" align="right">评论</td>
+	     		<td width="35%">
+	     		<textarea id="description" name="description" style="width: 450px;height: 100px;resize: none;">${(entity.description)!''}</textarea>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

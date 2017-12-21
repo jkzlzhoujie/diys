@@ -1,0 +1,45 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(form){
+				$.post('/diys/Bo/setting/sysParametersave',$("#editForm").serialize(),function(data){
+					$("#sysParameterForm").submit();
+				});
+			},
+			rules:{
+				code:{required:true},
+				name:{required:true},
+				value:{required:true}
+			}
+		});
+	})
+</script>
+     <div>
+    	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+    	<div class="breadcrumb">当前位置：系统管理> 系统参数编辑</div>
+    	<form action="/diys/Bo/setting/sysParametersave" id="editForm" method="post">
+    		<input type="hidden" name="id" value="${(entity.id)!''}" >
+    		<div class="table-show-code">
+    		<table class="table-show" >
+    			<tr>
+    				<td align="right"> 名称</td><td><input type="text" name="name" value="${(entity.name)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 编码</td><td><input type="text" name="code" value="${(entity.code)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 值</td><td><input type="text" name="value" value="${(entity.value)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 备注</td><td><input type="text" style="width: 300px" name="note" value="${(entity.note)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"><input type="submit" value="提交" class=" btn-submit" /> </td>
+    				<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>修改密码</title>
+<link rel="stylesheet" href="http://static.bit365.cn/css/login.css">
+<script type="text/javascript" src="http://static.bit365.cn/js/jquery/validate-ex.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#pwdFrom').validate({	
+			 rules:{
+	              password:{required:true,minlength:6,filterCharacter:true},
+	              repassword:{equalTo:'#password',required:true,filterCharacter:true}
+	            },
+	          messages:{
+	                password:{required:"密码不能为空",minlength:"最小长度为六位"},
+	              	repassword:{required:"重复密码不能为空",equalTo:"俩次密码不一致"}
+	            }
+			});	
+	 	});
+</script>
+</head>
+<body>
+<div id="main">
+      <div class="breadcrumb">当前位置：首页 > 修改密码</div>
+      <form action="/diys/Bo/pwd_edit" method="post" id="pwdFrom">
+      <div class="table-show-content">
+        <table class="table-show" >
+          <tbody>
+	     	<tr>
+	     		<td align="right" width="40%">用户新密码</td>
+	     		<td><input type="password" name="password" id="password" class="inputtext" autocomplete="off"/></td>
+	     		<td width="40%"></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">确认密码</td>
+	     		<td width="30%"><input type="password" name="repassword" id="repassword" class="inputtext" autocomplete="off"/></td>
+	     		<td width="40%"></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right"><input type="submit" class="btn-submit" name="submit" value="提交"/></td>
+	     		<td align="left"><input type="reset" class="btn-submit" name="reset" value="重置"/></td>
+	     		<td width="40%"></td>
+	     	</tr>
+          </tbody>
+        </table>
+      </form>
+    </div>
+   </body>
+</html>

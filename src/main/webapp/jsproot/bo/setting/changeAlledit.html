@@ -1,0 +1,73 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#classifyAddForm').validate({	 
+			 rules:{
+	          },
+	          messages:{
+	            }
+			});	
+			
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：批量编辑渠道</div>
+      <form action="/diys/Bo/setting/changeAllsave" method="post" id="classifyAddForm">
+       <input type="hidden" name="ids" value="${ids}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">是否可更新</td>
+	     		<td><select id="status" name="status" >
+	     		<option value="">请选择是否可更新</option>
+	     		<option  value="1">是</option>
+    			<option  value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否展示开屏广告</td>
+	     		<td><select id="flag" name="flag" >
+	     		<option value="">请选择</option>
+	     		<option  value="1">是</option>
+    			<option  value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否展示玩广告</td>
+	     		<td><select id="expand1" name="expand1" >
+	     		<option value="">请选择</option>
+	     		<option  value="1">是</option>
+    			<option  value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否展示秀广告</td>
+	     		<td><select id="expand2" name="expand2" >
+	     		<option value="">请选择</option>
+	     		<option  value="1">是</option>
+    			<option  value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>
+	     		<td  align="right">是否展示兴趣圈广告</td>
+	     		<td><select id="expand3" name="expand3" >
+	     		<option value="">请选择</option>
+	     		<option  value="1">是</option>
+    			<option  value="2">否</option>
+	     		</select>
+	     		</td>
+	     	</tr>
+	     	<tr>	     		
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

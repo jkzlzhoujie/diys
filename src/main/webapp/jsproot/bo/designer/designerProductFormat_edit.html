@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<style type="text/css">
+			.inputstyle{width:260px;height:22px;}
+			#entityiddis{display:none}		
+		</style>
+		
+		<script type="text/javascript">
+			$(function(){
+				$('#designerProductFormatEditForm').validate({	 
+				 rules:{
+					 format:{required:true},
+					 price:{required:true,number:true},
+					 productNum:{required:true,number:true}
+		          },
+		          messages:{
+		            }
+				});
+			})
+					
+		</script>
+	</head>
+	
+	<body>
+		
+		<div>
+			  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+		      <div class="breadcrumb">当前位置：设计师管理> 设计师商品规格编辑</div>
+		      <form action="/diys/Bo/designer/designerProductFormatEditsave" method="post" id="designerProductFormatEditForm">
+		      <div class="table-show-content">
+		        <table class="table-show" >
+		        	<#if (entity??)>
+			        	<tr >
+				     		<td align="right">规格ID：</td>
+				     		<td><span>${(entity.id)!''}</span></td>
+				     		<input type="hidden" id="id" name="id" value="${(entity.id)!''}" />
+				     		
+				     	</tr>
+			     		<tr>
+				     		<td align="right">所属作品ID：</td>
+				     		<td><span>${(entity.productId)!''}</span></td>
+				    		<input type="hidden" id="productId" name="productId" value="${(entity.productId)!''}"/>
+					<#else>	
+							<td align="right">所属作品ID：</td>
+							<td><span>${(productId)!''}</span> <input class="inputstyle" type="hidden" id="productId" name="productId" value="${(productId)!''}" /></td>
+						</tr>
+					</#if>
+			     	<tr>
+			     		<td align="right">商品规格：</td>
+			     		<td><input class="inputstyle" type="text" id="format" name="format" value="${(entity.format)!''}"/></td>
+			     	</tr>
+			     	<tr>
+			     		<td align="right">单价：</td>
+			     		<td><input class="inputstyle" type="text" id="price" name="price" value="${(entity.price)!''}"/></td>
+			     	</tr>
+			     	<tr>
+			     		<td align="right">库存数量：<span style="color:red">(*整数)</td>
+			     		<td><input class="inputstyle" type="text" id="productNum" name="productNum" value="${(entity.productNum)!''}"/></td>
+			     	</tr>
+
+			     	<tr>
+			     		<td align="center"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+			     		<td align="center"><input type="reset" class=" btn-submit" name="btn2" value="重置"/></td>
+			     	</tr>
+		        </table>
+		        </div>
+		      </form>
+		    </div>
+	<body>
+
+
+</html>

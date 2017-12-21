@@ -1,0 +1,69 @@
+<body>
+<script type="text/javascript">
+		$(function(){
+			$('#laberAddForm').validate({	 
+			 rules:{
+		          name:{
+		              required:true,
+		               remote: {
+							    url: "/diys/Bo/laber/check",     //后台处理程序
+							    type: "post",                //数据发送方式
+							    data: {                     //要传递的数据
+							        	name: function() {
+							            	return $("#name").val();
+							        	},
+							        	id: function() {
+							            	return $("#id").val();
+							        	}
+							   		  }
+							}
+		          },
+	              type:{
+		             required:true
+	              }
+	          },
+	          messages:{
+	                name:{
+		                required:"标签名称不能为空",
+		                remote:"标签名称不能重复"
+	                },
+	                type:{
+		               required:"标签类型不能为空"
+		            }
+	            }
+			});	
+		});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：素材管理 > 编辑标签</div>
+      <form action="/diys/Bo/laber/save" method="post" id="laberAddForm">
+            <input type="hidden" id="id" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+	     		<td  align="right">标签名称</td>
+	     		<td><input type="text" id="name" name="name" value="${(entity.name)!''}" class="inputtext" /></td>
+	   		<td align="right">偏好 </td>
+	     		<td>
+		     		<select id="type" name="type" class="selectOpt w164">
+             			<option  value="">请选择偏好</option>
+	   					<option <#if "${(entity.type)!0}"== "1">selected="selected"</#if> value="1">表情/颜文字</option>
+	   					<option <#if "${(entity.type)!0}"== "2">selected="selected"</#if> value="2">贴图</option>
+	   					<option <#if "${(entity.type)!0}"== "3">selected="selected"</#if> value="3">主题</option>
+	   					<option <#if "${(entity.type)!0}"== "4">selected="selected"</#if> value="4">作品/用户</option>
+	   					<option <#if "${(entity.type)!0}"== "4">selected="selected"</#if> value="5">悬赏求P</option>
+          			</select>
+		     	</td> 
+	     	</tr>
+	     	<tr>
+	     		<td width="20%"></td>
+	     		<td align="right"><input type="submit" class=" btn-submit" name="btn1" value="提交"/></td>
+	     		<td align="left"><input type="reset" class=" btn-submit" value="重置"/></td>
+	     		<td width="40%"></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

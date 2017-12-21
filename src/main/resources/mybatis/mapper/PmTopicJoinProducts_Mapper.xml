@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.PmTopicJoinProducts">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="PmTopicJoinProducts">
+			<id property="id" column="join_id" />
+			<result property="topicId" column="topic_id" />
+			<result property="journalSeq" column="journal_seq" />
+			<result property="productId" column="product_id" />
+			<result property="userId" column="user_id" />
+			<result property="joinType" column="join_type" />
+			<result property="joinProducts" column="join_products" />
+			<result property="acceptUserId" column="accept_user_id" />
+			<result property="description" column="description" />
+			<result property="praiseCount" column="praise_count" />
+			<result property="discussCount" column="discuss_count" />
+			<result property="shareCount" column="share_count" />
+			<result property="stampCount" column="stamp_count" />
+			<result property="downloadCount" column="download_count" />
+			<result property="contact" column="contact" />
+			<result property="qqContact" column="qqContact" />
+			<result property="acceptRemark" column="accept_remark" />
+			<result property="joinTime" column="join_time" />
+			<result property="url" column="url" />
+			<result property="thumbnail" column="thumbnail" />
+			<result property="nickName" column="nick_name"/>
+			<result property="headImageUrl" column="head_image_url" />
+			<result property="distributeNo" column="distribute_no"/>
+			<result property="distributeUser" column="distribute_user"/>
+			<result property="accountBuyId" column="accountBuyId"/>
+			<result property="status" column="status"/>
+			<result property="orderNo" column="orderNo"/>
+			<result property="designUrl" column="design_url"/>
+			<result property="psId" column="psId"/>
+			<result property="updateTime" column="updateTime"/>
+			<result property="getType" column="getType"/>
+			<result property="price" column="price"/>
+			<result property="isGet" column="isGet"/>
+			<result property="channel" column="client_channel"/>
+			<result property="phoneShell" column="phoneShell"/>
+			<result property="receivePerson" column="receivePerson"/>
+			<result property="receiveAddress" column="receiveAddress"/>
+			<result property="isPri" column="isPri"/>
+	</resultMap>
+	
+	
+
+	<sql id="sql_selectAll">
+		SELECT a.*,c.nick_name,c.head_image_url,b.url,b.thumbnail,b.`discuss_count`,b.`share_count`,b.`stamp_count`,b.download_count,b.`praise_count`,b.search_count 
+		FROM `pm_topic_join_products` a 
+		LEFT JOIN `pm_product_info` b ON a.`product_id`  = b.`product_id`
+		LEFT JOIN `cm_user_info` c ON a.`user_id` = c.`user_id`
+		LEFT JOIN pm_product_label d ON a.join_id = d.productId
+        LEFT JOIN emoji_label e ON d.labelId = e.id
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+			<!--  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and a.description not like "%彩绘%" and a.description not like "%手绘%"</if> -->
+			 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+			 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">and a.product_id = #{productId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(pJob23)">and a.status =1 and isGet =0 and price > 0 and TIMESTAMPDIFF(HOUR, join_time,NOW()) >= 23</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(pJob)">and a.status =1 and isGet =0 and price > 0 and TIMESTAMPDIFF(HOUR, join_time,NOW()) >= 24</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinId)">and join_id = #{joinId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicId)">and topic_id = #{topicId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(contact)">and contact like "%"#{contact}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(qqContact)">and qqContact like "%"#{qqContact}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accountBuyId)">and a.accountBuyId = #{accountBuyId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNo)">and orderNo like "%"#{orderNo}"%" </if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinType)">and join_type = #{joinType}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(acceptUserId)">and accept_user_id = #{acceptUserId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(acceptRemark)">and accept_remark like "%"#{acceptRemark}"%" </if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNo)">and orderNo like "%"#{orderNo}"%" </if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and a.status = #{status}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(noDelStatus)">and a.status != #{noDelStatus}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and a.user_id = #{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPri)">and a.isPri = #{isPri}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isGet)">
+				<if test="isGet==2">
+					and isGet in(0,1)
+				</if>
+				<if test="isGet!=2">
+					and isGet = #{isGet} 
+				</if>
+			</if>
+			
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endPrice)">
+          	   <![CDATA[   AND price <= #{endPrice}   ]]>
+         	</if>
+         	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startPrice)">
+         	  	 <![CDATA[     AND price >= #{startPrice} ]]>
+        	</if>
+        	
+        	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isInvitation)">and a.isInvitation = #{isInvitation}</if>
+        	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(depict)">and a.description like "%"#{depict}"%"</if>
+        	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(seContent)">and a.description like "%"#{seContent}"%" or e.name like "%"#{seContent}"%"</if>
+        	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(timeCount)">
+        	     <![CDATA[   and timestampdiff(HOUR,a.join_time,NOW())< #{timeCount}      ]]>
+        	</if>
+			
+			<if test="user == 'pt'">
+			and((a.join_type=1 AND b.`audit` =1) OR (a.join_type=2 AND a.join_products !=0))
+			</if>
+			<if test="user == 'sjs'">
+			and b.`audit` =1
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(list)">
+			and join_id IN
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+       		</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+		ORDER BY join_time desc
+	</select>
+	
+	
+	<sql id="sqlDto_where">
+		<where>
+			 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(audit)">and audit = #{audit}</if>
+			 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">and a.product_id =#{productId}</if>
+			 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPublic)">and is_public =#{isPublic}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(channel)">and d.client_channel = #{channel}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinId)">and a.join_id = #{joinId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicId)">and topic_id = #{topicId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(contact)">and contact like "%"#{contact}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(qqContact)">and qqContact like "%"#{qqContact}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinType)">and join_type = #{joinType}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(acceptUserId)">and accept_user_id = #{acceptUserId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(acceptRemark)">and accept_remark like "%"#{acceptRemark}"%" </if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(remakFilter)">and IFNULL(`accept_remark`,'') NOT LIKE "%"#{remakFilter}"%" </if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and a.user_id = #{userId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accountBuyId)">and a.accountBuyId = #{accountBuyId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNo)">and orderNo like "%"#{orderNo}"%" </if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and status = #{status}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isGet)">and isGet = #{isGet}</if>
+			<if test="user == 'pt'">
+			and((a.join_type=1 AND c.`audit` =1) OR (a.join_type=2 AND a.join_products !=0))
+			</if>
+			<if test="user == 'sjs'">
+			and c.`audit` =1
+			</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and nick_name like "%"#{nickName}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+          	   <![CDATA[
+                	 AND DATE_FORMAT(a.join_time,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+          	  ]]>
+         	</if>
+         	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+         	  	 <![CDATA[
+               	  AND DATE_FORMAT(a.join_time,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+           		 ]]>
+        	</if>
+        	
+        	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endPrice)">
+          	   <![CDATA[   AND price <= #{endPrice}   ]]>
+         	</if>
+         	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startPrice)">
+         	  	 <![CDATA[     AND price >= #{startPrice} ]]>
+        	</if>
+        	
+		</where>
+	</sql>
+	
+	<select id="countDto" resultType="long" useCache="false">
+		SELECT count(1) FROM `pm_topic_join_products` a 
+		LEFT JOIN `cm_user_info` b ON a.`user_id` = b.`user_id`
+		left join `pm_product_info` c ON a.`product_id`  = c.`product_id` 
+		left join emoji_client d ON b.client_id  = d.client_id
+		<include refid="sqlDto_where"/>
+    </select>
+	
+	<select id="findByPageDto" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+		SELECT a.*,b.nick_name,c.url,d.client_channel FROM `pm_topic_join_products` a LEFT JOIN `cm_user_info` b ON a.`user_id` = b.`user_id`
+			left join `pm_product_info` c ON a.`product_id`  = c.`product_id` left join emoji_client d ON b.client_id  = d.client_id
+		<include refid="sqlDto_where"/>
+		<choose>   
+            <when test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried) and @cn.temobi.core.util.StringUtil@isNotEmpty(sequence)">   
+                order by ${orderFried} ${sequence}
+            </when>   
+            <otherwise>   
+          order by join_time desc 
+            </otherwise>   
+        </choose>  limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		 where join_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+		<choose>   
+	            <when test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried) and @cn.temobi.core.util.StringUtil@isNotEmpty(sequence)">   
+	                order by ${orderFried} ${sequence}
+	            </when>   
+	            <when test="@cn.temobi.core.util.StringUtil@isNotEmpty(ids)">   
+	            	order by substring_index(#{ids},join_id,1)
+	            </when>  
+	            <otherwise>   
+	          order by join_time desc 
+	            </otherwise>   
+	        </choose>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(limit)">
+	        	 limit #{limit} offset #{offset}
+       	</if>
+	</select>
+	
+	<select id="findByPage" parameterType="PmTopicJoinProducts" resultMap="sql_resuleMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+		<choose>   
+	            <when test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried) and @cn.temobi.core.util.StringUtil@isNotEmpty(sequence)">   
+	                order by ${orderFried} ${sequence}
+	            </when>   
+	            <otherwise>   
+	              order by join_time desc 
+	            </otherwise>   
+	        </choose>
+		limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(1) FROM `pm_topic_join_products` a 
+		LEFT JOIN `pm_product_info` b ON a.`product_id`  = b.`product_id`
+		LEFT JOIN `cm_user_info` c ON a.`user_id` = c.`user_id`
+		LEFT JOIN pm_product_label d ON a.join_id = d.productId
+        LEFT JOIN emoji_label e ON d.labelId = e.id
+		<include refid="sql_where"/>
+    </select>
+    
+    <select id="singleCount" resultType="long" useCache="false">
+		SELECT count(1) FROM `pm_topic_join_products`
+    </select>
+    
+	<insert id="insert" parameterType="PmTopicJoinProducts" useGeneratedKeys="true" keyProperty="id">
+		insert into pm_topic_join_products(topic_id,journal_seq,product_id,user_id,join_type,join_products,accept_user_id,description,contact,qqContact,distribute_no,distribute_user,orderNo,status,design_url,psId,updateTime,getType,isGet,price,accountBuyId,join_time,phoneShell,receivePerson,receiveAddress,isPri)
+		values(#{topicId},#{journalSeq},#{productId},#{userId},#{joinType},#{joinProducts},#{acceptUserId},#{description},#{contact},#{qqContact},#{distributeNo},#{distributeUser},#{orderNo},#{status},#{designUrl},#{psId},#{updateTime},#{getType},#{isGet},#{price},#{accountBuyId},now(),#{phoneShell},#{receivePerson},#{receiveAddress},#{isPri})
+	</insert>
+	
+	<update id="update" parameterType="PmTopicJoinProducts">
+	  	UPDATE pm_topic_join_products
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(topicId)"> topic_id = #{topicId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(journalSeq)"> journal_seq = #{journalSeq},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)"> product_id = #{productId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> user_id = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinType)"> join_type = #{joinType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(joinProducts)"> join_products = #{joinProducts},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(acceptUserId)"> accept_user_id = #{acceptUserId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(description)"> description = #{description},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(contact)"> contact = #{contact},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(qqContact)"> qqContact = #{qqContact},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(acceptRemark)"> accept_remark = #{acceptRemark},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(distributeNo)"> distribute_no = #{distributeNo},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(distributeUser)"> distribute_user = #{distributeUser},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderNo)"> orderNo = #{orderNo},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)"> status = #{status},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(designUrl)"> design_url = #{designUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(getType)"> design_url = #{getType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(updateTime)"> updateTime = #{updateTime},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(getType)"> getType = #{getType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isGet)"> isGet = #{isGet},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(psId)"> psId = #{psId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)"> price = #{price},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accountBuyId)"> accountBuyId = #{accountBuyId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(phoneShell)"> phoneShell = #{phoneShell},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(receivePerson)"> receivePerson = #{receivePerson},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(receiveAddress)"> receiveAddress = #{receiveAddress},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isPri)"> isPri = #{isPri},</if>
+		 
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                join_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from pm_topic_join_products where join_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM pm_topic_join_products
+		<where>
+				join_id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

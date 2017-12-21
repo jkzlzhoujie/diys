@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.SysTypeTime">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="SysTypeTime">
+			<id property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="startTime" column="startTime" />
+			<result property="endTime" column="endTime" />
+			<result property="addTime" column="addTime" />
+			<result property="status" column="status" />
+			<result property="type" column="type" />
+			<result property="sort" column="sort" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from sys_type_time
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(currentDate)">
+            <![CDATA[
+                  AND DATE_FORMAT(startTime,'%Y-%m-%d') <= Date_FORMAT(#{currentDate},'%Y-%m-%d')
+                  AND DATE_FORMAT(endTime,'%Y-%m-%d') >= Date_FORMAT(#{currentDate},'%Y-%m-%d')
+            ]]>
+         </if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)">and status = #{status}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and type = #{type}</if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	order by sort desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	order by sort desc
+	</select>
+	
+	<select id="findByPage" parameterType="SysTypeTime" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	order by sort desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM sys_type_time 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="SysTypeTime" useGeneratedKeys="true" keyProperty="id">
+	insert into sys_type_time(name,type,startTime,endTime,status,sort,addTime)
+	values(#{name},#{type},#{startTime},#{endTime},#{status},#{sort},now())
+	</insert>
+	
+	<update id="update" parameterType="SysTypeTime">
+	  UPDATE sys_type_time
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)"> name = #{name},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startTime)"> startTime = #{startTime},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endTime)"> endTime = #{endTime},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)"> status = #{status},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sort)"> sort = #{sort},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from sys_type_time where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM sys_type_time
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

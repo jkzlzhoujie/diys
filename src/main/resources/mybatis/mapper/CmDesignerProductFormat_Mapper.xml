@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.temobi.complex.entity.CmDesignerProductFormat">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap type="CmDesignerProductFormat" id="sql_resultMap">
+		<id property="id" column="id" />
+		<result property="productId" column="productId" />
+		<result property="format" column="format" />
+		<result property="price" column="price" />
+		<result property="productNum" column="productNum" />
+		<result property="createTime" column="createTime" />
+	</resultMap>
+	
+	<sql id="sql_selectAll">
+		select * from cm_designer_product_format
+	</sql>
+	
+	<sql id="sql_where">
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and  id = #{id}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">and  productId = #{productId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(format)">and  format = #{format}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)">and  price = #{price}</if>
+		</where>
+	</sql>
+	
+	<select id="count" resultType="Long" useCache="false">
+		select count(1) from cm_designer_product_format 
+		<include refid="sql_where"></include>
+	</select>
+	
+	<select id="getById" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"></include>
+		where id=#{id}
+	</select>
+	
+	<select id="findByPage" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createTime)">and  createTime = #{createTime}</if>
+		order by id desc
+		limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resultMap" useCache="false">
+		<include refid="sql_selectAll"/>
+		<include refid="sql_where"/>
+	</select>
+	
+	<select id="findAll" useCache="false"  resultMap="sql_resultMap">
+		<include refid="sql_selectAll"></include>
+		<include refid="sql_where"></include>
+	</select>
+	
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+		insert into cm_designer_product_format(productId,format,price,productNum,createTime) 
+		 values(#{productId},#{format},#{price},#{productNum},now())
+	</insert>
+	
+	<insert id="insertBatch" parameterType="java.util.List">  
+        insert into cm_designer_product_format(productId,format,price,productNum,createTime)  values  
+       <foreach collection="list" item="item" index="index" separator=",">  
+           ( #{productId},#{format},#{price},#{productNum},now() )  
+       </foreach>  
+     </insert>  
+	
+	<update id="update" >
+		update cm_designer_product_format
+		<set>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">productId=#{productId},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(format)">format=#{format},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)">price=#{price},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productNum)">productNum=#{productNum},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="delete" flushCache="true">
+		delete from cm_designer_product_format where id=#{id}
+	</delete>
+	
+	<delete id="deleteByProductId" flushCache="true">
+		delete from cm_designer_product_format where productId=#{productId}
+	</delete>
+	
+	
+</mapper>

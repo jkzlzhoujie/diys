@@ -1,0 +1,44 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(form){
+				$.post('/diys/Bo/setting/qqlistSave',$("#editForm").serialize(),function(data){
+					$("#qqlistForm").submit();
+				});
+			},
+			rules:{
+				content:{required:true}
+			}
+		});
+	})
+</script>
+     <div>
+    	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+    	<div class="breadcrumb">当前位置：系统管理> QQ群编辑</div>
+    	<form action="/diys/Bo/setting/qqlistSave" id="editForm" method="post">
+    		<input type="hidden" name="id" value="${(entity.id)!''}" >
+    		<div class="table-show-content">
+    		<table class="table-show" >
+    			<tr>
+    				<td align="right"> QQ群号码</td><td><input type="text" name="qqId" value="${(entity.qqId)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> QQ群名称</td><td><input type="text" name="qqName" value="${(entity.qqName)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"> 状态</td><td>
+    				<select name="status" value="${(entity.status)!''}">
+    					<option <#if "${(entity.status)!'1'}"== "1">selected="selected"</#if> value="1">未满</option>
+    					<option <#if "${(entity.status)!'1'}"== "0">selected="selected"</#if> value="0">已满</option>
+    				</select>
+    			</tr>
+    			<tr>
+    				<td align="right"><input type="submit" value="提交" class=" btn-submit" /> </td>
+    				<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>

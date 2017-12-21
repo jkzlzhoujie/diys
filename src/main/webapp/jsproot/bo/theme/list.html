@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>主题列表</title>
+<script type="text/javascript">
+  function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#pkForm").submit();
+  		}
+  	}else{
+  		$("#pkForm").submit();
+  	}
+  }
+  
+  function selectReset() {
+  	 $("#startDate").val("");
+  	 $("#endDate").val("");
+  	 $("#name").val("");
+  	 $("#type").val("");
+  }
+   $(function() {
+     $("#checkAll").click(function() {
+          $('input[name="subBox"]').attr("checked",this.checked);
+      });
+      var $subBox = $("input[name='subBox']");
+      $subBox.click(function(){
+          $("#checkAll").attr("checked",$subBox.length == $("input[name='subBox']:checked").length ? true : false);
+      });
+   });    
+  	function updateStatus(status) {
+  		var pageNo = $("#pageNo").val();
+		var i = 0;
+		var j=0;
+		var arr = new Array();
+		var m = document.getElementsByName('subBox');
+		for ( var i = 0; i < m.length; i++) {
+			if (m[i].checked == true) {
+				arr[j] = $.trim(m[i].value);
+				j+=1;
+			}
+		}
+		$.post('/diys/Bo/theme/us', {
+			packetIdStr : arr.toString(),
+			status:status,
+		}, function() {
+			$('#loadingimg').jqmHide();
+			$("#pkForm").submit();
+		})
+	}
+	
+	function updatePush(id,status) {
+		$.post('/diys/Bo/theme/updatePush', {
+			themeId : id,
+			status:status,
+		}, function() {
+			$("#pkForm").submit();
+		})
+	}
+	
+	
+	function refreshIndexCache() {
+	 	$('#loadingimg').jqmShow();
+	 	var classifyId = $("#classifyId").val(); 
+	 	if(classifyId.length > 0){
+			$.post('/diys/Bo/theme/refreshCacheTheme?classifyId='+classifyId,function(data){
+				myAlert("成功");
+				$('#loadingimg').jqmHide();
+			});
+	 	}else{
+	 		alert("请选择 分类！");
+	 		$('#loadingimg').jqmHide();
+	 	}
+	}
+</script>
+</head>            
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：素材管理 > 主题列表</div>
+      <form id="pkForm" action="/diys/Bo/theme/list" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      			<input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('theme/edit')"/>
+      			<input type="button" id="goOffline" value="下线"  class="btn-submit" onclick="updateStatus(2)"/>
+      			<input type="button" id="goOffline" value="上线"  class="btn-submit" onclick="updateStatus(1)"/>
+      <div class="table-search">
+            <div>
+				  <div style="display: inline">
+				  		名称：<input name="name" id="name" type="text" value="${(name)!''}" class="input-style">
+				  </div>
+				   <div style="display: inline">
+				  		分类：<select id="classifyId" name="classifyId" class="inputtext">
+	              		<option  value="">请选择分类</option>
+   						<#if classifyList ??>
+   						<#list classifyList as classify>
+   						<option <#if "${(classifyId)!0}"== "${classify.id}">selected="selected"</#if> value="${classify.id}">${classify.name}</option>
+   						</#list>
+   						</#if>
+           			</select>
+				  </div>
+				   <div style="display: inline">
+				  		状态：<select id="status" name="status" class="inputtext">
+	              		<option  value="">请选择状态</option>
+   						<option <#if "${(status)!0}"== "1">selected="selected"</#if> value="1">正常</option>
+   						<option <#if "${(status)!0}"== "2">selected="selected"</#if> value="2">下线</option>
+           			</select>
+				  </div>
+				     <div style="display: inline">
+				  		是否push到h5：<select id="h5Push" name="h5Push" class="inputtext">
+	              		<option  value="">请选择状态</option>
+   						<option <#if "${(h5Push)!''}"== "0">selected="selected"</#if> value="0">否</option>
+   						<option <#if "${(h5Push)!''}"== "1">selected="selected"</#if> value="1">是</option>
+           			</select>
+				  </div>
+				  <div style="margin-top: 10px">
+				  <div style="display: inline">
+          				创建时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:80px;" class="Wdate" onClick="WdatePicker()" />
+	                	 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:80px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+          			 <div style="width:10%;display: inline;"><input type="button" id="btn" value="刷新缓存"  class="btn-submit" onclick="refreshIndexCache()"/></div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn1" value="重置" class="btn-submit" onclick="selectReset()"></div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" id="btn" value="查询"  class="btn-submit" onclick="selectInfo()"/></div>
+				</div>
+			</div>
+		</div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="5%" align="center"><input type="checkbox" id="checkAll" /></th>
+              <th width="6%" >主题id</th>
+              <th width="6%" >作者</th>
+              <th width="12%" >分类类型</th>
+              <th width="6%" >喜欢次数</th>
+               <th width="12%" >缩略图</th>
+              <th width="8%" >状态</th>
+              <th width="5%" >排序</th>
+              <th width="5%" >是否pushH5</th>
+              <th width="14%" >时间</th>
+              <th width="15%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td align="center">
+							<input value="${(entity.id)!''}" type="checkbox" name="subBox" class="subBox">
+						</td>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.userId)!''}
+						</td>
+						<td>
+							<#if classifyList ??>
+   						<#list classifyList as classify>
+   						<#if "${(entity.classifyId)!0}"== "${classify.id}">${classify.name}</#if> 
+   						</#list>
+   						</#if>
+						</td>
+						<td >
+							${(entity.loveNum)!'0'}
+						</td>
+						<td>
+						<img width="60px" height="80px" src="${(entity.imageUrl)!''}">
+						</td>
+						<td>
+							<#if entity.status??>
+								<#if "${entity.status}" == "1">上线
+									<#elseif "${entity.status}" == "2">编辑中
+									<#else>编辑中
+								</#if>
+							<#else>编辑中
+							</#if>
+						</td>
+						<td>
+							${entity.sort!''}
+						</td>
+						<td>
+							<#if entity.h5Push?? && "${entity.h5Push}" == "1">
+									是
+							<#else>否
+							</#if>
+						</td>
+						<td>
+							${entity.createdWhen!''}
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('theme/edit','${(entity.id)!0}')">编辑</a>						
+							<a class="btn btn-delete" onclick="del_('theme/del','${entity.id}')">删除</a>
+							<#if entity.h5Push?? && "${entity.h5Push}" == "1">
+									<a class="btn btn-delete" onclick="updatePush('${entity.id}','0')">h5下架</a>
+							<#else>
+							<a class="btn btn-look" onclick="updatePush('${entity.id}','1')">push到h5</a>
+							</#if>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

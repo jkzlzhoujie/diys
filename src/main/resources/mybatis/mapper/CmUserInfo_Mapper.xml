@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.CmUserInfo">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="CmUserInfo">
+			<id property="id" column="user_id" />
+			<result property="clientId" column="client_id" />
+			<result property="userName" column="user_name" />
+			<result property="tokenId" column="token_id" />
+			<result property="password" column="password" />
+			<result property="mobile" column="mobile" />
+			<result property="nickName" column="nick_name" />
+			<result property="headImageUrl" column="head_image_url" />
+			<result property="level" column="level" />
+			<result property="score" column="score" />
+			<result property="experience" column="experience" />
+			<result property="charm" column="charm" />
+			<result property="originality" column="originality" />
+			<result property="credit" column="credit" />
+			<result property="sex" column="sex" />
+			<result property="birth" column="birth" />
+			<result property="constellation" column="constellation" />
+			<result property="area" column="area" />
+			<result property="city" column="city" />
+			<result property="registerFrom" column="register_from" />
+			<result property="lastLoginTime" column="last_login_time" />
+			<result property="isOnline" column="is_online" />
+			<result property="lastActiveTime" column="last_active_time" />
+			<result property="qqUserId" column="qq_user_id" />
+			<result property="weixinUserId" column="weixin_user_id" />
+			<result property="weiboUserId" column="weibo_user_id" />
+			<result property="clientChannel" column="client_channel" />
+			<result property="clientVersion" column="client_version" />
+			<result property="fansCount" column="fans_count" />
+			<result property="productCount" column="product_count" />
+			<result property="praisesCount" column="praises_count" />
+			<result property="discussCount" column="discuss_count" />
+			<result property="attentionsCount" column="attentions_count" />
+			<result property="friendsCount" column="friends_count" />
+			<result property="machine" column="client_machine" />
+			<result property="isAccusation" column="is_accusation" />
+			<result property="accuErrCount" column="accu_err_count" />
+			<result property="accuCount" column="accu_count" />
+			<result property="createdWhen" column="created_when" />
+			<result property="userType" column="user_type" />
+			<result property="isBan" column="is_ban" />
+			<result property="imei" column="imei" />
+			<result property="privilegeLevel" column="privilegeLevel" />
+			
+	</resultMap>
+	
+	<sql id="sql_selectAll">
+		select * from cm_user_info a
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		 <if test="isWeixin ==0">and weixin_user_id is not null</if>
+		 <if test="isWeixin ==1">and weixin_user_id is null</if>
+		  <if test="isQq ==0">and qq_user_id is not null</if>
+		 <if test="isQq ==1">and qq_user_id is null</if>
+		  <if test="isWeibo ==0">and weibo_user_id is not null</if>
+		 <if test="isWeibo ==1">and weibo_user_id is null</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(identity)">and MD5(CONCAT('xxiu',a.user_id)) like #{identity}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(tokenId)">and token_id=#{tokenId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and  user_id=#{id}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and nick_name like "%"#{nickName}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userType)">and user_type = #{userType}</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(allUser)">and user_type in (0,1)</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(registerFrom)">and register_from = #{registerFrom}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(mobile)">and mobile = #{mobile}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(mobileTo)">and mobile like "%"#{mobileTo}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(password)">and password = #{password}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(qqUserId)">and qq_user_id = #{qqUserId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(weixinUserId)">and weixin_user_id = #{weixinUserId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productCount)">and product_count = #{productCount}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientChannel)">and client_channel = #{clientChannel}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)">and client_id = #{clientId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(weiboUserId)">and weibo_user_id = #{weiboUserId}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(attentionLabel)">and attention_label like "%"#{attentionLabel}"%" or nick_name like "%"#{attentionLabel}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isBan)">and is_ban = #{isBan}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(imei)">and imei = #{imei}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(privilegeLevel)">and privilegeLevel = #{privilegeLevel}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(noPrivilege)">and privilegeLevel != #{noPrivilege}</if>
+         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(created_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(created_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+        </where>
+	</sql>
+	 
+	
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where user_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="findRand" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+		SELECT *
+		FROM `cm_user_info` AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(`user_id`) FROM `cm_user_info`)-(SELECT MIN(user_id) FROM `cm_user_info`))+(SELECT MIN(user_id) FROM `cm_user_info`)) AS id) AS t2
+		WHERE t1.user_id >= t2.id
+		ORDER BY t1.user_id LIMIT #{limit};
+	</select>
+	
+	<!-- and attention_label like "%"#{attentionLabel}"%" or nick_name like "%"#{attentionLabel}"%" -->
+	<select id="findDtoByMap" parameterType="map" resultType="cn.temobi.complex.dto.CmUserInfoListDto" useCache="false">
+		SELECT b.career,a.birth,a.user_id as userId,nick_name as nickName,head_image_url as headImageUrl,city,fans_count as fansCount,product_count as productCount,discuss_count as discussCount FROM `cm_user_info` a LEFT JOIN `cm_user_extend_info` b ON a.`user_id` = b.`user_id`
+		  <where>
+			 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(attentionLabel)">
+			 	and nick_name like "%"#{attentionLabel}"%"
+			 </if>
+	      </where>
+		ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findCircleId" parameterType="map" resultType="long" useCache="false">
+	SELECT a.user_id FROM `cm_user_info` a LEFT JOIN `cm_user_extend_info` b ON a.`user_id` = b.`user_id`
+	<where>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(keyword)">and attention_label like "%"#{keyword}"%"</if>
+     	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(time)">
+             <![CDATA[
+                 AND DATE_FORMAT(created_when,'%Y-%m-%d')=Date_FORMAT(#{time},'%Y-%m-%d')
+            ]]>
+         </if>
+      </where>
+	</select>
+	
+	<select id="findByList" parameterType="map" resultType="cn.temobi.complex.dto.CmUserInfoListDto" useCache="false">
+	SELECT b.career,a.level,a.birth,a.user_id as userId,a.imei,nick_name as nickName,head_image_url as headImageUrl,city,fans_count as fansCount,
+	product_count as productCount,discuss_count as discussCount FROM `cm_user_info` a
+	LEFT JOIN cm_user_extend_info b ON a.`user_id` = b.`user_id`
+	WHERE a.user_id IN
+	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(imei)"> and a.imei is not null </if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(ids)">order by substring_index(#{ids},a.user_id,1)</if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(limit)">limit #{limit} offset #{offset}</if>
+	
+	</select>
+	
+	<select id="findByPage" parameterType="CmUserInfo" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried)">order by ${orderFried}</if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sequence)"> ${sequence}</if>
+	limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(1) FROM `cm_user_info` a LEFT JOIN `cm_user_extend_info` b ON a.`user_id` = b.`user_id`
+		<include refid="sql_where"/>
+    </select>
+    
+    <select id="singleCount" resultType="long" useCache="false">
+		SELECT count(1) FROM `cm_user_info` 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="CmUserInfo" useGeneratedKeys="true" keyProperty="id">
+	insert into cm_user_info(client_id,is_accusation,accu_err_count,accu_count,user_name,password,mobile,nick_name,head_image_url,level,score,experience,charm,originality,credit,sex,birth,constellation,area,city,register_from,last_login_time,
+		is_online,last_active_time,qq_user_id,weixin_user_id,weibo_user_id,client_channel,client_version,fans_count,attentions_count,friends_count,client_machine,discuss_count,product_count,praises_count,user_type,created_when,is_ban,token_id,imei)
+	values(#{clientId},#{isAccusation},#{accuErrCount},#{accuCount},#{userName},#{password},#{mobile},#{nickName},#{headImageUrl},#{level},#{score},#{experience},#{charm},#{originality},#{credit},#{sex},#{birth},#{constellation},#{area},#{city},#{registerFrom},#{lastLoginTime},
+	    #{isOnline},#{lastActiveTime},#{qqUserId},#{weixinUserId},#{weiboUserId},#{clientChannel},#{clientVersion},#{fansCount},#{attentionsCount},#{friendsCount},#{machine},#{discussCount},#{productCount},
+		#{praisesCount},#{userType},now(),#{isBan},#{tokenId},#{imei})
+	</insert>
+	
+	<select id="findLoginUser" parameterType="map" resultType="long" useCache="false">
+	SELECT a.user_id FROM `cm_user_info` a LEFT JOIN (SELECT DISTINCT `client_id` FROM `emoji_start_statistics` 
+	WHERE `created_when`  &gt; #{startTime} AND `created_when` 	&lt; #{endTime}) b 
+	ON a.`client_id` = b.client_id WHERE b.client_id IS NOT NULL AND   `product_count` > 0
+	</select>
+	
+	<update id="update" parameterType="CmUserInfo">
+	  UPDATE cm_user_info
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)"> client_id = #{clientId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isAccusation)"> is_accusation = #{isAccusation},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accuErrCount)"> accu_err_count = #{accuErrCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accuCount)"> accu_count = #{accuCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userName)"> user_name = #{userName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(password)"> password = #{password},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(mobile)"> mobile = #{mobile},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)"> nick_name = #{nickName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(headImageUrl)"> head_image_url = #{headImageUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(level)"> level = #{level},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(score)"> score = #{score},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(experience)"> experience = #{experience},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(charm)"> charm = #{charm},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(originality)"> originality = #{originality},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(credit)"> credit = #{credit},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sex)"> sex = #{sex},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(birth)"> birth = #{birth},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(constellation)"> constellation = #{constellation},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(area)"> area = #{area},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(city)"> city = #{city},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(registerFrom)"> register_from = #{registerFrom},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(lastLoginTime)"> last_login_time = #{lastLoginTime},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isOnline)"> is_online = #{isOnline},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(lastActiveTime)"> last_active_time = #{lastActiveTime},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(qqUserId)"> qq_user_id = #{qqUserId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(weixinUserId)"> weixin_user_id = #{weixinUserId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(weiboUserId)"> weibo_user_id = #{weiboUserId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientChannel)"> client_channel = #{clientChannel},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientVersion)"> client_version = #{clientVersion},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(machine)"> client_machine = #{machine},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(fansCount)"> fans_count = #{fansCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(attentionsCount)"> attentions_count = #{attentionsCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(friendsCount)"> friends_count = #{friendsCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productCount)"> product_count = #{productCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(discussCount)"> discuss_count = #{discussCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(praisesCount)"> praises_count = #{praisesCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userType)"> user_type = #{userType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isBan)"> is_ban = #{isBan},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(tokenId)"> token_id = #{tokenId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(imei)"> imei = #{imei},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(privilegeLevel)"> privilegeLevel = #{privilegeLevel},</if>
+		 </set>
+        <where>
+                user_id=#{id}
+        </where>
+	</update>
+	
+	<update id="updatePartCmUser" parameterType="cn.temobi.complex.dto.CmUserInfoUpdateDto">
+	  UPDATE cm_user_info
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)"> client_id = #{clientId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isAccusation)"> is_accusation = #{isAccusation},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accuErrCount)"> accu_err_count = #{accuErrCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accuCount)"> accu_count = #{accuCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userName)"> user_name = #{userName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(password)"> password = #{password},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(mobile)"> mobile = #{mobile},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)"> nick_name = #{nickName},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(headImageUrl)"> head_image_url = #{headImageUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(level)"> level = #{level},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(score)"> score = #{score},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(experience)"> experience = #{experience},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(charm)"> charm = #{charm},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(originality)"> originality = #{originality},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(credit)"> credit = #{credit},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sex)"> sex = #{sex},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(birth)"> birth = #{birth},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(constellation)"> constellation = #{constellation},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(area)"> area = #{area},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(city)"> city = #{city},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(registerFrom)"> register_from = #{registerFrom},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(lastLoginTime)"> last_login_time = #{lastLoginTime},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isOnline)"> is_online = #{isOnline},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(lastActiveTime)"> last_active_time = #{lastActiveTime},</if>
+		 <if test="qqUserId != '' " > qq_user_id = #{qqUserId},</if>
+		 <if test="weixinUserId != '' " > weixin_user_id = #{weixinUserId},</if>
+		 <if test="weiboUserId != '' " > weibo_user_id = #{weiboUserId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientChannel)"> client_channel = #{clientChannel},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientVersion)"> client_version = #{clientVersion},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(machine)"> client_machine = #{machine},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(fansCount)"> fans_count = #{fansCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(attentionsCount)"> attentions_count = #{attentionsCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(friendsCount)"> friends_count = #{friendsCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productCount)"> product_count = #{productCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(discussCount)"> discuss_count = #{discussCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(praisesCount)"> praises_count = #{praisesCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userType)"> user_type = #{userType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isBan)"> is_ban = #{isBan},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(tokenId)"> token_id = #{tokenId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(imei)"> imei = #{imei},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(privilegeLevel)"> privilegeLevel = #{privilegeLevel},</if>
+		 </set>
+        <where>
+                user_id=#{id}
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from cm_user_info where user_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM cm_user_info
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+	
+	<select id="findPriCmUser" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+		SELECT cup.failureTime,cui.* FROM cm_user_info cui
+ 		LEFT JOIN  cm_user_privilege cup ON cui.user_id = cup.userId
+ 		<where>
+ 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and userId != #{userId}</if>
+ 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(noPrivilege)">and privilegeLevel != #{noPrivilege}</if>
+ 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(failureTime)">
+             	<![CDATA[
+             	 AND DATE_FORMAT(cup.failureTime,'%Y-%m-%d %H:%i:%s')<=Date_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+           		 ]]>
+        	 </if>
+ 		</where>
+	</select>
+	
+</mapper>

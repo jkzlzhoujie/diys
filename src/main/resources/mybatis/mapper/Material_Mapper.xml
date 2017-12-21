@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.Material">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="Material">
+			<id property="id" column="id" />
+			<result property="name" column="m_name" />
+			<result property="desc" column="m_desc" />
+			<result property="size" column="size" />
+			<result property="price" column="price" />
+			<result property="downUrl" column="down_url" />
+			<result property="zipPath" column="zip_path" />
+			<result property="resourceCount" column="resource_count" />
+			<result property="thumbnailUrl" column="thumbnail_url" />
+			<result property="status" column="m_status" />
+			<result property="sort" column="sort" />
+			<result property="downloadNum" column="download_num" />
+			<result property="type" column="m_type" />
+			<result property="business" column="business" />
+			<result property="businessUrl" column="businessUrl" />
+			<result property="businessContent" column="businessContent" />
+			<result property="businessType" column="businessType" />
+			<result property="commodityStatus" column="commodityStatus" />
+			<result property="updateWhen" column="update_when" />
+			<result property="createdWhen" column="created_when" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from emoji_material
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(created_when,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+         <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(created_when,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNumber(id)">and id = #{id}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)">and m_name like "%"#{name}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(desc)">and m_desc = #{desc}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(size)">and size = #{size}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(downUrl)">and down_url = #{downUrl}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(resourceCount)">and resource_count = #{resourceCount}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(thumbnailUrl)">and thumbnail_url = #{thumbnailUrl}</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and m_type = #{type}</if>
+		 <if test='status == "2"'>
+		 and m_status != 1
+		 </if>
+		 <if test='status == "1"'>
+		 and m_status = 1
+		 </if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY sort desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+		ORDER BY sort desc
+	</select>
+	
+	<select id="findUseByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	SELECT b.* FROM `emoji_material_use` a LEFT JOIN `emoji_material` b ON a.`materialId` =  b.`id` ORDER BY a.`useSeq` DESC
+	</select>
+	
+	<select id="findByPage" parameterType="Material" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sort)">ORDER BY ${sort} desc </if>
+	 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(orderFried)">order by ${orderFried}</if>
+	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sequence)"> ${sequence}</if>
+	<if test="@cn.temobi.core.util.StringUtil@isEmpty(sort) and @cn.temobi.core.util.StringUtil@isEmpty(orderFried)">ORDER BY created_when DESC  </if>
+	
+	limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findByPage2" parameterType="Material" resultMap="sql_resuleMap" useCache="false">
+	SELECT * FROM `emoji_material` a LEFT JOIN (SELECT material_id,COUNT(*) AS num FROM `emoji_material_download` WHERE `material_type` =3 GROUP BY `material_id`
+) b ON a.id=b.material_id WHERE a.`m_type`=3 AND a.`m_status`= 1 ORDER BY num DESC
+	limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM emoji_material 
+		<include refid="sql_where"/>
+    </select>
+	
+	<insert id="insert" parameterType="Material" useGeneratedKeys="true" keyProperty="id">
+	insert into emoji_material(m_name,m_desc,size,down_url,zip_path,resource_count,
+		thumbnail_url,m_type,m_status,sort,download_num,price,update_when,business,businessUrl,businessContent,businessType,commodityStatus,created_when) 
+	values(#{name},#{desc},#{size},#{downUrl},#{zipPath},#{resourceCount},#{thumbnailUrl},
+		#{type},#{status},#{sort},#{downloadNum},#{price},#{updateWhen},#{business},#{businessUrl},#{businessContent},#{businessType},#{commodityStatus},now())
+	</insert>
+	
+	<update id="update" parameterType="Material">
+	  UPDATE emoji_material
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(name)"> m_name = #{name},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(desc)"> m_desc = #{desc},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(size)"> size = #{size},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(downUrl)"> down_url = #{downUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(zipPath)"> zip_path = #{zipPath},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(resourceCount)"> resource_count = #{resourceCount},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(thumbnailUrl)"> thumbnail_url = #{thumbnailUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> m_type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(status)"> m_status = #{status},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sort)"> sort = #{sort},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(price)"> price = #{price},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(updateWhen)"> update_when = #{updateWhen},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(downloadNum)"> download_num = #{downloadNum},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(business)"> business = #{business},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(businessUrl)"> businessUrl = #{businessUrl},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(businessContent)"> businessContent = #{businessContent},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(businessType)"> businessType = #{businessType},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(commodityStatus)"> commodityStatus = #{commodityStatus},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from emoji_material where id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM emoji_material
+		<where>
+				id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

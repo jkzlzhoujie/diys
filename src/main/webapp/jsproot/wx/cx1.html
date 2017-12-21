@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="date=no">
+    <meta name="format-detection" content="address=no">
+    <title>X秀</title>
+<script type="text/javascript" src="/diyroot/js/jquery/jquery-1.7.1.min.js"></script>
+<style type="text/css">
+*{padding:0; margin:0;}
+</style>
+<script type="text/javascript">
+function getCode(){
+	var mobile = $("#mobile").val();
+	if(mobile=="" || mobile==null)
+	{
+		alert("手机号不能为空");
+		return null;
+	} 
+	$.post("/diys/client/cmUser/getCode",{mobile:mobile,type:5}, function(data) {
+				var temp = eval("("+data+")");
+				if(temp.code != '00000'){
+					alert("请稍后再发");
+				}else{
+					alert("发送成功");
+				}
+	})
+}
+
+
+function submitMo(){
+	var mobile = $("#mobile").val();
+	var code = $("#code").val();
+	if(mobile=="" || mobile==null)
+	{
+		alert("手机号不能为空");
+		return null;
+	}
+	if(code=="" || code==null)
+	{
+		alert("验证码不能为空");
+		return null;
+	}
+	$.post("/diys/client/cmUser/submitMo",{mobile:mobile,code:code}, function(data) {
+				var temp = eval("("+data+")");
+				if(temp.code == '00000'){
+					alert("亲，恭喜你，已成功领取了优惠券，可到X秀APP中下单使用");
+					window.location.href='/diys/client/v42/cx2';
+				}else if(temp.code == '10003'){
+					alert("验证码过期");
+				}else if(temp.code == '10004'){
+					alert("验证码错误");
+				}else{
+					alert("已获取");
+					window.location.href='/diys/client/v42/cx2';
+				}
+	})
+}
+</script>
+</head>
+<body> 
+<img src="/diyroot/static/css/images/zz.png" width="100%" id="cxbg" style="position:absolute;top:0; left:0; z-index:1"> 
+<div id="downAPk" style="top:12rem;margin-left: 2%;margin-right: 2%;position: absolute;cursor: pointer; z-index:2"><input style="width:100%;height: 2.8rem;line-height:2.8rem;vertical-align:middle; font-size: 1rem;position: absolute;BACKGROUND-COLOR: transparent;outline:medium;color: white;border:0px;pad" placeholder="请输入手机号" type="text" id="mobile" name='mobile'/><img width="100%" src="/diyroot/static/css/images/hm.png"></div>
+<div id="downAPk" style="top:15.5rem;margin-left: 2%;margin-right: 2%;position: absolute;cursor: pointer; z-index:2"><input style="width:48%;height: 2.8rem;border:0px;BACKGROUND-COLOR: transparent;outline:medium;color: white;font-size: 1rem;position: absolute;line-height:2.8rem;vertical-align:middle; " placeholder="请输入验证码" type="text" id="code" name='code'/>
+<div style="width: 48%;float: left;"><img width="100%" src="/diyroot/static/css/images/yzm.png"></div>
+<div style="width: 48%;float: right;" onclick="getCode();"><img width="100%" src="/diyroot/static/css/images/djs.png"></div>
+</div>
+<div onclick="submitMo();" style="top:19rem;margin-left: 2%;margin-right: 2%;position: absolute;cursor: pointer; z-index:2"><img width="100%" src="/diyroot/static/css/images/an1.png"></div>
+</body>
+</html>

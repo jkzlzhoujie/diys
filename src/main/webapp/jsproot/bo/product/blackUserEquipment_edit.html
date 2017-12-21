@@ -1,0 +1,34 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(form){
+				$.post('/diys/Bo/black/blackUserEquipmentSave',$("#editForm").serialize(),function(data){
+					$("#blackUserEquipmentForm").submit();
+				});
+			},
+			rules:{
+				content:{required:true}
+			}
+		});
+	})
+</script>
+     <div>
+    	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+    	<div class="breadcrumb">当前位置：系统管理> 用户设备编辑</div>
+    	<form action="/diys/Bo/black/blackUserEquipmentSave" id="editForm" method="post">
+    		<input type="hidden" name="id" value="${(entity.id)!''}" >
+    		<div class="table-show-content">
+    		<table class="table-show" >
+    			<tr>
+    				<td align="right">用户ID,设备imei号</td><td><input type="text" name="content" value="${(entity.content)!''}"/> </td>
+    			</tr>
+    			<tr>
+    				<td align="right"><input type="submit" value="提交" class=" btn-submit" /> </td>
+    				<td><input type="reset" value="重置" class=" btn-submit"/> </td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>

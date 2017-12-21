@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>应用管理</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+	<script type="text/javascript">
+	    	
+	    	function selectOne(){
+	    		$("#pageNo").val("1");
+	    		$("#bannerForm").submit();
+	    	}
+	    	function refreshIndexCache() {
+			 	$('#loadingimg').jqmShow();
+				$.post('/diys/Bo/topic/refreshCache',function(data){
+					myAlert("成功");
+					$('#loadingimg').jqmHide();
+				});
+			}
+	</script>
+
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：应用管理 > 应用列表</div>
+      <form id="bannerForm" action="/diys/Bo/application/list" method="post">
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+       <div class="table-search">
+		<div style="display:inline">
+			应用名：
+				<input type="text" name="name" class="input-style"/>
+          	状态：
+	          	<select id="type" name="status" class="inputtext">
+             			<option  value="">请选择</option>
+             			<option <#if "${status!''}" ==  "1">selected="selected"</#if> value="1">上线</option>
+             			<option <#if "${status!''}" ==  "2">selected="selected"</#if> value="2">下线</option>
+	          	</select>
+		</div>
+		<div style="width:10%;display: inline;float: right"><input type="button" id="btn1"  class="btn-submit" value="查询" onclick="selectOne()" /></div>
+	  </div>
+      
+      
+      <div class="table-show-content">
+      <div style="padding-bottom: 5px">
+      <div style="display: inline"><input type="button" id="btn" value="新增"  class="btn-submit" onclick="editNew('application/edit')"/></div>
+      </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title" >
+              <th width="5%" >id</th>
+              <th width="10%" >应用名</th>
+              <th width="10%">简介</th>
+              <th width="5%">logo</th>
+              <th width="15%">下载地址</th>
+              <th width="5%">应用下载次数/banner点击次数</th>
+              <th width="6%" >状态</th>
+              <th width="10%" >创建时间</th>
+              <th width="10%" >操作</th>
+            </tr>
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.name)!''}
+						</td>
+						<td >
+							${(entity.title)!''}
+						</td>
+						<td >
+						<img src="${(entity.logo)!''}"  style="width: 120px;height: 60px"/>
+						</td>
+						<td >
+							${(entity.url)!''}
+						</td>
+						<td>
+							${(entity.uploadCount)!''}/${(entity.clickCount)!''}
+						</td>
+						<td>
+							<#if entity.status??>
+								<#if "${entity.status}" == "1"><p style="color: fuchsia">上线</p>
+									<#else><p style="color: blue">下线</p>
+								</#if>
+							</#if>
+						</td>
+						<td>
+							${entity.createdWhen!''}
+						</td>
+						<td  style="display: table">
+							<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('application/edit','#{(entity.id)!0}')">编辑</a>
+							<a class="btn btn-delete" onclick="del_('application/del','#{(entity.id)!0}')">删除</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+    <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

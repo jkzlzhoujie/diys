@@ -1,0 +1,71 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$("#editForm").validate({
+			submitHandler:function(form){
+				$.post('/diys/Bo/operate/sysPrivilegePackageSave',$("#editForm").serialize(),function(data){
+					alert("设置成功！");
+				});
+			},
+			rules:{
+				
+			}
+		});
+	})
+	function selectReset(){
+   	
+   	}
+</script>
+     <div>
+    	<input type="button" value="关闭" name="close" class="jqmClose btn right btn-delete"/>
+    	<div class="breadcrumb">当前位置：运营管理> 特权编辑 > 特权套餐内容配置</div>
+    	<form action="/diys/Bo/operate/sysPrivilegePackageSave" id="editForm" method="post">
+    		<input type="hidden" name="privilegeId" value="${privilegeId!''}"   >
+    		<div class="table-show-content">
+    		<table class="table-show" >
+    			<tr>
+    				<td align="center"> 套餐列表</td>
+    			</tr>
+    			<tr>
+    				<td align="left"> 
+    				<#if sysPackageList??>
+		    			<#list sysPackageList as sysPackage>
+    				  		 <input name="packageId" type="checkbox" value="${(sysPackage.id)!''}" 
+		    				<#if sysPrivilegePackageList??>
+		    				  <#list sysPrivilegePackageList as sysPrivilegePackage>
+    				  		 		<#if "${(sysPrivilegePackage.packageId)}"== "${(sysPackage.id)?string}" > checked="checked"</#if>
+    				  		  </#list> 
+				    		</#if>
+				    		 />${(sysPackage.name)!''}
+    				   </#list> 
+				    </#if>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td align="center"> 特权内容列表</td>
+    			</tr>
+    			<tr>
+    				<td align="left"> 
+    				<#if sysPrivilegeContentTypeList??>
+		    			<#list sysPrivilegeContentTypeList as sysPrivilegeContentType>
+    				  		 <input name="contentId" type="checkbox" value="${(sysPrivilegeContentType.id)!''}" 
+		    				<#if sysPrivilegeContentList??>
+		    				  <#list sysPrivilegeContentList as sysPrivilegeContent>
+    				  		 		<#if "${(sysPrivilegeContent.contentTypeId)}"== "${(sysPrivilegeContentType.id)?string}" > checked="checked"</#if>
+    				  		  </#list> 
+				    		</#if>
+				    		 />${(sysPrivilegeContentType.content)!''}
+    				   </#list> 
+				    </#if>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td align="right">
+    				    <input type="submit" value="提交" class=" btn-submit" /> 
+    				</td>
+    			</tr>
+    		</table>
+    		</div>
+    	</form>
+    </div>
+</body>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.temobi.complex.entity.PmProductAccusation">
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
+	<resultMap id="sql_resuleMap" type="PmProductAccusation">
+			<id property="id" column="accusation_id" />
+			<result property="productId" column="product_id" />
+			<result property="productUrl" column="product_url" />
+			<result property="userId" column="user_id" />
+			<result property="accusationUserId" column="accusation_user_id" />
+			<result property="clientId" column="client_id" />
+			<result property="type" column="type" />
+			<result property="content" column="content" />
+			<result property="isDistort" column="is_distort" />
+			<result property="createdWhen" column="created_when" />
+	</resultMap>
+
+	<sql id="sql_selectAll">
+		select * from pm_product_accusation a
+	</sql>
+
+	<sql id="sql_where">
+		<where>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accusationNickName)">and c.`nick_name` like "%"#{accusationNickName}"%"</if>
+		<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and b.`nick_name` like "%"#{nickName}"%"</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accusationUserId)">and accusation_user_id = #{accusationUserId}</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)">and a.product_id = #{productId}</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isDistort)">and is_distort = #{isDistort}</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isDistortTo)">and is_distort in (0,2)</if>
+		  <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)">and a.user_id = #{userId}</if>
+        	<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(endDate)">
+             <![CDATA[
+                 AND DATE_FORMAT(a.`created_when`,'%Y-%m-%d')<=Date_FORMAT(#{endDate},'%Y-%m-%d')
+            ]]>
+         </if>
+          <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(startDate)">
+            <![CDATA[
+                 AND DATE_FORMAT(a.`created_when`,'%Y-%m-%d')>=Date_FORMAT(#{startDate},'%Y-%m-%d')
+            ]]>
+         </if>
+        </where>
+	</sql>
+	
+	<select id="findAll" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="getById" parameterType="Long" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	 where accusation_id=#{id}
+	</select>
+	
+	<select id="findByMap" parameterType="map" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc
+	</select>
+	
+	<select id="findByPage" parameterType="PmProductAccusation" resultMap="sql_resuleMap" useCache="false">
+	<include refid="sql_selectAll"/>
+	<include refid="sql_where"/>
+	ORDER BY created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findDtoByPage" parameterType="PmProductAccusation" resultType="cn.temobi.complex.dto.PmProductAccusationDto" useCache="false">
+	SELECT c.accu_err_count as accuErrCount,c.accu_count as accuCount,d.is_public as isPublic,d.create_type as createType,is_distort as isDistort,a.accusation_id as id,a.type,a.`created_when` AS createdWhen,a.`product_url` AS productUrl,a.`product_id` AS productId,c.user_id as accusationUserId,c.`nick_name` AS accusationNickName,b.user_id as userId,b.`nick_name` AS nickName
+	FROM `pm_product_accusation` a LEFT JOIN `cm_user_info` b ON a.`user_id` = b.`user_id` LEFT JOIN `cm_user_info` c ON a.`accusation_user_id` = c.`user_id` left join pm_product_info d on a.product_id = d.product_id
+	<include refid="sql_where"/>
+	ORDER BY a.created_when desc limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="countDto" resultType="long" useCache="false">
+		SELECT count(*) FROM `pm_product_accusation` a LEFT JOIN `cm_user_info` b ON a.`user_id` = b.`user_id` LEFT JOIN `cm_user_info` c ON a.`accusation_user_id` = c.`user_id` 
+		<include refid="sql_where"/>
+    </select>
+	
+	<select id="count" resultType="long" useCache="false">
+		SELECT count(*) FROM pm_product_accusation 
+		<include refid="sql_where"/>
+    </select>
+    
+	<insert id="insert" parameterType="PmProductAccusation" useGeneratedKeys="true" keyProperty="id">
+	insert into pm_product_accusation(product_id,product_url,user_id,is_distort,accusation_user_id,client_id,type,content,created_when)
+	values(#{productId},#{productUrl},#{userId},#{isDistort},#{accusationUserId},#{clientId},#{type},#{content},now())
+	</insert>
+	
+	<update id="update" parameterType="PmProductAccusation">
+	  UPDATE pm_product_accusation
+        <set>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productId)"> product_id = #{productId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(userId)"> user_id = #{userId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(accusationUserId)"> accusation_user_id = #{accusationUserId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(clientId)"> client_id = #{clientId},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)"> type = #{type},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(content)"> content = #{content},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(isDistort)"> is_distort = #{isDistort},</if>
+		 <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(productUrl)"> product_url = #{productUrl},</if>
+		 </set>
+        <where>
+            <if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">
+                accusation_id=#{id}
+            </if>
+        </where>
+	</update>
+	
+	<delete id="delete" parameterType="Long" flushCache="true">
+		delete from pm_product_accusation where accusation_id = #{id}
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds" parameterType="list" flushCache="true">
+		DELETE FROM pm_product_accusation
+		<where>
+				accusation_id in
+				<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+        		</foreach>
+		</where>
+	</delete>
+	
+</mapper>

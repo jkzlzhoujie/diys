@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>作品规格列表</title>
+		
+		<script type="text/javascript">
+		
+			function selectInfo() {
+		  		$("#designerProductForm").submit();
+		  }
+			function selectReset(){
+	    		$("#id").val("");
+	    		$("#userId").val("");
+	    	}
+			function editNewFormat(urlString,index) {
+				$('#editor').jqm({
+							ajax : "/diys/Bo/"+urlString+"?productId="+ index,
+							overlay : 30,
+							overlayClass : 'whiteOverlay'
+						}).draggable();
+				$('#editor').jqmShow();
+			}
+
+		</script>
+		<style type="text/css">
+			.dginputstyle{width:100px;height:22px}
+		</style>
+	
+	</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：设计师管理> 设计师作品信息>作品规格</div>
+      <form id="designerProductFormatForm" action="/diys/Bo/designer/designerProductFormatList" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <input type="hidden" id="productId" name="productId" value="${(productId)!''}" />
+      
+      <div class="table-show-content">
+      <div class="table-search">
+
+			<div style="display: inline">
+				<input type="button" id="btn1" value="新增"  class="btn-submit" onclick="editNewFormat('designer/designerProductFormatEdit','${(productId)!''}')"/>
+			</div>
+			<!-- <div style="display: inline;float: right"> 
+				<input type="button" id="btn2" value="返回"  class="btn-submit" onclick="editNew('designer/designerProductInfoList','${(productId)!''}')"/>
+ 			</div >  -->
+ 			
+        </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+            
+              <th width="5%">规格ID</th>
+              <th width="5%">所属作品ID:</th>
+              <th width="15%">规格信息</th>
+              <th width="5%">库存数量</th>
+              <th width="5%">单价</th>
+              <th width="5%" >创建时间</th>
+              <th width="5%" >操作</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.id)!''}
+						</td>
+						<td >
+							${(entity.productId)!''}
+						</td>
+						<td >
+							${(entity.format)!''}
+						</td>
+						<td >
+							${(entity.productNum)!''}
+						</td>
+						<td >
+							${(entity.price)!''}
+						</td>
+						<td>
+							${(entity.createTime)!''}
+						</td>
+						<td>
+							<a class="btn btn-look" href="javascript:;" onclick="edit('designer/designerProductFormatEdit','${(entity.id)!''}')">编辑</a>
+							<a class="btn btn-delete" href="javascript:;" onclick="del_('designer/designerProductFormatDelete','${(entity.id)!''}')">删除</a>
+						</td>
+					</tr>
+					</#list> 
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+        <#include "/bo/page.html">
+      </form>
+    </div>
+        <div id="editor" class="jqmWindow"></div>
+</body>
+</html>

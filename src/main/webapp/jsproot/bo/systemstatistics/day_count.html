@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>每日统计</title>
+<script type="text/javascript">
+function selectInfo() {
+  	var startDate = $("#startDate").val();
+  	var endDate = $("#endDate").val();
+  	$("#pageNo").val("1"); 
+  	if(startDate != "" && endDate != ""){
+  		if(startDate > endDate){
+  			myAlert("结束时间必须大于开始时间！");
+  		}else{
+  			$("#userForm").submit();
+  		}
+  	}else{
+  		$("#userForm").submit();
+  	}
+  }
+</script>
+</head>
+<body>
+   <div id="main">
+      <div class="breadcrumb">当前位置：统计管理 > 每日统计</div>
+      <form id="userForm" action="/diys/Bo/st/day_count" method="post" >
+      <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
+      <div class="table-show-content">
+      <div class="table-search">
+			    <div style="width:100%;padding-top: 10px">
+ 					<div style="display: inline"> 渠道：
+ 					<select style="width: 150px" id="channel" name="channel" class="select-style">
+ 					<option value="">请选择渠道</option>
+ 					<#if changeList??>
+   						<#list changeList as change>
+   						<option <#if "${(channel)!''}"== "${change.enParamName}">selected="selected"</#if> value="${change.enParamName}">${change.paramValue}</option>
+   						</#list>
+   						</#if>
+			      </select>
+			      </div>
+          			<div style="display: inline">
+          			创建时间： <input type="text" name="startDate" value="${startDate!''}" id="startDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+	                 &nbsp;至&nbsp;
+	               		<input type="text" name="endDate" value="${endDate!''}" id="endDate" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()">
+          			</div>
+          			<div style="width:10%;display: inline;float: right"><input type="button" onclick="selectInfo()" id="btn" value="查询"  class="btn-submit"/></div>
+          		</div>
+          </div>
+          </div>
+        <table class="table-show">
+          <tbody>
+            <tr  class="list_title">
+              <th width="20%">时间</th>
+              <th width="20%">客户端用户</th>
+               <th width="20%">注册用户</th>
+              <th width="20%">转化率</th>
+            </tr>
+            <#if list?? >
+	            <#if list??>
+		            <#list list as entity>
+					<tr>
+						<td >
+							${(entity.time)!''}
+						</td>
+						<td >
+							${(entity.clientNum)!''}
+						</td>
+						<td >
+							${(entity.userNum)!''}
+						</td>
+						<td >
+							${(entity.lv)!'0'}%
+						</td>
+					</tr>
+					</#list> 
+					<tr>
+						<td >
+							 总计
+						</td>
+						<td >
+							${(totalDto.clientNum)!''}
+						</td>
+						<td >
+							${(totalDto.userNum)!''}
+						</td>
+						<td >
+							${(totalDto.lv)!'0'}%
+						</td>
+					</tr>
+				</#if>
+            </#if>
+          </tbody>
+        </table>
+      <#include "/bo/page.html">
+      </form>
+    </div>
+</body>
+</html>

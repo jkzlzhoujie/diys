@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>圈子作品列表</title>
+    <meta charset=UTF-8">
+    	<script type="text/javascript">
+		function selectReset(){
+			$("#startDate").val("");
+			$("#endDate").val("");
+			$("#name").val("");
+			$("#productId").val("");
+		}
+		
+		function selectOne(){
+			var startDate = $("#startDate").val();
+			var endDate = $("#endDate").val();
+			$("#pageNo").val("1");
+			if(endDate!=""&&startDate!=""){
+				if(endDate<startDate){
+					myAlert("起始时间不能大于结束时间");
+				}else{
+					$("#circleForm").submit();}
+			}else{
+				$("#circleForm").submit();
+			}
+
+		}
+	</script>
+  </head>
+  
+  <body>
+      <div id="main">
+  		<div class="breadcrumb">当前位置：兴趣圈管理> 圈子作品列表</div>
+  		<form action="/diys/Bo/circle/productlist" method="post" id="circleForm" >
+  			<input type="hidden" name="pageNo" id="pageNo" value="${pageNo!''}">
+  			<div class="table-show-content">
+  				<div class="table-search">
+  					<div style="display: inline">
+				  		圈名：<input name="name" id="name" type="text" value="${(name)!''}" class="input-style">
+				  	</div>
+				  	<div style="display: inline">
+				  		作品id：<input name="productId" id="productId" type="text" value="${(productId)!''}" class="input-style">
+				  	</div>
+  					<div style="display: inline" >
+  						创建时间：<input type="text" id="startDate" name="startDate" value="${startDate!''}" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+  						&nbsp;至&nbsp;<input type="text" id="endDate" name="endDate" value="${endDate!''}" style="height:25px;width:100px;" class="Wdate" onClick="WdatePicker()" />
+  					</div>
+  					<div style="width:10%;display: inline;float: right" >
+  						<input type="button" value="重置" class="btn-submit" onclick="selectReset()">
+  					</div>
+  					<div style="width:10%;display: inline;float: right" >
+  						<input type="button" value="查询" class="btn-submit" onclick="selectOne()">
+  					</div>
+  				</div>
+  				<div style="padding-bottom: 10px"></div>
+  				<div style="display: inline">
+  					<input type="button" class="btn-submit"  value="新增" onclick="editNew('circle/productedit')"/>
+  				</div>
+				<table class="table-show">
+					<tr>
+						<th width="8%">圈子id</th>
+						<th width="8%">圈名</th>
+						<th width="10%">作品id</th>
+						<th width="10%">作品</th>
+						<th width="8%">状态</th>
+						<th width="13%">创建时间</th>
+						<th width="10%">操作</th>
+					</tr>
+					<#if list??>
+						<#list list as entity>
+							<tr>
+								<td>${(entity.circleId!'')}</td>
+								<td>${(entity.name!'')}</td>
+								<td>${(entity.productId!'')}</td>
+								<td>
+									<a title="Lorem ipsum dolor sit amet" rel="example_group" href="${entity.url!''}" title=""><img  width="60" height="80" src="${entity.url!''}" /></a>
+								</td>
+								<td>
+									<#if entity.flag??>
+										<#if "${entity.flag}" == "0">正常
+										<#elseif "${entity.flag}" == "1">用户解散
+										<#elseif "${entity.flag}" == "2">管理员删除
+										</#if>
+									</#if>
+								</td>
+								<td>${(entity.addTime)!''}</td>
+								<td>
+									<#if entity?? && entity.flag??&&"${entity.flag}" == "0">
+									<a class="btn btn-look agentClaim2" href="javascript:;" onclick="edit('circle/productedit',#{(entity.id)!''})" >编辑</a>
+									</#if>
+<!--									<a class="btn btn-delete" href="javascript:;" onclick="del_('circle/productdelete','#{(entity.id)!''}&circleId=${(entity.circleId!'')}')">删除</a>-->
+								</td>
+							</tr>
+						</#list>
+					</#if>
+				</table>				
+  			</div>
+  			<#include "/bo/page.html">
+  		</form>
+  	</div>
+  	<div id="editor" class="jqmWindow"></div>
+  </body>
+</html>
