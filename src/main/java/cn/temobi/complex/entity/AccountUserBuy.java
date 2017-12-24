@@ -12,7 +12,7 @@ public class AccountUserBuy extends IdEntity{
 	private Long retionId;			//关联Id
 	private Long commodityId;		//商品类型Id
 	private Long commodityInfoId;	//商品Id
-	private String type;			//1 购买彩绘 2悬赏求p 3充值 4 开通特权 5 参与夺宝
+	private String type;			//1 购买彩绘 2悬赏求p 3充值 4 开通特权 5 参与夺宝 9 喵网红打call
 	private String payType;			//0免费 1 微信 2 支付宝 3余额 4支付宝组合支付 5微信组合支付
 	private double price;			//价格
 	private String status = "0";	//0未支付1 已支付2支付失败  4 订单失效

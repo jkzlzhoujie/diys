@@ -32,6 +32,13 @@ public class Constant {
 	
 	public static final String ENCRYPT_KEY = "net_salim";   //加密私密串
 	
+	
+	
+	public static final String WEICHAT_NETRED_USER = "weichat_netred_user";
+	public static final String WEICHAT_NETRED_CITY = "weichat_netred_city";
+	public static final String ACCESS_TOKEN = "access_token";
+	public static final String JSAPI_TICKET = "jsapi_ticket";
+	
 	/**
 	 * 132 IDC http://180.97.250.132:8091
 	 * 测试http://192.168.0.242:8080

@@ -133,8 +133,10 @@
 		<typeAlias alias="CmDesignerSaleComment"  type="cn.temobi.complex.entity.CmDesignerSaleComment"/>
 
 		
-		
-		
+		<!-- 喵网红 -->
+		<typeAlias alias="WeixinUserInfo"  type="cn.temobi.complex.entity.WeixinUserInfo"/>
+		<typeAlias alias="VoteRecord"  type="cn.temobi.complex.entity.VoteRecord"/>
+		<typeAlias alias="AccessRecord"  type="cn.temobi.complex.entity.AccessRecord"/>
 		
 		
 		

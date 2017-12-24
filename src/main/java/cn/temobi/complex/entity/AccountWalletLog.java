@@ -5,7 +5,7 @@ public class AccountWalletLog extends IdEntity{
 	private Long userId;
 	private String orderNo;		//订单号
 	private String type;		//1 充值 2消费
-	private String useType;		//1 购买彩绘 2悬赏求P 3提现 4 特权支付  5 夺宝
+	private String useType;		//1 购买彩绘 2悬赏求P 3提现 4 特权支付  5 夺宝 6 打call
 	private String havaType;	//1 单次充值 2获得悬赏 3赏金退回 4系统充值  5 系统退款   
 	private String payType;		//1 微信 2 支付宝 3余额 6话费
 	private double price;		//金额

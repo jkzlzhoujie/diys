@@ -43,6 +43,7 @@
 	                <value>/circlePost/myCirclePost</value>
 	                <value>/open/checkOrderPayResult</value>
 	                <value>/designer/designerlabelList</value>
+	                <value>/meowred/*</value>
 	                
 	                
 	            </list>
