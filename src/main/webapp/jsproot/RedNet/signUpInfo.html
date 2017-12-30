@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>喵女郎报名信息</title>
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/iosSelect.css">
+</head>
+<body>
+    <div class="aui-content aui-margin-b-15">
+        <img src="" alt="" class="ind-adv-img">
+    </div>
+    <div id="indexApp" class="aui-content aui-margin-b-15">
+        <ul class="aui-list aui-form-list aui-margin-b-15">
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        姓&nbsp;&nbsp;&nbsp;名
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="text" placeholder="请填写姓名" v-model="user.name">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        城&nbsp;&nbsp;&nbsp;市
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="text" placeholder="请选择城市" v-model="user.city" readonly v-on:click="getArea()">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        手机号
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="number" placeholder="请填写手机号" v-model="user.phone">
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        验证码
+                    </div>
+                    <div class="aui-list-item-input">
+                        <input type="number" class="code-inp" placeholder="请输入验证码" v-model="code">
+                        <div class="code-btn" v-on:click="getCode()" v-text="codeBtnTxt"></div>
+                    </div>
+                </div>
+            </li>
+            <li class="aui-list-item">
+                <div class="form-li">
+                    <div class="form-label">
+                        自&nbsp;&nbsp;&nbsp;荐
+                    </div>
+                    <div class="form-textarea">
+                        <textarea placeholder="请填自我介绍或者参赛口号，将有更多粉丝支持你" v-model="user.info"></textarea>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="ind-btn">
+            <div class="aui-btn aui-btn-block" v-on:click="sendInfo">确定报名</div>
+        </div>
+    </div>
+    <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/vue.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/aui-toast.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/underscore.js"></script>
+    <script src="../../jsproot/RedNet/js/areaData_v2.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/iosSelect.js"></script>
+    <script src="../../jsproot/RedNet/js/script/signUpInfo.js"></script>
+</body>
+</html>

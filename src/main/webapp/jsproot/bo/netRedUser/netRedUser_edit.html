@@ -1,0 +1,94 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+		$('#registForm').validate({	
+			 rules:{
+		            rightsName:{
+		            	required:true,
+		            	maxlength:100
+		           	},
+		            rightsCode:{
+			            required:true,
+			            maxlength:100
+		            }
+	          },
+	          messages:{
+	                rightsName:{
+		                required:"权限名称不能为空",
+		                maxlength:"最大长度为20个字符"
+	                },
+	                rightsCode:{
+		                required:"权限编号不能为空",
+		                maxlength:"最大长度为20个英文字符"
+	                }
+	            }
+			});	 
+	 	});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：微信用户管理> 喵网红> 审核</div>
+      <form action="/diys/Bo/rh/rights_save" method="post" id="registForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+     			<td width="50%" align="right">姓名</td>
+	     		<td width="50%"><input type="text" name="name" value="${(entity.name)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">手机号</td>
+	     		<td><input type="text" name="phone" id="phone" value="${(entity.phone)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+     			<td  align="right">城市</td>
+	     		<td><input type="text" name="city" value="${(entity.city)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">自我介绍</td>
+	     		<td><input type="text" name="phone" id="selfIntroduction" value="${(entity.selfIntroduction)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+     			<td  align="right">直播经验</td>
+	     		<td ><input type="text" name="liveExperience" value="${(entity.name)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">粉丝量</td>
+	     		<td><input type="text" name="fansAmount" id="fansAmount" value="${(entity.fansAmount)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	
+	     	<tr>
+     			<td width="50%" align="right">展示地址</td>
+	     		<td width="50%"><input type="text" name="webSit" value="${(entity.webSit)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">形象首图</td>
+	     		<td><input type="text" name="firstImage" id="firstImage" value="${(entity.firstImage)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	
+	     	<tr>
+     			<td width="50%" align="right">欢迎词</td>
+	     		<td width="50%"><input type="text" name="welcomeWord" value="${(entity.welcomeWord)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">感谢词</td>
+	     		<td><input type="text" name="thanksWord" value="${(entity.thanksWord)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	
+	     	<tr>
+     			<td width="50%" align="right">答谢感谢词</td>
+	     		<td width="50%"><input type="text" name="callTanksWord" value="${(entity.callTanksWord)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">报名时间</td>
+	     		<td><input type="text" name="createTimeStr" value="${(entity.createTimeStr)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+		          <td align="right"><input type="submit" value="提交"  class="btn-submit" /></td>
+		          <td><input type="reset" value="重置" class="btn-submit" /></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

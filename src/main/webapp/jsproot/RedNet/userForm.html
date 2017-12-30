@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>百度</title>
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
+</head>
+<body style="background:#fbf0ef;padding: 13px 11px;">
+    <div id="ufApp">
+        <div class="uf-top">
+            <div class="uf-top-one">喵网红个人信息</div>
+            <div class="uf-top-two">请保证填写信息真实有效，*号为必填</div>
+        </div>
+        <div class="uf-form">
+            <!-- title -->
+            <div class="us-tit">
+                <span>姓名<i class="uf-req">*</i></span> 
+            </div>
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <input type="text" placeholder="姓名" v-model="user.name">
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>自荐<i class="uf-req">*</i></span> 
+            </div>
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <textarea placeholder="请填自我介绍或者参赛口号，将有风多粉丝支持你" v-model="user.info"></textarea>
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>是否有直播经验<i class="uf-req">*</i></span> 
+            </div>
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <div class="us-rad-item">
+                        <input type="radio" class="inp-rad" name="experience" value="1" v-model="user.experience"><span class="uf-rad-txt">是</span>
+                    </div>
+                    <div class="us-rad-item">
+                        <input type="radio" class="inp-rad" name="experience" value="0" v-model="user.experience"><span class="uf-rad-txt">否</span>
+                    </div>
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>粉丝数量<i class="uf-req">*</i></span> 
+            </div>
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <div class="us-rad-item">
+                        <input type="radio" class="inp-rad" name="fans" 
+                        v-model="user.fans" 
+                        value="1"><span class="uf-rad-txt">0~500</span>
+                    </div>
+                    <div class="us-rad-item">
+                        <input type="radio" class="inp-rad" name="fans"
+                        v-model="user.fans" 
+                        value="2"><span class="uf-rad-txt">500~1000</span>
+                    </div>
+                    <div class="us-rad-item">
+                        <input type="radio" class="inp-rad" name="fans" 
+                        v-model="user.fans" 
+                        value="3"><span class="uf-rad-txt">1000以上</span>
+                    </div>
+                    <div class="us-rad-item">
+                        <input type="radio" class="inp-rad" name="fans" 
+                        v-model="user.fans" 
+                        value="4"><span class="uf-rad-txt">其他</span>
+                    </div>
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>个人标签<i class="uf-req">*</i></span> 
+            </div>
+            <div class="label-list">
+                <div class="label-item" 
+                    v-on:click="checkVal('cyVal')" 
+                    v-bind:class="[checkList.cyVal.class]">才艺</div>
+                <div class="label-item" 
+                    v-on:click="checkVal('yzVal')" 
+                    v-bind:class="[checkList.yzVal.class]">颜值</div>
+                <div class="label-item" 
+                    v-on:click="checkVal('ssVal')" 
+                    v-bind:class="[checkList.ssVal.class]">时尚达人</div>
+                <div class="label-item" 
+                    v-on:click="checkVal('mzVal')" 
+                    v-bind:class="[checkList.mzVal.class]">美妆达人</div>
+                <div class="label-item" 
+                    v-on:click="checkVal('gxVal')" 
+                    v-bind:class="[checkList.gxVal.class]">搞笑达人</div>
+                <div class="label-item" 
+                    v-on:click="checkVal('msVal')" 
+                    v-bind:class="[checkList.msVal.class]">美食达人</div>
+                <div class="label-item" 
+                    v-on:click="checkVal('yxVal')" 
+                    v-bind:class="[checkList.yxVal.class]">游戏达人</div>
+                <div class="label-item" 
+                    v-on:click="checkVal('qtVal')" 
+                    v-bind:class="[checkList.qtVal.class]">其他</div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>展示网址<i class="uf-req">*</i></span> 
+            </div>
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <div class="aui-list-item-input">
+                        <input type="text" placeholder="http://wanghongdianshang.com" v-model="user.net">
+                    </div>
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>形象图片（1张）<i class="uf-req">*</i></span> 
+            </div>
+            <div class="us-img-one">
+                <div class="weui_uploader_bd">
+                    <ul class="weui_uploader_files">
+                        <li class="weui_uploader_file" 
+                            v-for="item in user.xxImg">
+                            <img v-bind:src="item" alt="">
+                            <i class="uf-close-img" 
+                                v-on:click="delImg('xxImg')"></i>
+                        </li>
+                    </ul>
+                    <div class="weui_uploader_input_wrp" 
+                        v-if="user.xxImg.length == 0">
+                        <input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg('xxImg', this)" multiple />
+                    </div>
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>其他形象图（最多9张）<i class="uf-req">*</i></span> 
+            </div>
+            <div class="us-img-one">
+                <div class="weui_uploader_bd">
+                    <ul class="weui_uploader_files">
+                        <li class="weui_uploader_file" 
+                            v-for="(item, $index) in user.qtxxImg">
+                            <img v-bind:src="item" alt="">
+                            <i class="uf-close-img" 
+                                v-on:click="delImg('qtxxImg', $index)"></i>
+                        </li>
+                    </ul>
+                    <div class="weui_uploader_input_wrp" 
+                        v-if="user.qtxxImg.length < 9">
+                        <input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg('qtxxImg', this)" multiple />
+                    </div>
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>欢迎词（展示在个人投票页，提升投票量）<i class="uf-req">*</i></span> 
+            </div>
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <div class="aui-list-item-input">
+                        <input type="text" placeholder="亲，我正在参加喵女郎大赛，期待你的支援噢~" v-model="user.welval">
+                    </div>
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>投票感谢词（展示在个人投票页，提升投票量）<i class="uf-req">*</i></span> 
+            </div>
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <div class="aui-list-item-input">
+                        <input type="text" placeholder="感谢亲的支持！" v-model="user.thankval">
+                    </div>
+                </div>
+            </div>
+            <!-- title -->
+            <div class="us-tit">
+                <span>打CALL感谢词（展示在个人投票页，感谢真粉）<i class="uf-req">*</i></span> 
+            </div>
+            <div class="aui-list-item-inner">
+                <div class="aui-list-item-input">
+                    <div class="aui-list-item-input">
+                        <input type="text" placeholder="感谢亲的大力支持，祝你每天美美哒~！" v-model="user.thanksval">
+                    </div>
+                </div>
+            </div>
+            <div class="ind-btn" style="padding:40px 30px ">
+                <div class="aui-btn aui-btn-block" v-on:click="sendInfo">保存</div>
+            </div>
+        </div>
+    </div>
+    <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/vue.min.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/aui-toast.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/underscore.js"></script>
+    <script src="../../jsproot/RedNet/js/script/userForm.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>支持我的</title>
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
+</head>
+<body style="background: #f1f1f1;">
+    <div id="msApp">
+        <div class="ms-top">
+            <div class="ms-top-nums">
+                <div><span class="ms-top-num"><span v-text="callNum"></span><i class="ms-n-dw">CL</i></span></div>
+                <div><span class="ms-top-num"><span v-text="pNum"></span><i class="ms-n-dw">票</i></span></div>
+            </div>
+        </div>
+    
+        <div class="ms-con">
+            <div class="aui-tab" id="msTab">
+                <div class="aui-tab-item"
+                    v-on:click="changeTab()"
+                    v-bind:class="{'aui-active': chackOne}">打CALL(<span v-text="callNumPer"></span>人)</div>
+                <div class="aui-tab-item" 
+                    v-on:click="changeTab()"
+                    v-bind:class="{'aui-active': !chackOne}">投票(<span v-text="pNumPer"></span>人)</div>
+            </div>
+            <div class="ms-con-items">
+                <div class="ms-con-item" v-if="chackOne">
+                    <ul class="aui-list aui-media-list">
+                        <li class="aui-list-item aui-list-item-middle ms-li" v-for="item in callArr">
+                            <div class="aui-media-list-item-inner">
+                                <div class="aui-list-item-media" style="width: auto;padding-left: 12px;">
+                                    <img v-bind:src="item.headImgUrl" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
+                                </div>
+                                <div class="aui-list-item-inner">
+                                    <div class="aui-list-item-text">
+                                        <div class="aui-list-item-title aui-font-size-14" v-text="item.voteUserUserNickName"></div>
+                                        <div class="aui-list-item-right"><span v-text="item.callCount"></span>打CALL</div>
+                                        <div class="aui-list-item-right"><span v-text="item.count"></span>票</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="ms-con-item" v-if="!chackOne">
+                    <ul class="aui-list aui-media-list">
+                        <li class="aui-list-item aui-list-item-middle ms-li" v-for="item in pArr">
+                            <div class="aui-media-list-item-inner">
+                                <div class="aui-list-item-media" style="width: auto;padding-left: 12px;">
+                                    <img v-bind:src="item.headImgUrl" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
+                                </div>
+                                <div class="aui-list-item-inner">
+                                    <div class="aui-list-item-text">
+                                        <div class="aui-list-item-title aui-font-size-14" v-text="item.voteUserUserNickName"></div>
+                                        <div class="aui-list-item-right"><span v-text="item.callCount"></span>打CALL</div>
+                                        <div class="aui-list-item-right"><span v-text="item.count"></span>票</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../../jsproot/RedNet/js/plugins/vue.min.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/aui-tab.js"></script>
+    <script src="../../jsproot/RedNet/js/script/supportMe.js"></script>
+</body>
+</html>

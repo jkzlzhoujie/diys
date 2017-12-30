@@ -414,6 +414,17 @@ ${head}
 	    </ul>
 	    </#if>
 	    
+		<#if privilege?? &&"${privilege}"?index_of("netRed") != -1>
+		    <h3 class="menuheader expandable">喵网红管理</h3>
+	    	<ul class="categoryitems">
+		    	<#if privilege?? &&"${privilege}"?index_of("weixinNetRedUser_netRedUserInfo") != -1>
+		          	<li class="first"><a href="/diys/Bo/netRed/netRedUserInfoList">喵网红用户信息</a></li>
+		        </#if>
+		        <#if privilege?? &&"${privilege}"?index_of("weixinNetRedUser_weixinUserInfo") != -1>
+		          	<li class="first"><a href="/diys/Bo/netRed/weixinUserInfoList">关注用户信息</a></li>
+		        </#if>
+	    	</ul>
+	    </#if>
 	    
       </div>
     </div>

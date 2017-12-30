@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
+</head>
+<body style="background:#f1f1f1">
+    <div id="uiApp">
+        <div class="aui-content aui-margin-t-15">
+            <ul class="aui-list aui-media-list">
+                <li class="aui-list-item aui-list-item-middle u-li">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-media u-head">
+                            <img v-bind:src="user.img" class="aui-img-round aui-list-img-sm u-img">
+                        </div>
+                        <div class="aui-list-item-inner aui-list-item-arrow">
+                            <div class="aui-list-item-text">
+                                <div class="aui-list-item-title u-name" v-text="user.name"></div>
+                            </div>
+                            <div class="u-city-name">
+                                <i class="u-dibiao"></i><span v-text="user.city"></span>
+                            </div>
+                            <div style="font-size:0">
+                                <div class="u-biaoqian blue" v-for="item in user.biaoqian" v-bind:class="[item.color]">{{item.value}}</div> 
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="aui-content aui-margin-t-15 aui-margin-b-15 u-cs">
+            <div class="u-c-list">
+                <div class="u-check" v-on:click="meowGirl">
+                    <i class="u-c-img miao"></i>
+                    <span>我是喵女郎</span>
+                </div>
+                <div class="u-check" v-on:click="supportMe">
+                    <i class="u-c-img xin"></i>
+                    <span>支持我的</span>
+                </div>
+            </div>
+        </div>
+        <div class="aui-content aui-margin-t-15 aui-margin-b-15">
+            <ul class="aui-list aui-media-list">
+                <li class="aui-list-item aui-list-item-middle u-list">
+                    <div class="aui-media-list-item-inner">
+                        <div class="aui-list-item-inner aui-list-item-arrow" v-on:click="">
+                            <i class="u-zan-img"></i><span class="u-zan-text">我支持的</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="../../jsproot/RedNet/js/plugins/vue.min.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
+    <script src="../../jsproot/RedNet/js/script/userInfo.js"></script>
+</body>
+</html>
