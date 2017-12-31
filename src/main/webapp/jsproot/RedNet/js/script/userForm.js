@@ -1,4 +1,11 @@
 ;(function ($) {
+	function GetQueryString(name)
+	{
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r!=null)return  unescape(r[2]); return null;
+	}
+	
     var toast = new auiToast({});
     var uf = {
         ufVue: null,
@@ -12,15 +19,15 @@
                 data: {
                     user: {//用户 数据
                         name: '',
-                        info: '',
-                        experience: '1',
-                        fans: '1',
-                        net: '',
-                        welval: '',
-                        thankval: '',
-                        thanksval: '',
-                        xxImg: [],//形象图片（1张）
-                        qtxxImg: []//其他形象图片（1张）
+                        selfIntroduction: '',
+                        liveExperience: '1',
+                        fansAmount: '1',
+                        webSit: '',
+                        welcomeWord: '',
+                        thanksWord: '',
+                        callTanksWord: '',
+                        firstImage: '',//形象图片（1张）
+                        imagesArr: []//其他形象图片（1张）
                     },
                     checkList: {
                         cyVal: {
@@ -58,6 +65,25 @@
                     }
                 },
                 methods: {
+                	
+                	getData: function () {
+                    	var that = this;
+                        //数据请求
+                         $.ajax({
+                             url: 'getNetRedUser',
+                             data: {
+                            	 //参数
+                            	 netRedUserId:GetQueryString("netRedUserId")
+                             },
+                             success: function (result) {
+                            	 var obj = JSON.parse(result);
+                            	 if(obj != null){
+                            		 that.user = obj;
+                            	 }
+                             }
+                         });
+                    },
+                	
                     checkVal: function (v) {
                         var str = this.checkList[v].class;
                         if (str != '') {
@@ -78,17 +104,23 @@
                         }
                     },
                     sendInfo: function () {//提交数据
-                        this.checkData();
-                        //数据请求
-                        // $.ajax({
-                        //     url: '',
-                        //     data: {
-                        //参数
-                        //     },
-                        //     success: function () {
-        
-                        //     }
-                        // });
+                    	delete this.user.createTime;
+                    	//数据请求
+                        $.ajax({
+                            url: 'updateNetRedUser',
+                            data: {
+                           	 userStr: JSON.stringify( this.user)
+                            },
+                            success: function (result) {
+                           	 var obj = JSON.parse(result);
+                           	 if(obj.code == "00000"){
+                           		 alert("修改成功");
+                           		window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + obj.response.id;
+                           	 }else{
+                           		 alert("修改失败," +obj.desc);
+                           	 }
+                            }
+                        });
                     },
                     ysImg: function (v, file) {//上传图片
                         var vm = this;
@@ -109,31 +141,31 @@
                                     isTrue = false;
                                     vm.checkVal(o, '请输入姓名');
                                 break;
-                                case 'info':
+                                case 'selfIntroduction':
                                     isTrue = false;
                                     vm.checkVal(o, '请输入自荐');
                                 break;
-                                case 'net':
+                                case 'webSit':
                                     isTrue = false;
                                     vm.checkVal(o, '请输入展示网址');
                                 break;
-                                case 'welval':
+                                case 'welcomeWord':
                                     isTrue = false;
                                     vm.checkVal(o, '请输入欢迎词');
                                 break;
-                                case 'thankval':
+                                case 'tanksWord':
                                     isTrue = false;
                                     vm.checkVal(o, '请输入投票感谢词');
                                 break;
-                                case 'thanksval':
+                                case 'callTanksWord':
                                     isTrue = false;
                                     vm.checkVal(o, '请输入打CALL感谢词');
                                 break;
-                                case 'xxImg':
+                                case 'firstImage':
                                     isTrue = false;
                                     vm.checkLen(o, '请上传形象图片');
                                 break;
-                                case 'qtxxImg':
+                                case 'imagesArr':
                                     isTrue = false;
                                     vm.checkLen(o, '请上传形象图片');
                                 break;
@@ -159,7 +191,11 @@
                             });
                         }
                     }
-                }
+                },
+                
+                created: function () {
+                    this.getData();
+                } 
             });
         }
     };

@@ -1,5 +1,12 @@
 ;(function ($) {
-    var toast = new auiToast({});
+	function GetQueryString(name)
+	{
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r!=null)return  unescape(r[2]); return null;
+	}
+	
+	var toast = new auiToast({});
     var indexVue = new Vue({
         el: '#indexApp',
         data: {
@@ -16,7 +23,7 @@
                 gameRounds:1,
                 fansAmount:0,
                 gameRounds:1,
-                weichatUserId:0,
+                weichatUserId:GetQueryString("voteUserId"),
 	            count:0    
                 
             },
@@ -42,7 +49,7 @@
                             vm.oneLevelId = selectOneObj.id;
                             vm.twoLevelId = selectTwoObj.id;
                             vm.threeLevelId = selectThreeObj.id;
-                            vm.user.city = selectOneObj.value + ' ' + selectTwoObj.value + ' ' + selectThreeObj.value;
+                            vm.user.city = selectOneObj.value + ',' + selectTwoObj.value + ',' + selectThreeObj.value;
                         }
                 });
             },
@@ -103,10 +110,9 @@
                     success: function (result) {
                    	 var obj = JSON.parse(result);
                    	 if(obj.code == "00000"){
-                   		window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + this.user.id;
+                   		window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + obj.response.id;
                    	 }else{
                    		 alert("报名失败," +obj.desc);
-                   		window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + 1;
                    	 }
                     }
                 });

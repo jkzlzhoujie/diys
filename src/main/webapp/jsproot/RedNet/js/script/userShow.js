@@ -1,8 +1,16 @@
-;(function ($) {    
+;(function ($) { 
+	
+	function GetQueryString(name)
+	{
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r!=null)return  unescape(r[2]); return null;
+	}
+	
     // 页数
     var page = 0;
-    // 每页展示5个
-    var size = 5;
+    // 每页展示10个
+    var size = 10;
     var us = {
         usVue: null,
         init: function () {
@@ -15,8 +23,8 @@
                 el: '#usApp',
                 data: {
                     user: {
-                        nickName: 'asdf',
-                        labelList: [
+                    	name: '喵红',
+                    	lablesArr: [
                             {
                                 value: '颜值',
                                 color: 'blue'
@@ -34,33 +42,74 @@
                         ranking: '0',
                         votesNum: '0',
                         callNum: '0',
-                        picOne: ['../../jsproot/RedNet/images/null.png'],
-                        picOther: [],
+                        firstImage: ['../../jsproot/RedNet/images/null.png'],
+                        imagesArr: [],
                         endorsementImg: ['../../jsproot/RedNet/images/null.png']
                     },
                     supportUser: [
                         {
-                            img: '../../jsproot/RedNet/images/null.png',
-                            name: 'ffff',
-                            callNum: 123,
-                            pNum: 234
+                        	headImgUrl: '../../jsproot/RedNet/images/null.png',
+                        	voteUserUserNickName: 'ffff',
+                        	typeName: 123,
+                        	createTimeStr: 234
                         },
                         {
-                            img: '../../jsproot/RedNet/images/null.png',
-                            name: 'ffff',
-                            callNum: 123,
-                            pNum: 234
+                        	headImgUrl: '../../jsproot/RedNet/images/null.png',
+                        	voteUserUserNickName: 'ffff',
+                        	typeName: 123,
+                        	createTimeStr: 234
                         }
                     ]
                 },
                 methods: {
+                	getData: function () {
+                    	var that = this;
+                        //数据请求  获取网红用户信息
+                         $.ajax({
+                             url: '../../clientNew/weixin/getNetRedUser',
+                             data: {
+                            	 //参数
+                            	 netRedUserId:GetQueryString("netRedUserId")
+                             },
+                             success: function (result) {
+                            	 var data = JSON.parse(result);
+                            	 if(data != null){
+                            		 that.user.name = data.name;
+                            		 that.user.lablesArr = data.lablesArr;
+                            		 that.user.imagesArr = data.imagesArr;
+                            		 that.user.firstImage = data.firstImage;
+                            	 }
+                             }
+                         });
+                         
+                       //数据请求 获取支持网红的用户列表
+                         $.ajax({
+                             url: '../../clientNew/weixin/supportNetRedWeixinUserList',
+                             data: {
+                            	 //参数
+                            	 netRedUserId:GetQueryString("netRedUserId"),
+                            	 pageNo:1,
+                            	 pageSize:10
+                             },
+                             success: function (result) {
+                            	 var data = JSON.parse(result);
+                            	 if(data != null){
+                            		 that.supportUser = data.response;
+                            	 }
+                             }
+                         });
+                    },
                     perfectInfo: function () {
                         console.log('perfectInfo');
                     },
                     goCanvassing: function () {
                         console.log('goCanvassing');
                     }
-                }
+                },
+                
+                created: function () {
+                    this.getData();
+                } 
             });
         },
         initDropDown: function () {
@@ -98,7 +147,10 @@
                             },1000);
                         },
                         error: function(xhr, type){
-                            alert('Ajax error!');
+                        	// 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
                             // 即使加载出错，也得重置
                             me.resetload();
                         }

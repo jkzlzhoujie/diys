@@ -50,7 +50,7 @@ public class MeowredApiController extends ClientApiBaseController{
 	
 	
 	/**
-	 * 支持我的用户数量和投票数
+	 * 
 	 * @param request
 	 * @return
 	 */

@@ -44,7 +44,7 @@
                     	var that = this;
                         //数据请求
                         $.ajax({
-                             url: '../../clientNew/meowred/supportMeUserCount',
+                             url: 'supportMeUserCount',
                              data: {
                             	 //参数
                             	 netRedUserId:GetQueryString("netRedUserId")
@@ -66,7 +66,7 @@
                          });
                         
                         $.ajax({
-                            url: '../../clientNew/meowred/supportMeUserList',
+                            url: 'supportMeUserList',
                             data: {
                            	 //参数
                            	 netRedUserId:GetQueryString("netRedUserId")
@@ -186,7 +186,10 @@
                             },1000);
                         },
                         error: function(xhr, type){
-                            alert('Ajax error!');
+                        	 // 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
                             // 即使加载出错，也得重置
                             me.resetload();
                         }

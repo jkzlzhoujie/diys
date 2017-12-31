@@ -17,6 +17,7 @@ public interface WeixinVoteRecordDao extends SimpleDao<VoteRecord, Long> {
 	
 	public Page<VoteRecord> getISupportNetRedVoteRecordPage(Page<VoteRecord> page, Map<String, Object> parameter);
 	
+	public Page<VoteRecord> findBySupportNetRedPage(Page<VoteRecord> page, Map<String, Object> parameter);
 	
 	
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
-    <title>百度</title>
+    <title>喵网红</title>
     <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
 </head>
@@ -30,7 +30,7 @@
             </div>
             <div class="aui-list-item-inner">
                 <div class="aui-list-item-input">
-                    <textarea placeholder="请填自我介绍或者参赛口号，将有风多粉丝支持你" v-model="user.info"></textarea>
+                    <textarea placeholder="请填自我介绍或者参赛口号，将有风多粉丝支持你" v-model="user.selfIntroduction"></textarea>
                 </div>
             </div>
             <!-- title -->
@@ -40,10 +40,10 @@
             <div class="aui-list-item-inner">
                 <div class="aui-list-item-input">
                     <div class="us-rad-item">
-                        <input type="radio" class="inp-rad" name="experience" value="1" v-model="user.experience"><span class="uf-rad-txt">是</span>
+                        <input type="radio" class="inp-rad" name="liveExperience" value="1" v-model="user.liveExperience"><span class="uf-rad-txt">是</span>
                     </div>
                     <div class="us-rad-item">
-                        <input type="radio" class="inp-rad" name="experience" value="0" v-model="user.experience"><span class="uf-rad-txt">否</span>
+                        <input type="radio" class="inp-rad" name="liveExperience" value="2" v-model="user.liveExperience"><span class="uf-rad-txt">否</span>
                     </div>
                 </div>
             </div>
@@ -54,23 +54,23 @@
             <div class="aui-list-item-inner">
                 <div class="aui-list-item-input">
                     <div class="us-rad-item">
-                        <input type="radio" class="inp-rad" name="fans" 
-                        v-model="user.fans" 
+                        <input type="radio" class="inp-rad" name="fansAmountAmount" 
+                        v-model="user.fansAmountAmount" 
                         value="1"><span class="uf-rad-txt">0~500</span>
                     </div>
                     <div class="us-rad-item">
-                        <input type="radio" class="inp-rad" name="fans"
-                        v-model="user.fans" 
+                        <input type="radio" class="inp-rad" name="fansAmount"
+                        v-model="user.fansAmount" 
                         value="2"><span class="uf-rad-txt">500~1000</span>
                     </div>
                     <div class="us-rad-item">
-                        <input type="radio" class="inp-rad" name="fans" 
-                        v-model="user.fans" 
+                        <input type="radio" class="inp-rad" name="fansAmount" 
+                        v-model="user.fansAmount" 
                         value="3"><span class="uf-rad-txt">1000以上</span>
                     </div>
                     <div class="us-rad-item">
-                        <input type="radio" class="inp-rad" name="fans" 
-                        v-model="user.fans" 
+                        <input type="radio" class="inp-rad" name="fansAmount" 
+                        v-model="user.fansAmount" 
                         value="4"><span class="uf-rad-txt">其他</span>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
             <div class="aui-list-item-inner">
                 <div class="aui-list-item-input">
                     <div class="aui-list-item-input">
-                        <input type="text" placeholder="http://wanghongdianshang.com" v-model="user.net">
+                        <input type="text" placeholder="http://" v-model="user.webSit">
                     </div>
                 </div>
             </div>
@@ -120,22 +120,22 @@
             <div class="us-tit">
                 <span>形象图片（1张）<i class="uf-req">*</i></span> 
             </div>
-            <div class="us-img-one">
+           <!--  <div class="us-img-one">
                 <div class="weui_uploader_bd">
                     <ul class="weui_uploader_files">
                         <li class="weui_uploader_file" 
-                            v-for="item in user.xxImg">
+                            v-for="item in user.firstImage">
                             <img v-bind:src="item" alt="">
                             <i class="uf-close-img" 
-                                v-on:click="delImg('xxImg')"></i>
+                                v-on:click="delImg('firstImage')"></i>
                         </li>
                     </ul>
                     <div class="weui_uploader_input_wrp" 
-                        v-if="user.xxImg.length == 0">
-                        <input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg('xxImg', this)" multiple />
+                        v-if="user.xxImg.length == 0"> 
+                        <input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg('firstImage', this)" multiple />
                     </div>
                 </div>
-            </div>
+            </div> -->
             <!-- title -->
             <div class="us-tit">
                 <span>其他形象图（最多9张）<i class="uf-req">*</i></span> 
@@ -144,15 +144,15 @@
                 <div class="weui_uploader_bd">
                     <ul class="weui_uploader_files">
                         <li class="weui_uploader_file" 
-                            v-for="(item, $index) in user.qtxxImg">
+                            v-for="(item, $index) in user.imagesArr">
                             <img v-bind:src="item" alt="">
                             <i class="uf-close-img" 
-                                v-on:click="delImg('qtxxImg', $index)"></i>
+                                v-on:click="delImg('imagesArr', $index)"></i>
                         </li>
                     </ul>
                     <div class="weui_uploader_input_wrp" 
-                        v-if="user.qtxxImg.length < 9">
-                        <input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg('qtxxImg', this)" multiple />
+                        v-if="user.imagesArr.length < 9">
+                        <input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg('imagesArr', this)" multiple />
                     </div>
                 </div>
             </div>
@@ -163,7 +163,7 @@
             <div class="aui-list-item-inner">
                 <div class="aui-list-item-input">
                     <div class="aui-list-item-input">
-                        <input type="text" placeholder="亲，我正在参加喵女郎大赛，期待你的支援噢~" v-model="user.welval">
+                        <input type="text" placeholder="亲，我正在参加喵女郎大赛，期待你的支援噢~" v-model="user.welcomeWord">
                     </div>
                 </div>
             </div>
@@ -174,7 +174,7 @@
             <div class="aui-list-item-inner">
                 <div class="aui-list-item-input">
                     <div class="aui-list-item-input">
-                        <input type="text" placeholder="感谢亲的支持！" v-model="user.thankval">
+                        <input type="text" placeholder="感谢亲的支持！" v-model="user.thanksWord">
                     </div>
                 </div>
             </div>
@@ -185,7 +185,7 @@
             <div class="aui-list-item-inner">
                 <div class="aui-list-item-input">
                     <div class="aui-list-item-input">
-                        <input type="text" placeholder="感谢亲的大力支持，祝你每天美美哒~！" v-model="user.thanksval">
+                        <input type="text" placeholder="感谢亲的大力支持，祝你每天美美哒~！" v-model="user.callTanksWord">
                     </div>
                 </div>
             </div>

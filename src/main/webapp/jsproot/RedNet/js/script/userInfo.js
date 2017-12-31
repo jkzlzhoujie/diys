@@ -18,7 +18,7 @@
                 el: '#uiApp',
                 data: {
                     user: {
-                    	firstImage: './images/null.png',
+                    	firstImage: '../../jsproot/images/null.png',
                         name: '张三',
                         city: '厦门',
                         lables: [{
@@ -44,6 +44,7 @@
                 			success: function(result) {
                 				var obj = JSON.parse(result);
 	                           	 if(obj.code == "00000"){
+	                           		 debugger
 	                           		 that.user = obj.response;
 	                           	 }else{
 	                           		

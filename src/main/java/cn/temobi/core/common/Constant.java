@@ -22,6 +22,8 @@ public class Constant {
 	public static final String RESPONSE_ERROR_10013 = "10013";//暂无新版本
 	public static final String RESPONSE_ERROR_10014 = "10014";//不要重复提交
 	
+	public static final String RESPONSE_SUCCESS_DESC = "成功";
+	
 	
 	public static final String SESSION_USER_INFO = "session_user_info";
 	public static final int COOKIE_OUTTIME_LONG = 60*60*24*30;     //cookie时效30天

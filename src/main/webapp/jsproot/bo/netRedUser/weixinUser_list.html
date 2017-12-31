@@ -5,23 +5,23 @@
 	<script type="text/javascript">
 		
 			function selectInfo() {
-			$("#netRedUserInfoList").submit();
+			$("#weixinUserInfoList").submit();
 		  	}
 			function selectReset(){
-	    		$("#name").val("");
+	    		$("#nickname").val("");
 	    	}
 		</script>	
   </head>
   <body>
    <div id="main">
-      <div class="breadcrumb">当前位置：喵网红管理> 喵网红用户信息> 列表</div>
-      <form id ="netRedUserInfoList" action="/diys/Bo/netRed/netRedUserInfoList" method="post">
+      <div class="breadcrumb">当前位置：喵网红管理> 用户关注信息> 列表</div>
+      <form id ="weixinUserInfoList" action="/diys/Bo/netRed/weixinUserInfoList" method="post">
       <input type="hidden" id="pageNo" name="pageNo" value="${(pageNo)!''}" />
       <div class="table-show-content">
 	  <div class="table-search">
           <div>		
 				    <div style="display: inline">
-				  	 名称：<input id="name" name="name" type="text" value="${name!''}" class="dginputstyle">
+				  	 名称：<input id="nickname" name="nickname" type="text" value="${name!''}" class="dginputstyle">
            			
 				  </div>
           		  <div style="display: inline;float: right">
@@ -34,24 +34,18 @@
         <table class="table-show">
           <tbody>
             <tr  class="list_title">
-              <th width="10%">名称</th>
-              <th width="20%">电话</th>
+              <th width="20%">用户标识</th>
+              <th width="10%">昵称</th>
               <th width="10%" >城市</th>
-              <th width="10%" >粉丝数</th>
-              <th width="20%" >自我推荐</th>
-              <th width="15%" >操作</th>
+              <th width="10%" >性别</th>
             </tr>
             <#if list?? >
             <#list list as entity>
             <tr>
-              <td>${(entity.name)!''}</td>
-              <td>${(entity.phone)!''}</td>
+              <td>${(entity.openId)!''}</td>
+              <td>${(entity.nickname)!''}</td>
               <td>${((entity.city)!'')}</td>
-              <td>${((entity.fansAmount)!'')}</td>
-              <td>${((entity.selfIntroduction)!'')}</td>
-              <td>
-              	<a class="btn btn-look"  href="javascript:;" onclick="edit('netRed/netRedUserEdit','#{(entity.id)!0}')">编辑</a>
-              </td>
+              <td>${((entity.sex)!'')}</td>
             </tr>
             </#list>
             </#if>

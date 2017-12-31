@@ -34,7 +34,6 @@ public class WeixinVoteRecordDaoImpl extends SimpleMybatisSupport<VoteRecord, Lo
         List list = getSqlSession().selectList(toMybatisStatement("getSupportMeVoteRecordPage"), toParameterMap(parameter, page));
         page.setResult(list);
         return page;
-        
 	}
 
 	@Override
@@ -42,7 +41,12 @@ public class WeixinVoteRecordDaoImpl extends SimpleMybatisSupport<VoteRecord, Lo
         List list = getSqlSession().selectList(toMybatisStatement("getISupportNetRedVoteRecordPage"), toParameterMap(parameter, page));
         page.setResult(list);
         return page;
-        
 	}
-
+	
+	@Override
+	public Page<VoteRecord> findBySupportNetRedPage(Page<VoteRecord> page,Map<String, Object> parameter) {
+        List list = getSqlSession().selectList(toMybatisStatement("findBySupportNetRedPage"), toParameterMap(parameter, page));
+        page.setResult(list);
+        return page;
+	}
 }

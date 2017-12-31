@@ -105,6 +105,7 @@ public class UserOptionController extends ClientApiBaseController {
 	 * 查询个人信息
 	 */
     @RequestMapping(value = "/netRedUserEdit", method = { RequestMethod.GET,
+    		
             RequestMethod.POST })
     @ResponseBody
     public Map<String, Object> netRedUserEdit(HttpServletRequest request,
@@ -166,17 +167,16 @@ public class UserOptionController extends ClientApiBaseController {
             user.setCallTanksWord(callTanksWord);
             
             user.setCity(city);
-            user.setCode(code);
             user.setCreateTime(new Date());
             if(StringUtils.isNotBlank(fansAmount))
             user.setFansAmount(Integer.valueOf(fansAmount));
             user.setFirstImage(firstImage);
             if(StringUtils.isNotBlank(gameRounds))
             user.setGameRounds(Integer.valueOf(gameRounds));
-            if(StringUtils.isNotBlank(images))
-            user.setImages(Arrays.asList(images.split(",")));
-            if(StringUtils.isNotBlank(lables))
-            user.setLables(Arrays.asList(lables.split(",")));
+//            if(StringUtils.isNotBlank(images))
+//            user.setImages(Arrays.asList(images.split(",")));
+//            if(StringUtils.isNotBlank(lables))
+//            user.setLables(Arrays.asList(lables.split(",")));
             user.setPhone(phone);
             user.setProvince(province);
             user.setSelfIntroduction(selfIntroduction);
@@ -269,11 +269,11 @@ public class UserOptionController extends ClientApiBaseController {
         object.setDesc("参数错误");
         try {
             String phone = request.getParameter("phone");
-            int num = (int) (Math.random()*1000+1000);
+            int num = (int)((Math.random()*9+1)*100000);
             long time = System.currentTimeMillis();
             //String oldCode = (String) CacheHelper.getInstance().get(mobile);
             SmsMessageUtil util = new SmsMessageUtil();
-            if(util.sendMessage(phone, String.valueOf(num), "authentication")){
+            if(util.sendMessage(phone, String.valueOf(num), "")){
                 object.setCode(Constant.RESPONSE_SUCCESS_CODE);
                 CachedValueAndTime(phone, num+"|"+time, 5*60);
                 object.setDesc("发送成功");

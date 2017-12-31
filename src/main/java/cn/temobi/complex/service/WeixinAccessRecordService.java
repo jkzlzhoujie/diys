@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cn.temobi.complex.dao.WeixinAccessRecordDao;
 import cn.temobi.complex.entity.AccessRecord;
+import cn.temobi.complex.entity.VoteRecord;
 import cn.temobi.core.common.Page;
 import cn.temobi.core.service.ServiceBase;
 
@@ -27,6 +28,10 @@ public class WeixinAccessRecordService extends ServiceBase{
 	}
 	
 	public Page<AccessRecord> findByPage(Page page,Object map){
+		return weixinAccessRecordDao.findByPage(page, map);
+	}
+	
+	public Page<AccessRecord> findBySupportNetRedPage(Page page,Object map){
 		return weixinAccessRecordDao.findByPage(page, map);
 	}
 	

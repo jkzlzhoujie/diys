@@ -5,8 +5,6 @@ public class WeixinUserInfo extends IdEntity{
 
 	 // 用户的标识
     private String openId;
-    // 关注状态（1是关注，0是未关注），未关注时获取不到其余信息
-    private int subscribe;
     // 用户关注时间，为时间戳。如果用户曾多次关注，则取最后关注时间
     private String subscribeTime;
     // 昵称
@@ -30,14 +28,6 @@ public class WeixinUserInfo extends IdEntity{
 
     public void setOpenId(String openId) {
         this.openId = openId;
-    }
-
-    public int getSubscribe() {
-        return subscribe;
-    }
-
-    public void setSubscribe(int subscribe) {
-        this.subscribe = subscribe;
     }
 
     public String getSubscribeTime() {

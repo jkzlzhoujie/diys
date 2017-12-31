@@ -69,7 +69,12 @@ public class WeixinVoteRecordService extends ServiceBase{
 	public Page<VoteRecord> getISupportNetRedVoteRecordPage(Page<VoteRecord> page,Map<String, Object> param){
 		return WeixinVoteRecordDao.getISupportNetRedVoteRecordPage(page, param);
 	}
-
+	
+	public Page<VoteRecord> findBySupportNetRedPage(Page<VoteRecord> page,Map<String, Object> param){
+		return WeixinVoteRecordDao.findBySupportNetRedPage(page, param);
+	}
+	
+	
 	public ResponseObject saveVote(ResponseObject object ,String voteUserId, String netRedUserId,String count, String type) {
 		
 		
