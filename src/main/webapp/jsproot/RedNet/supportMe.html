@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
     <title>支持我的</title>
     <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/dropload.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
 </head>
 <body style="background: #f1f1f1;">
@@ -21,42 +22,42 @@
             <div class="aui-tab" id="msTab">
                 <div class="aui-tab-item"
                     v-on:click="changeTab()"
-                    v-bind:class="{'aui-active': chackOne}">打CALL(<span v-text="callNumPer"></span>人)</div>
+                    v-bind:class="{'aui-active': chackOne}">打CALL(<span v-text="callNum"></span>)</div>
                 <div class="aui-tab-item" 
                     v-on:click="changeTab()"
-                    v-bind:class="{'aui-active': !chackOne}">投票(<span v-text="pNumPer"></span>人)</div>
+                    v-bind:class="{'aui-active': !chackOne}">投票(<span v-text="pNum"></span>)</div>
             </div>
             <div class="ms-con-items">
-                <div class="ms-con-item" v-if="chackOne">
+                <div class="ms-con-item call-list" v-if="chackOne">
                     <ul class="aui-list aui-media-list">
                         <li class="aui-list-item aui-list-item-middle ms-li" v-for="item in callArr">
                             <div class="aui-media-list-item-inner">
                                 <div class="aui-list-item-media" style="width: auto;padding-left: 12px;">
-                                    <img v-bind:src="item.headImgUrl" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
+                                    <img v-bind:src="item.img" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
                                 </div>
                                 <div class="aui-list-item-inner">
                                     <div class="aui-list-item-text">
-                                        <div class="aui-list-item-title aui-font-size-14" v-text="item.voteUserUserNickName"></div>
-                                        <div class="aui-list-item-right"><span v-text="item.callCount"></span>打CALL</div>
-                                        <div class="aui-list-item-right"><span v-text="item.count"></span>票</div>
+                                        <div class="aui-list-item-title aui-font-size-14" v-text="item.name"></div>
+                                        <div class="aui-list-item-right"><span v-text="item.callNum"></span>打CALL</div>
+                                        <div class="aui-list-item-right"><span v-text="item.pNum"></span>票</div>
                                     </div>
                                 </div>
                             </div>
                         </li>
                     </ul>
                 </div>
-                <div class="ms-con-item" v-if="!chackOne">
+                <div class="ms-con-item piao-list" v-if="!chackOne">
                     <ul class="aui-list aui-media-list">
                         <li class="aui-list-item aui-list-item-middle ms-li" v-for="item in pArr">
                             <div class="aui-media-list-item-inner">
                                 <div class="aui-list-item-media" style="width: auto;padding-left: 12px;">
-                                    <img v-bind:src="item.headImgUrl" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
+                                    <img v-bind:src="item.img" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
                                 </div>
                                 <div class="aui-list-item-inner">
                                     <div class="aui-list-item-text">
-                                        <div class="aui-list-item-title aui-font-size-14" v-text="item.voteUserUserNickName"></div>
-                                        <div class="aui-list-item-right"><span v-text="item.callCount"></span>打CALL</div>
-                                        <div class="aui-list-item-right"><span v-text="item.count"></span>票</div>
+                                        <div class="aui-list-item-title aui-font-size-14" v-text="item.name"></div>
+                                        <div class="aui-list-item-right"><span v-text="item.callNum"></span>打CALL</div>
+                                        <div class="aui-list-item-right"><span v-text="item.pNum"></span>票</div>
                                     </div>
                                 </div>
                             </div>
@@ -65,10 +66,38 @@
                 </div>
             </div>
         </div>
+
+        
+        <div class="pop-success" v-if="showTPSuc">
+                <div class="pop-suc-con p-tpcg">
+                    <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
+                    <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                </div>
+            </div>
+    
+            
+            <div class="pop-success" v-if="showTPOverSuc">
+                <div class="pop-suc-con p-tpwk">
+                    <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
+                    <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                </div>
+            </div>
+    
+            
+            <div class="pop-success" v-if="showTPCallSuc">
+                <div class="pop-suc-con p-call-suc">
+                    <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
+                    <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                </div>
+            </div>
     </div>
     <script src="../../jsproot/RedNet/js/plugins/vue.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/aui-tab.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/dropload.min.js"></script>
     <script src="../../jsproot/RedNet/js/script/supportMe.js"></script>
 </body>
 </html>

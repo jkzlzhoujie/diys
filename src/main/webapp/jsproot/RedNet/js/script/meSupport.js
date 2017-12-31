@@ -57,42 +57,18 @@
                             	 }
                              }
                          });
-//                        this.supporter = [ 
-//                            {
-//                            	netRedUserId: 1411,
-//                            	netRedUserName: '',
-//                                count: 1211,
-//                                firstImage: '../../jsproot/RedNet/images/null.png',
-//                                id: '1'
-//                            },
-//                            {
-//                            	netRedUserId: 6611,
-//                            	netRedUserName: '',
-//                                count: 1181,
-//                                firstImage: '../../jsproot/RedNet/images/null.png',
-//                                id: '1'
-//                            }
-//                        ]
                     },
-                    sendFab: function (netRedUserId) {
+                    sendFab: function () {
                         //数据请求
-//                         $.ajax({
-//                             url: 'userVote',
-//                             data: {
-//                            	 netRedUserId:netRedUserId,
-//                            	 voteUserId:GetQueryString("voteUserId"),
-//                            	 type:,
-//                            	 count:
-//                            },
-//                            success: function (result) {
-//	                           	 var obj = JSON.parse(result);
-//	                           	 if(obj.code == "00000"){
-//	                           		 alert();
-//	                           	 }else{
-//	                           		 
-//	                           	 }
-//                            }
-//                         });
+                        // $.ajax({
+                        //     url: '',
+                        //     data: {
+                        //参数
+                        //     },
+                        //     success: function () {
+        
+                        //     }
+                        // });
                         var mask = $('#mask');
                         var weuiActionsheet = $('#weui_actionsheet');
                         weuiActionsheet.addClass('weui_actionsheet_toggle');

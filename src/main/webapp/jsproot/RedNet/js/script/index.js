@@ -1,10 +1,8 @@
 ;(function ($) {
-    
-
-    //页数 
+    // 页数
     var page = 0;
-    // 每页展示10个
-    var size =10;
+    // 每页展示5个
+    var size = 10;
     var popup = new auiPopup();
     var imgs = {
         hImg: ['../../jsproot/RedNet/images/h-click.png','../../jsproot/RedNet/images/h.png'],
@@ -24,7 +22,7 @@
         scroll:null,
         init: function () {
             this.initVue();
-            this.initScroll();
+            this.initMainDropDowm();
         },
         initVue: function () {
             var me = this;
@@ -41,10 +39,17 @@
                     number: 0,//打CALL数
                     searchArr: [],
                     isShow: false,
-                    searchVal: ''
+                    searchVal: '',
+                    seleclUser: {
+                        name: '',
+                        id: ''
+                    },
+                    showTPSuc: false,//投票成功弹窗
+                    showTPOverSuc: false,//票数用完弹窗
+                    showTPCallSuc: false//打call成功
                 },
                 methods: {
-                    getData: function () {
+                	getData: function () {
                     	var that = this;
                     	$.ajax({
                             url: 'supperCount',
@@ -65,52 +70,11 @@
                             }
                         });
                         
-                        $.ajax({
-                            url: 'findNetRedListPage',
-                            data: {
-                           	 //参数
-                           	 pageSize:10,
-                           	 pageNo:1,
-                           	 content: this.searchVal,
-                            },
-                            success: function (result) {
-	                           	 var obj = JSON.parse(result);
-	                           	 if(obj != null){
-	                           		 debugger
-	                           		that.supporter = obj.list;
-	                           	 }else{
-	                           		this.supporter = [
-	                                  {
-                                  		  firstImage: '../../jsproot/RedNet/images/null.png',
-	                                      name: '张三',
-	                                      count: 20,
-	                                      id: 22
-	                                  },
-	                                  {
-	                                  	  firstImage: '../../jsproot/RedNet/images/null.png',
-	                                      name: '李四',
-	                                      count: 20,
-	                                      id: 22
-	                                  }
-	                                ]
-	                           	 }
-                            }
-                        });
-                        
-                        
                     },
-                    sendFab: function () {
-                        var mask = $('#mask');
-                        var weuiActionsheet = $('#weui_actionsheet');
-                        weuiActionsheet.addClass('weui_actionsheet_toggle');
-                        mask.show().addClass('weui_fade_toggle').one('click', function () {
-                            hideActionSheet(weuiActionsheet, mask);
-                        });
-                        $('#actionsheet_cancel').one('click', function () {
-                            hideActionSheet(weuiActionsheet, mask);
-                        });
-                        weuiActionsheet.unbind('transitionend').unbind('webkitTransitionEnd');
-
+                    sendFab: function (id,name) {
+                        this.seleclUser.id = id;
+                        this.seleclUser.name = name;
+                        this.showTP();
                     },
                     selLw: function (n) {
                         if (n == 1) {
@@ -122,7 +86,7 @@
                         }
                         this.type = n;
                     },
-                    sendInfo: function () {
+                    sendInfo: function (id) {//支持投票
                         var mask = $('#mask');
                         var weuiActionsheet = $('#weui_actionsheet');
                         hideActionSheet(weuiActionsheet, mask);
@@ -145,6 +109,36 @@
                     },
                     showPop: function () {
                         this.isShow = true;
+                        this.searchArr = [];
+                        setTimeout(function () {
+                            me.initPopDropDown();
+                        }, 300);
+                    },
+                    showTP: function() {
+                        var mask = $('#mask');
+                        var weuiActionsheet = $('#weui_actionsheet');
+                        weuiActionsheet.addClass('weui_actionsheet_toggle');
+                        mask.show().addClass('weui_fade_toggle').one('click', function () {
+                            hideActionSheet(weuiActionsheet, mask);
+                        });
+                        $('#actionsheet_cancel').one('click', function () {
+                            hideActionSheet(weuiActionsheet, mask);
+                        });
+                        weuiActionsheet.unbind('transitionend').unbind('webkitTransitionEnd');
+                    },
+                    wtdc: function () {
+                        this.showTP();
+                        this.showTPOverSuc = false;
+                        this.showTPSuc = false;
+                        this.showTPCallSuc = false;
+                    },
+                    gbtpcg: function () {
+                        this.showTPOverSuc = false;
+                        this.showTPSuc = false;
+                        this.showTPCallSuc = false;
+                    },
+                    wybm: function () {//我要报名
+                        window.location.href = '';//跳转到报名页
                     }
                 },
                 created: function () {
@@ -152,82 +146,102 @@
                 }
             });
         },
-        initScroll: function () {
-            var me = this;
-            me.scroll = new auiScroll({
-                listen: true,
-                distance: 20
-            },function(ret){
-                //数据请求
-                // $.ajax({
-                //     url: '',
-                //     data: {
-                //参数
-                //     },
-                //     success: function () {
+        initMainDropDowm: function () {
+            var that = this;
+            $('#indApp').dropload({
+                scrollArea : $('#indApp'),
+                loadDownFn : function(me){
+                    page++;
+                    // 拼接HTML
+                    $.ajax({
+                        type: 'GET',
+                        url: 'findNetRedListPage?pageNo='+page+'&pageSize='+size,
+                        success: function(data){
+                        	var obj = JSON.parse(data);
+                            if(obj){
+                            	if (obj.list.length > 0){
+                                	that.indVue.supporter = that.indVue.supporter.concat(obj.list);
+                            	}else {
+                                    // 锁定
+                                    me.lock();
+                                    // 无数据
+                                    me.noData();
+                            		
+                            	}
+                            // 如果没有数据
+                            }else{
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                                // 插入数据到页面，放到最后面
 
-                //     }
-                // });
-               console.log(ret)
+                                // 每次数据插入，必须重置
+                                me.resetload();
+                            },1000);
+                        },
+                        error: function(xhr, type){
+                            // 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                        }
+                    });
+                }
+            });
+        },
+        initPopDropDown: function () {
+            var that = this;
+            $('.i-search-info').dropload({
+                scrollArea : $('.i-search-info'),
+                loadDownFn : function(me){
+                    page++;
+                    // 拼接HTML
+                    var searcheContent = '';
+                    if(that.indVue.searchVal ){
+                    	searcheContent = that.indVue.searchVal;
+                    }
+                    $.ajax({
+                        type: 'GET',
+                        url: 'findNetRedListPage?pageNo='+page+'&pageSize='+size+'&content=' + searcheContent,
+                        dataType: 'json',
+                        success: function(data){
+                        	var obj = JSON.parse(data);
+                            if(obj){
+                            	if (obj.list.length > 0){
+                                	that.indVue.supporter = that.indVue.supporter.concat(obj.list);
+                            	}else {
+                                    // 锁定
+                                    me.lock();
+                                    // 无数据
+                                    me.noData();
+                            		
+                            	}
+                            // 如果没有数据
+                            }else{
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                                // 插入数据到页面，放到最后面
+
+                                // 每次数据插入，必须重置
+                                me.resetload();
+                            },1000);
+                        },
+                        error: function(xhr, type){
+                        	 // 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                        }
+                    });
+                }
             });
         }
     }
     ind.init();
-    $(document).on('keydown',function (e) {
-    	if (e.keyCode == 13) {
-    		debugger
-    		// $.ajax({
-            //     url: '',
-            //     data: {
-            //参数
-            //     },
-            //     success: function () {
-
-            //     }
-            // });
-    	}
-    	
-    })
-    //获取搜索数据
-    $('.i-search-info').dropload({
-        scrollArea : window,
-        autoLoad : true,//自动加载
-        domDown : {//上拉
-            domClass   : 'dropload-down',
-            domRefresh : '<div class="dropload-refresh f15 "><i class="icon icon-20"></i>上拉加载更多</div>',
-            domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>',
-            domNoData  : '<div class="dropload-noData">没有更多数据了</div>'
-        },
-        loadDownFn : function(me){//加载更多    分页加载
-            // page++;
-            // window.history.pushState(null, document.title, window.location.href);
-            // var result = '';
-            // $.ajax({
-            //     type: 'GET',
-            //     url:'',
-            //     dataType: 'json',
-            //     success: function(data){
-
-            //         var arrLen = data.length;
-            //         if(arrLen > 0){
-                        
-            //         // 如果没有数据
-            //         }else{
-            //             // 锁定
-            //             me.lock();
-            //             // 无数据
-            //             me.noData();
-            //         }
-            //         // 每次数据加载完，必须重置
-            //         me.resetload();
-            //     },
-            //     error: function(xhr, type){
-            //         alert('Ajax error!');
-            //         // 即使加载出错，也得重置
-            //         me.resetload();
-            //     }
-            // });
-        }
-    });
 
 })(Zepto)

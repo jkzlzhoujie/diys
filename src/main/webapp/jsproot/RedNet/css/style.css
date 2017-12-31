@@ -452,7 +452,7 @@ input.code-inp{
     border: 1px solid #d2d2d2;
 }
 .us-p-list{
-    max-height: 420px;
+    height: 420px;
     overflow-x: hidden;
     overflow-y: auto;
     margin-bottom: 53px;
@@ -1011,14 +1011,22 @@ padding-left: 35px!important;
     right: 10px;
 }
 .i-search-cancel{
-position: absolute;
-top: 0;
-right: 0;
-bottom: 0;
-line-height: 2.65rem;
-width: 3rem;
-text-align: center;
-z-index: 999;
+
+position: absolute;
+
+top: 0;
+
+right: 0;
+
+bottom: 0;
+
+line-height: 2.65rem;
+
+width: 3rem;
+
+text-align: center;
+
+z-index: 999;
 }
 .i-search-info{
 
@@ -1042,4 +1050,94 @@ overflow: auto;
     right: 3rem;
     background: #f1f1f1;
     border-radius: 5px;
+}
+#indApp{
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.i-s-null{
+    font-size: 17px;
+    padding: 51px 51px 10px 68px;
+}
+.i-s-null p{
+    color: #b2b2b2;
+    text-align: center;
+    padding: 10px 0;
+}
+.isearch-bg{
+    background: #f1f1f1;
+}
+.pop-success{
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+}
+.pop-suc-con{
+    width: 15.75rem;
+    height: 17.65rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin: 0 auto;
+    margin-top: 50px;
+    position: relative;
+}
+.p-tpcg{
+    background-image: url(../images/tpcg.png)
+}
+.p-tpwk{
+    background-image: url(../images/tpgz.png)
+}
+.p-call-suc{
+    background-image: url(../images/tpcga.png)
+}
+.p-bmcg{
+    background-image: url(../images/bmcg.png)
+}
+.pop-wtdc-btn{
+    position: absolute;
+    width: 4.5rem;
+    height: 1.5rem;
+    left: 3.5rem;
+    bottom: 0;
+}
+.pop-wybm-btn{
+    position: absolute;
+    width: 3.5rem;
+    height: 1.5rem;
+    right: 2.8rem;
+    bottom: 0;
+}
+.close-btn-tpcg{
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    top: 0;
+    right: 1.5rem;
+}
+.p-call-suc .pop-wtdc-btn{
+    bottom: 2.2rem;
+    left: 4.5rem;
+}
+.p-call-suc .pop-wybm-btn{
+    bottom: 2.2rem;
+}
+.p-call-suc .close-btn-tpcg{
+    left: 57%;
+    transform: translateX(-50%);
+    top: 1rem;
+}
+.p-bmcg .pop-wtdc-btn{
+    left: 50%;
+    transform: translateX(-50%);
 }

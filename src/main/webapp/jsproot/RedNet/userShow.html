@@ -6,130 +6,112 @@
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
     <title>网红秀</title>
     <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/dropload.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
 </head>
 <body style="background:#fbf0ef">
-    <!-- fffaf9 -->
-    <div class="us-top">
-        
-    </div>
-    <div class="us-user-info">
-        <p class="us-name">你的小小红</p>
-        <div class="us-tz-list">
-            <div class="us-tz-item blue">颜值</div>
-            <div class="us-tz-item red">喵女郎</div>
-            <div class="us-tz-item green">才艺</div>
+    <div id="usApp">
+        <!-- fffaf9 -->
+        <div class="us-top">
+            
         </div>
-        <div class="us-num-list">
-            <div class="us-num-item">
-                <div>编号</div>
-                <div>188</div>
+        <div class="us-user-info">
+            <p class="us-name" v-text="user.nickName"></p>
+            <div class="us-tz-list">
+                <div class="us-tz-item" v-for="item in user.labelList" v-bind:class="[item.color]" v-tex="item.value">颜值</div>
             </div>
-            <div class="us-num-item">
-                <div>排名</div>
-                <div>188</div>
-            </div>
-            <div class="us-num-item">
-                <div>票数</div>
-                <div>188</div>
-            </div>
-            <div class="us-num-item">
-                <div>累计CALL</div>
-                <div>188</div>
-            </div>
-        </div>
-    </div>
-    <div class="us-cs-info">
-        <!-- 标题 -->
-        <div class="us-tit">
-            <span>我的形象</span> 
-        </div>
-        <!-- 无图片时显示 -->
-        <p>请点击“完善信息”按钮上传形象图片</p>
-
-        <!-- 图片 -->
-        <div class="us-imgs us-img-self">
-            <img src="../../jsproot/RedNet/images/null.png" alt="">
-        </div>
-
-        <!-- 标题 -->
-        <div class="us-tit">
-            <span>我的代言</span>
-        </div>
-        <!-- 无图片时显示 -->
-        <p>请点击“完善信息”按钮上传形象图片</p>
-        
-        <!-- 图片 -->
-        <div class="us-imgs">
-            <div class="aui-row aui-row-padded">
-                <div class="aui-col-xs-4">
-                    <img src="../../jsproot/RedNet/images/null.png" alt="">
+            <div class="us-num-list">
+                <div class="us-num-item">
+                    <div>编号</div>
+                    <div v-text="user.id"></div>
                 </div>
-                <div class="aui-col-xs-4">
-                    <img src="../../jsproot/RedNet/images/null.png" alt="">
+                <div class="us-num-item">
+                    <div>排名</div>
+                    <div v-text="user.ranking"></div>
                 </div>
-                <div class="aui-col-xs-4">
-                    <img src="../../jsproot/RedNet/images/null.png" alt="">
+                <div class="us-num-item">
+                    <div>票数</div>
+                    <div v-text="user.count"></div>
+                </div>
+                <div class="us-num-item">
+                    <div>累计CALL</div>
+                    <div v-text="user.callCount"></div>
                 </div>
             </div>
         </div>
-
-
-        <!-- 标题 -->
-        <div class="us-tit">
-            <span>我的支持者</span>
-        </div>
-        <!-- 无图片时显示 -->
-        <p>请点击“完善信息”按钮,完善后就可以拉票了</p>
-
-        <!-- 支持者列表 -->
-        <div class="us-p-list">
-            <ul class="aui-list aui-media-list" style="background-color: rgba(0,0,0,0)">
-                <li class="aui-list-item aui-list-item-middle ms-li">
-                    <div class="aui-media-list-item-inner">
-                        <div class="aui-list-item-media" style="width: auto;padding-left: 12px;">
-                            <img src="../../jsproot/RedNet/images/null.png" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
-                        </div>
-                        <div class="aui-list-item-inner">
-                            <div class="aui-list-item-text">
-                                <div class="aui-list-item-title aui-font-size-14">你的小甜心</div>
-                                <div class="aui-list-item-right">20打CALL</div>
-                                <div class="aui-list-item-right">20票</div>
+        <div class="us-cs-info">
+            <!-- 标题 -->
+            <div class="us-tit">
+                <span>我的形象</span> 
+            </div>
+            <!-- 无图片时显示 -->
+            <p v-if="user.picOne.length == 0">请点击“完善信息”按钮上传形象图片</p>
+    
+            <!-- 图片 -->
+            <div class="us-imgs us-img-self" v-if="user.picOne.length > 0">
+                <img v-bind:src="user.picOne[0]" alt="">
+            </div>
+    
+            <!-- 标题 -->
+            <div class="us-tit">
+                <span>我的代言</span>
+            </div>
+            <!-- 无图片时显示 -->
+            <p v-if="user.endorsementImg.length == 0">请点击“完善信息”按钮上传形象图片</p>
+            
+            <!-- 图片 -->
+            <div class="us-imgs" v-if="user.endorsementImg.length > 0">
+                <div class="aui-row aui-row-padded">
+                    <div class="aui-col-xs-4" v-for="item in user.endorsementImg">
+                        <img v-bind:src="item" alt="">
+                    </div>
+                </div>
+            </div>
+    
+    
+            <!-- 标题 -->
+            <div class="us-tit">
+                <span>我的支持者</span>
+            </div>
+            <!-- 无图片时显示 -->
+            <p v-if="user.nickName == ''">请点击“完善信息”按钮,完善后就可以拉票了</p>
+    
+            <!-- 支持者列表 -->
+            <div class="us-p-list" v-if="user.nickName != ''">
+                <ul class="aui-list aui-media-list" style="background-color: rgba(0,0,0,0)">
+                    <li class="aui-list-item aui-list-item-middle ms-li" v-for="item in supportUser">
+                        <div class="aui-media-list-item-inner">
+                            <div class="aui-list-item-media" style="width: auto;padding-left: 12px;">
+                                <img v-bind:src="item.img" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
+                            </div>
+                            <div class="aui-list-item-inner">
+                                <div class="aui-list-item-text">
+                                    <div class="aui-list-item-title aui-font-size-14" v-text="item.name"></div>
+                                    <div class="aui-list-item-right"><span v-text="item.callNum"></span>打CALL</div>
+                                    <div class="aui-list-item-right"><span v-text="item.pNum"></span>票</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
-                <li class="aui-list-item aui-list-item-middle ms-li">
-                    <div class="aui-media-list-item-inner">
-                        <div class="aui-list-item-media" style="width: auto;padding-left: 12px;">
-                            <img src="../../jsproot/RedNet/images/null.png" class="aui-img-round aui-list-img-sm" style="width: 50px;height: 50px;">
-                        </div>
-                        <div class="aui-list-item-inner">
-                            <div class="aui-list-item-text">
-                                <div class="aui-list-item-title aui-font-size-14">你的小甜心</div>
-                                <div class="aui-list-item-right">20打CALL</div>
-                                <div class="aui-list-item-right">20票</div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <!-- 二维码 -->
-        <div class="us-follow">
-            <img src="../../jsproot/RedNet/images/code.png" alt="">
-            <div class="us-f-info">
-                <div>主办方：红U联盟</div>
-                <div>协办方：和黄信息 一喵科技</div>
+                    </li>
+                </ul>
+            </div>
+            <!-- 二维码 -->
+            <div class="us-follow">
+                <img src="../../jsproot/RedNet/images/code.png" alt="">
+                <div class="us-f-info">
+                    <div>主办方：红U联盟</div>
+                    <div>协办方：和黄信息 一喵科技</div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="us-btns">
-        <div class="aui-btn aui-btn-primary">完善信息</div>
-        <div class="aui-btn aui-btn-primary">去拉票</div>
+        <div class="us-btns">
+            <div class="aui-btn aui-btn-primary" v-on:click="perfectInfo">完善信息</div>
+            <div class="aui-btn aui-btn-primary" v-on:click="goCanvassing">去拉票</div>
+        </div>
     </div>
     <script src="../../jsproot/RedNet/js/plugins/vue.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/dropload.min.js"></script>
     <script src="../../jsproot/RedNet/js/script/userShow.js"></script>
 </body>
 </html>

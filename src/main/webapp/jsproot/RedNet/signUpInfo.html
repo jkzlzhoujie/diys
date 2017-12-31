@@ -62,7 +62,7 @@
                         自&nbsp;&nbsp;&nbsp;荐
                     </div>
                     <div class="form-textarea">
-                        <textarea placeholder="请填自我介绍或者参赛口号，将有更多粉丝支持你" v-model="user.info"></textarea>
+                        <textarea placeholder="请填自我介绍或者参赛口号，将有风多粉丝支持你" v-model="user.selfIntroduction"></textarea>
                     </div>
                 </div>
             </li>
@@ -70,6 +70,14 @@
         <div class="ind-btn">
             <div class="aui-btn aui-btn-block" v-on:click="sendInfo">确定报名</div>
         </div>
+
+
+       <!--  <div class="pop-success" v-if="showTPSuc">
+            <div class="pop-suc-con p-bmcg">
+                <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
+                <div class="pop-wtdc-btn" v-on:click="ljqw"></div>
+            </div>
+        </div> -->
     </div>
     <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/vue.js"></script>
