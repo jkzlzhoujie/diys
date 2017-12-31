@@ -40,8 +40,8 @@
                         ],
                         number: '123',
                         ranking: '0',
-                        votesNum: '0',
-                        callNum: '0',
+                        count: '0',
+                        callCount: '0',
                         firstImage: ['../../jsproot/RedNet/images/null.png'],
                         imagesArr: [],
                         endorsementImg: ['../../jsproot/RedNet/images/null.png']
@@ -74,6 +74,7 @@
                              success: function (result) {
                             	 var data = JSON.parse(result);
                             	 if(data != null){
+                            		 that.user.id = data.id;
                             		 that.user.name = data.name;
                             		 that.user.lablesArr = data.lablesArr;
                             		 that.user.imagesArr = data.imagesArr;
@@ -82,11 +83,29 @@
                              }
                          });
                          
-                       //数据请求 获取支持网红的用户列表
+                       //数据请求 获取用户等级
+                         $.ajax({
+                             url: '../../clientNew/weixin/netRedRankAndCount',
+                             data: {
+                            	 //参数
+                            	 netRedUserId:GetQueryString("netRedUserId"),
+                            	 pageNo:1,
+                            	 pageSize:10
+                             },
+                             success: function (result) {
+                            	 var data = JSON.parse(result);
+                            	 if(data != null){
+                            		 that.user.ranking = data.response.rank;
+                            		 that.user.count = data.response.count;
+                            		 that.user.callCount = data.response.callCount;
+                            	 }
+                             }
+                         });
+                         
+                       /*//数据请求 获取支持网红的用户列表
                          $.ajax({
                              url: '../../clientNew/weixin/supportNetRedWeixinUserList',
                              data: {
-                            	 //参数
                             	 netRedUserId:GetQueryString("netRedUserId"),
                             	 pageNo:1,
                             	 pageSize:10
@@ -97,10 +116,11 @@
                             		 that.supportUser = data.response;
                             	 }
                              }
-                         });
+                         });*/
+                         
                     },
                     perfectInfo: function () {
-                        console.log('perfectInfo');
+                    	window.location.href = '../../jsproot/RedNet/userForm.html?netRedUserId=' + this.user.id;
                     },
                     goCanvassing: function () {
                         console.log('goCanvassing');
@@ -121,23 +141,24 @@
                     // 拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: 'http://ons.me/tools/dropload/json.php?page='+page+'&size='+size,
+                        url: '../../clientNew/weixin/supportNetRedWeixinUserList?pageNo='+page+'&pageSize='+size + '&netRedUserId=' + GetQueryString("netRedUserId"),
                         dataType: 'json',
                         success: function(data){
-                            if(true){
-                                that.usVue.supportUser.push({
-                                    img: '../../jsproot/RedNet/images/null.png',
-                                    name: 'ffff',
-                                    callNum: 123,
-                                    pNum: 234
-                                });
-                            // 如果没有数据
-                            }else{
-                                // 锁定
-                                me.lock();
-                                // 无数据
-                                me.noData();
-                            }
+                        	 var obj = JSON.parse(data);
+                             if(obj){
+                            	 debugger
+                             	if (obj.list.length > 0){
+                                 	that.usVue.supporter = that.usVue.supporter.concat(obj.list);
+                             	}else {
+                                     // 锁定
+                                     me.lock();
+                                     // 无数据
+                                     me.noData();
+                             		
+                             	}
+                             // 如果没有数据
+                             }else{
+                             }
                             // 为了测试，延迟1秒加载
                             setTimeout(function(){
                                 // 插入数据到页面，放到最后面

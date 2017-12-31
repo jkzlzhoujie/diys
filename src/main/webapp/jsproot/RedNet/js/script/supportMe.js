@@ -115,17 +115,21 @@
                     // 拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: 'http://ons.me/tools/dropload/json.php?page='+page+'&size='+size,
+                        url: '../../clientNew/weixin/supportMeUserList?pageNo='+page+'&pageSize='+size+'&netRedUserId=' + GetQueryString("netRedUserId"),
                         dataType: 'json',
-                        success: function(data){
-                            debugger
-                            if(true){
-                                that.msVue.callArr.push({
-                                    img: '../../jsproot/RedNet/images/null.png',
-                                    name: '张三',
-                                    pNum: 20,
-                                    callNum: 22
-                                });
+                        success: function(result){
+                        	var obj = JSON.parse(result);
+                          	 if(obj.code == "00000"){
+                          		 
+                          		if (obj.list.length > 0){
+                                	that.msVue.supporter = that.msVue.supporter.concat(obj.list);
+                            	}else {
+                                    // 锁定
+                                    me.lock();
+                                    // 无数据
+                                    me.noData();
+                            	}
+                          		
                             // 如果没有数据
                             }else{
                                 // 锁定
@@ -136,13 +140,15 @@
                             // 为了测试，延迟1秒加载
                             setTimeout(function(){
                                 // 插入数据到页面，放到最后面
-
                                 // 每次数据插入，必须重置
                                 me.resetload();
                             },1000);
                         },
                         error: function(xhr, type){
-                            alert('Ajax error!');
+                        	 // 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
                             // 即使加载出错，也得重置
                             me.resetload();
                         }

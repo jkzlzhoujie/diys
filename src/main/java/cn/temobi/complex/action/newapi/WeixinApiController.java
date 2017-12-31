@@ -298,12 +298,32 @@ public class WeixinApiController extends ClientApiBaseController{
         try {
         	Gson  gson =  new  Gson() ;
         	NetRedUser user = gson.fromJson(userStr, NetRedUser.class);
+        	if(user.getCity() != null){
+        		String [] address = user.getCity().split(","); 
+        		user.setProvince(address[0]);
+        		if(address.length >= 2 ){
+        			user.setCity(address[1]);
+        		}
+        		if(address.length >= 2 ){
+        			user.setTown(address[2]);
+        		}
+        	}
             if (user.getId() != 0) {
             	userOptionService.update(user);
             } else {
                 String oldCode = (String) CacheHelper.getInstance().get(user.getPhone());
                 if(StringUtils.equals(code, oldCode)){
-                	userOptionService.save(user);
+                	
+                	Map<String,String> map = new HashMap();
+                	map.put("phone", user.getPhone());
+                	List<NetRedUser> netRedList = userOptionService.findByMap(map);
+                	if(netRedList!=null && netRedList.size() > 1){
+                		object.setCode(Constant.RESPONSE_ERROR_CODE);
+                        object.setDesc("手机号已注册");
+                        return object;
+                	}else{
+                		userOptionService.save(user);
+                	}
 	                object.setDesc("成功");
 	                object.setResponse(user);
 	                object.setCode(Constant.RESPONSE_SUCCESS_CODE);
@@ -371,6 +391,41 @@ public class WeixinApiController extends ClientApiBaseController{
         }
         return netRedUser;
     }
+    
+    
+    /**
+	 * 网红用户的 等级和 得票数
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/netRedRankAndCount", method = {RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody ResponseObject netRedRankAndCount(String netRedUserId) {
+    	ResponseObject object = initResponseObject();
+		object.setCode(Constant.RESPONSE_PARAMS_ERROR);
+		object.setDesc("参数错误");
+		try {
+			Map<String,Object> param = new HashMap<String, Object>();
+	    	param.put("netRedUserId", netRedUserId);
+	    	List<VoteRecord>  voteRecords = weixinVoteRecordService.getSumCountByType(param);
+	    	NetRedUser netRedUser = new NetRedUser();
+	    	netRedUser.setCount( voteRecords.get(0)!=null? voteRecords.get(0).getCount() :0 );
+	    	netRedUser.setCallCount( voteRecords.get(0)!=null? voteRecords.get(0).getCallCount() :0 );
+	    	
+	    	param.clear();
+	    	param.put("count", voteRecords.get(0).getCount());
+	    	List<AccessRecord> accessRecords = accessRecordService.findNetRank(param);
+	    	netRedUser.setRank(accessRecords.size() + 1);
+	    	object.setResponse(netRedUser);
+		}catch(Exception e) {
+			log.error(e.getMessage());
+			object.setCode(Constant.RESPONSE_ERROR_CODE);
+			object.setDesc("服务器有点忙");
+		}
+		return object;
+	}
+    
+    
 
     /**
 	 * 支持我的
@@ -404,6 +459,7 @@ public class WeixinApiController extends ClientApiBaseController{
 		try {
 	    	if(StringUtil.isEmpty(netRedUserId)){
 	    		object.setDesc("网红用户不能为空");
+	    		return object;
 	    	}
 	    	Map<String,Object> param = new HashMap<String, Object>();
 			param.clear();
@@ -448,6 +504,7 @@ public class WeixinApiController extends ClientApiBaseController{
 		try {
 	    	if(StringUtil.isEmpty(netRedUserId)){
 	    		object.setDesc("网红用户不能为空");
+	    		return object;
 	    	}
 	    	Map<String,Object> param = new HashMap<String, Object>();
 			Page page =  new Page(pageNo, pageSize);
@@ -484,6 +541,7 @@ public class WeixinApiController extends ClientApiBaseController{
 		try {
 	    	if(StringUtil.isEmpty(netRedUserId)){
 	    		object.setDesc("网红用户不能为空");
+	    		return object;
 	    	}
 	    	Map<String,Object> param = new HashMap<String, Object>();
 			Page page =  new Page(pageNo, pageSize);

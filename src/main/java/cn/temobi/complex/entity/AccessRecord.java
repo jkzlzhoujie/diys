@@ -7,6 +7,7 @@ public class AccessRecord extends IdEntity{
 	private Long netRedUserId;//网红用户
 	private Long attentionUserId;//关注用户
 	private Date createTime;
+	private int count;//
 	
 	
 	public Long getNetRedUserId() {
@@ -26,6 +27,12 @@ public class AccessRecord extends IdEntity{
 	}
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
 	}
 	
 	

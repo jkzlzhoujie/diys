@@ -22,19 +22,35 @@ public class NetRedUser extends IdEntity{
 	private int gameRounds;//第几轮
 	private Date createTime;//报名时间
 	private long weichatUserId;//公众号关注用户
-	private long count;
 	private String[] lablesArr;
 	private String[] imagesArr;
 	
 	private String createTimeStr;//报名时间
+	private int count;
+	private int callCount;
+	private int rank;
 	
 	
-    public long getCount() {
-        return count;
-    }
-    public void setCount(long count) {
-        this.count = count;
-    }
+	
+	
+    public int getCount() {
+		return count;
+	}
+	public int getRank() {
+		return rank;
+	}
+	public void setRank(int rank) {
+		this.rank = rank;
+	}
+	public void setCount(int count) {
+		this.count = count;
+	}
+	public void setCallCount(int callCount) {
+		this.callCount = callCount;
+	}
+	public long getCallCount() {
+		return callCount;
+	}
     public String getName() {
 		return name;
 	}

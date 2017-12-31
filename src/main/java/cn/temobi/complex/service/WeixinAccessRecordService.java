@@ -58,4 +58,10 @@ public class WeixinAccessRecordService extends ServiceBase{
 	public int delete(Object id){
 		return weixinAccessRecordDao.delete(id);
 	}
+	
+	public List<AccessRecord> findNetRank(Map param){
+		return weixinAccessRecordDao.findNetRank(param);
+	}
+	
+	
 }

@@ -22,5 +22,10 @@ public class WeixinAccessRecordDaoImpl extends SimpleMybatisSupport<AccessRecord
 		return "cn.temobi.complex.entity.AccessRecord";
 	}
 
+	@Override
+	public List<AccessRecord> findNetRank(Map<String, Object> parameter) {
+		List<AccessRecord> accessRecords =  getSqlSession().selectList(toMybatisStatement("findNetRank"), parameter);
+		return accessRecords;
+	}
 	
 }

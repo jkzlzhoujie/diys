@@ -1,5 +1,6 @@
 package cn.temobi.complex.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import cn.temobi.complex.entity.AccessRecord;
@@ -9,5 +10,5 @@ import cn.temobi.core.dao.SimpleDao;
 
 public interface WeixinAccessRecordDao extends SimpleDao<AccessRecord, Long> {
 
-	
+	public List<AccessRecord> findNetRank(Map<String, Object> map);
 }
