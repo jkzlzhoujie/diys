@@ -39,7 +39,10 @@ input.code-inp{
 .ind-btn{
     padding: 15px 32px;
 }
-.ind-btn .aui-btn{
+.p-btn{
+    padding: 110px 30px;
+}
+.ind-btn .aui-btn,.p-btn .aui-btn, .v-btn .aui-btn{
     height: 2rem;
     font-size: 15px;
     line-height: 2rem;
@@ -1140,4 +1143,41 @@ overflow: auto;
 .p-bmcg .pop-wtdc-btn{
     left: 50%;
     transform: translateX(-50%);
+}
+.p-img{
+
+}
+
+.p-img img{
+    width: 100%;
+}
+.p-btn{
+}
+.zy_media,.zy_media video{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 5;
+}
+.v-btn{
+    position: absolute;
+    z-index: 10;
+    left: 15px;
+    bottom: 30px;
+    right: 15px;
+}
+.su-top,.i-top{
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.su-top{
+    height: 170px;
+    background-image: url(../images/bmhb.jpg);
+}
+.i-top{
+    background-image: url(../images/dshb.jpg);
 }

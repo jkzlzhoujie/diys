@@ -27,41 +27,18 @@
                         thanksWord: '',
                         callTanksWord: '',
                         firstImage: '',//形象图片（1张）
+                        lablesArr:[],
                         imagesArr: []//其他形象图片（1张）
                     },
                     checkList: {
-                        cyVal: {
-                            class: '',
-                            value: '1'
-                        },
-                        yzVal: {
-                            class: '',
-                            value: '2'
-                        },
-                        ssVal: {
-                            class: '',
-                            value: '3'
-                        },
-                        mzVal: {
-                            class: '',
-                            value: '4'
-                        },
-                        gxVal: {
-                            class: '',
-                            value: '5'
-                        },
-                        msVal: {
-                            class: '',
-                            value: '6'
-                        },
-                        yxVal: {
-                            class: '',
-                            value: '7'
-                        },
-                        qtVal: {
-                            class: '',
-                            value: '8'
-                        }
+                        cyVal: false,
+                        yzVal: false,
+                        ssVal: false,
+                        mzVal: false,
+                        gxVal: false,
+                        msVal: false,
+                        yxVal: false,
+                        qtVal: false
                     }
                 },
                 methods: {
@@ -70,7 +47,7 @@
                     	var that = this;
                         //数据请求
                          $.ajax({
-                             url: 'getNetRedUser',
+                             url: '../../clientNew/weixin/getNetRedUser',
                              data: {
                             	 //参数
                             	 netRedUserId:GetQueryString("netRedUserId")
@@ -79,35 +56,41 @@
                             	 var obj = JSON.parse(result);
                             	 if(obj != null){
                             		 that.user = obj;
+                            		 $.each(that.user.lablesArr, function(k,o) {
+                            			 that.checkList[o] = true;
+                            		 });
                             	 }
                              }
                          });
                     },
                 	
-                    checkVal: function (v) {
-                        var str = this.checkList[v].class;
-                        if (str != '') {
-                            this.checkList[v].class = '';
-                        } else {
-                            this.checkList[v].class = 'active';
-                        }
+                    checkVala: function (v) {
+                    	this.checkList[v] = !this.checkList[v];
+                    	if (this.checkList[v]) {
+                    		this.user.lablesArr.push(v);
+                    	} else {
+                    		var ind = this.user.lablesArr.indexOf(v);
+                    		this.user.lablesArr.splice(ind,1);
+                    	}
                     },
                     unImg: function (v, t) {
                         var $dom = t.event.target;
                         this.ysImg(v, $dom);
                     },
                     delImg: function (v, n) {//删除图片
-                        if (v == 'xxImg') {
-                            this.user[v] = [];
+                        if (v == 'firstImage') {
+                            this.user[v] = '';
                         } else {
                             this.user[v].splice(n, 1);
                         }
                     },
                     sendInfo: function () {//提交数据
                     	delete this.user.createTime;
+                    	debugger
                     	//数据请求
                         $.ajax({
-                            url: 'updateNetRedUser',
+                        	type : 'post',
+                            url: '../../clientNew/weixin/updateNetRedUser',
                             data: {
                            	 userStr: JSON.stringify( this.user)
                             },
@@ -127,7 +110,11 @@
                         if (file.files && file.files[0]) {
                             var reader = new FileReader();
                             reader.onload = function (evt) {
-                                vm.user[v].push(evt.target.result);
+                            	if (v == 'firstImage') {
+                            		vm.user.firstImage = evt.target.result;
+                            	} else {
+                                    vm.user[v].push(evt.target.result);
+                            	}
                             };
                             reader.readAsDataURL(file.files[0]);
                         }

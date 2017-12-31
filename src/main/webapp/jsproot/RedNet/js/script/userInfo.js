@@ -37,14 +37,13 @@
                 	getData: function () {
                 		var that = this;
                 		$.ajax({
-                			url:'getUserInfo',
+                			url:'../../clientNew/weixin/getUserInfo',
                 			data: {
-                				id:GetQueryString('id')
+                				id:GetQueryString('voteUserId')
                 			},
                 			success: function(result) {
                 				var obj = JSON.parse(result);
 	                           	 if(obj.code == "00000"){
-	                           		 debugger
 	                           		 that.user = obj.response;
 	                           	 }else{
 	                           		

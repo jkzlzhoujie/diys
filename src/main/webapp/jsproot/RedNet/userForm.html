@@ -54,7 +54,7 @@
             <div class="aui-list-item-inner">
                 <div class="aui-list-item-input">
                     <div class="us-rad-item">
-                        <input type="radio" class="inp-rad" name="fansAmountAmount" 
+                        <input type="radio" class="inp-rad" name="fansAmount" 
                         v-model="user.fansAmountAmount" 
                         value="1"><span class="uf-rad-txt">0~500</span>
                     </div>
@@ -79,31 +79,31 @@
             <div class="us-tit">
                 <span>个人标签<i class="uf-req">*</i></span> 
             </div>
-            <div class="label-list">
+          <div class="label-list">
                 <div class="label-item" 
-                    v-on:click="checkVal('cyVal')" 
-                    v-bind:class="[checkList.cyVal.class]">才艺</div>
+                    v-on:click="checkVala('cyVal')" 
+                    v-bind:class="{'active':checkList.cyVal}">才艺</div>
                 <div class="label-item" 
-                    v-on:click="checkVal('yzVal')" 
-                    v-bind:class="[checkList.yzVal.class]">颜值</div>
+                    v-on:click="checkVala('yzVal')" 
+                    v-bind:class="{'active':checkList.yzVal}">颜值</div>
                 <div class="label-item" 
-                    v-on:click="checkVal('ssVal')" 
-                    v-bind:class="[checkList.ssVal.class]">时尚达人</div>
+                    v-on:click="checkVala('ssVal')" 
+                    v-bind:class="{'active':checkList.ssVal}">时尚达人</div>
                 <div class="label-item" 
-                    v-on:click="checkVal('mzVal')" 
-                    v-bind:class="[checkList.mzVal.class]">美妆达人</div>
+                    v-on:click="checkVala('mzVal')" 
+                    v-bind:class="{'active':checkList.mzVal}">美妆达人</div>
                 <div class="label-item" 
-                    v-on:click="checkVal('gxVal')" 
-                    v-bind:class="[checkList.gxVal.class]">搞笑达人</div>
+                    v-on:click="checkVala('gxVal')" 
+                    v-bind:class="{'active':checkList.gxVal}">搞笑达人</div>
                 <div class="label-item" 
-                    v-on:click="checkVal('msVal')" 
-                    v-bind:class="[checkList.msVal.class]">美食达人</div>
+                    v-on:click="checkVala('msVal')" 
+                    v-bind:class="{'active':checkList.msVal}">美食达人</div>
                 <div class="label-item" 
-                    v-on:click="checkVal('yxVal')" 
-                    v-bind:class="[checkList.yxVal.class]">游戏达人</div>
+                    v-on:click="checkVala('yxVal')" 
+                    v-bind:class="{'active':checkList.yxVal}">游戏达人</div>
                 <div class="label-item" 
-                    v-on:click="checkVal('qtVal')" 
-                    v-bind:class="[checkList.qtVal.class]">其他</div>
+                    v-on:click="checkVala('qtVal')" 
+                    v-bind:class="{'active':checkList.qtVal}">其他</div>
             </div>
             <!-- title -->
             <div class="us-tit">
@@ -120,22 +120,22 @@
             <div class="us-tit">
                 <span>形象图片（1张）<i class="uf-req">*</i></span> 
             </div>
-           <!--  <div class="us-img-one">
+           <div class="us-img-one">
                 <div class="weui_uploader_bd">
                     <ul class="weui_uploader_files">
                         <li class="weui_uploader_file" 
-                            v-for="item in user.firstImage">
-                            <img v-bind:src="item" alt="">
+                            v-if="user.firstImage.length > 0">
+                            <img v-bind:src="user.firstImage" alt="">
                             <i class="uf-close-img" 
                                 v-on:click="delImg('firstImage')"></i>
                         </li>
                     </ul>
                     <div class="weui_uploader_input_wrp" 
-                        v-if="user.xxImg.length == 0"> 
+                        v-if="user.firstImage.length == 0"> 
                         <input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg('firstImage', this)" multiple />
                     </div>
                 </div>
-            </div> -->
+            </div>
             <!-- title -->
             <div class="us-tit">
                 <span>其他形象图（最多9张）<i class="uf-req">*</i></span> 

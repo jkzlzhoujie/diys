@@ -9,6 +9,7 @@
 	
     // 页数
     var page = 0;
+    var pageTwo = 0;
     // 每页展示5个
     var size = 5;
     var ms = {
@@ -44,7 +45,7 @@
                     	var that = this;
                         //数据请求
                         $.ajax({
-                             url: 'supportMeUserCount',
+                             url: '../../clientNew/weixin/supportMeUserCount',
                              data: {
                             	 //参数
                             	 netRedUserId:GetQueryString("netRedUserId")
@@ -64,41 +65,6 @@
                             	 }
                              }
                          });
-                        
-                        $.ajax({
-                            url: 'supportMeUserList',
-                            data: {
-                           	 //参数
-                           	 netRedUserId:GetQueryString("netRedUserId")
-                            },
-                            success: function (result) {
-                           	 var obj = JSON.parse(result);
-                           	 if(obj.code == "00000"){
-                           		that.callArr = obj.response;
-                           		that.pArr = obj.response
-                           	 }else{
-                           		that.callArr = [ 
-                                    {
-                                    	headImgUrl: './images/null.png',
-                                        name: '张三',
-                                        count: 20,
-                                        callCount: 22
-                                    }
-                                ];
-                           		
-                           		this.pArr = [
-	                                 {
-	                                     img: './images/null.png',
-	                                     name: '张三',
-	                                     pNum: 20,
-	                                     callNum: 22
-	                                 }
-	                             ];
-                           	 }
-                            }
-                        });
-                        
-                        
                     }
                 },
                 created: function () {
@@ -116,26 +82,15 @@
                     $.ajax({
                         type: 'GET',
                         url: '../../clientNew/weixin/supportMeUserList?pageNo='+page+'&pageSize='+size+'&netRedUserId=' + GetQueryString("netRedUserId"),
-                        dataType: 'json',
                         success: function(result){
                         	var obj = JSON.parse(result);
-                          	 if(obj.code == "00000"){
-                          		 
-                          		if (obj.list.length > 0){
-                                	that.msVue.supporter = that.msVue.supporter.concat(obj.list);
-                            	}else {
-                                    // 锁定
-                                    me.lock();
-                                    // 无数据
-                                    me.noData();
-                            	}
-                          		
-                            // 如果没有数据
+                          	 if(obj.response.length >0){
+                          		that.msVue.callArr = that.msVue.callArr.concat(obj.response);
                             }else{
-                                // 锁定
-                                me.lock();
-                                // 无数据
-                                me.noData();
+                            	 // 锁定
+                              me.lock();
+                              // 无数据
+                             me.noData();
                             }
                             // 为了测试，延迟1秒加载
                             setTimeout(function(){
@@ -160,29 +115,21 @@
             $('.piao-list').dropload({
                 scrollArea : $('.piao-list'),
                 loadDownFn : function(me){
-                    page++;
-                    // 拼接HTML
+                	pageTwo++;
+//                     拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: 'http://ons.me/tools/dropload/json.php?page='+page+'&size='+size,
-                        dataType: 'json',
+                        url: '../../clientNew/weixin/supportMeUserList?pageNo='+pageTwo+'&pageSize='+size+'&netRedUserId=' + GetQueryString("netRedUserId"),
                         success: function(data){
-                            debugger
-                            if(true){
-                                that.msVue.pArr.push(
-                                    {
-                                        img: '../../jsproot/RedNet/images/null.png',
-                                        name: '张三',
-                                        pNum: 20,
-                                        callNum: 22
-                                    });
-                            // 如果没有数据
-                            }else{
-                                // 锁定
-                                me.lock();
-                                // 无数据
-                                me.noData();
-                            }
+                        	var obj = JSON.parse(data);
+                         	 if(obj.response.length >0){
+                           		that.msVue.pArr = that.msVue.pArr.concat(obj.response);
+                           }else{
+                               // 锁定
+                               me.lock();
+                               // 无数据
+                               me.noData();
+                           }
                             // 为了测试，延迟1秒加载
                             setTimeout(function(){
                                 // 插入数据到页面，放到最后面

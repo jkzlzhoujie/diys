@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>网红大赛</title>
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
+</head>
+<body>
+    <div class="zy_media">
+        <video src="../../jsproot/RedNet/images/v.mp4" controls="controls" autoplay="autoplay" webkit-playsinline>
+                您的浏览器不支持HTML5视频
+        </video>
+    </div> 
+    <div class="v-btn">
+        <div class="aui-btn aui-btn-block" id="bmBtn">我要报名</div>
+    </div>
+    <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
+
+    <script>
+    	function GetQueryString(name)
+		{
+		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		     var r = window.location.search.substr(1).match(reg);
+		     if(r!=null)return  unescape(r[2]); return null;
+		}
+        ;(function () {
+        	var id = GetQueryString('voteUserId');
+        	var status = GetQueryString('status');
+            $('#bmBtn').on('click', function () {
+	            if (status == '1'){
+	            	$(this).html('你已报名')
+	            	window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + id;
+	            } else {
+	            	window.location.href = '../../jsproot/RedNet/poster.html?voteUserId=' + id;
+	            }
+            });
+        })(Zepto)
+    </script>   
+</body>
+</html>

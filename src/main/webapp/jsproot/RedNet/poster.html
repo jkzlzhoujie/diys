@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>网红大赛</title>
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
+</head>
+<body style="background:#fbf0ef;">
+    <div class="p-img">
+        <img src="../../jsproot/RedNet/images/hb.jpg" alt="">
+    </div>
+    <div class="p-btn">
+        <div class="aui-btn aui-btn-block" id="bmBtn">我要报名</div>
+    </div>
+    <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
+    <script>
+    	function GetQueryString(name)
+		{
+		     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+		     var r = window.location.search.substr(1).match(reg);
+		     if(r!=null)return  unescape(r[2]); return null;
+		};
+		
+		(function () {
+        	 var id = GetQueryString('voteUserId');
+              $('#bmBtn').on('click', function () {
+	           	window.location.href = '../../jsproot/RedNet/signUpInfo.html?voteUserId=' + id;
+            }); 
+        })(Zepto)
+    </script>
+</body>
+</html>

@@ -1,9 +1,18 @@
 ;(function ($) {
+	
+	function GetQueryString(name)
+	{
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r!=null)return  unescape(r[2]); return null;
+	}
     // 页数
     var page = 0;
     // 每页展示5个
     var size = 10;
+    var serPage = 0;
     var popup = new auiPopup();
+    var serLoad = null;
     var imgs = {
         hImg: ['../../jsproot/RedNet/images/h-click.png','../../jsproot/RedNet/images/h.png'],
         xImg: ['../../jsproot/RedNet/images/x.png','../../jsproot/RedNet/images/x-click.png']
@@ -90,7 +99,30 @@
                         var mask = $('#mask');
                         var weuiActionsheet = $('#weui_actionsheet');
                         hideActionSheet(weuiActionsheet, mask);
+                        var params = {
+                        		voteUserId: GetQueryString("voteUserId"),
+                        		netRedUserId: id,
+                        		count: 1,
+                        		type: 1
+                        }
+                        if (this.type == 2) {
+                        	alert('暂不支持');
+                        	return;
+                        }
                         //支持投票
+                        $.ajax({
+                        	url: 'userVote',
+                        	data: params,
+                        	success: function (result) {
+                        		debugger
+                        		var obj = JSON.parse(result);
+	                           	 if(obj.code == "00000"){
+	                           		 alert("投票成功");
+	                           	 }else{
+	                           		 alert("投票失败，"+obj.desc);
+	                           	 }
+                        	}
+                        })
                     },
                     add: function () {
                         this.number += 1;
@@ -110,9 +142,6 @@
                     showPop: function () {
                         this.isShow = true;
                         this.searchArr = [];
-                        setTimeout(function () {
-                            me.initPopDropDown();
-                        }, 300);
                     },
                     showTP: function() {
                         var mask = $('#mask');
@@ -192,56 +221,102 @@
             });
         },
         initPopDropDown: function () {
+        	serPage++;
             var that = this;
-            $('.i-search-info').dropload({
-                scrollArea : $('.i-search-info'),
-                loadDownFn : function(me){
-                    page++;
-                    // 拼接HTML
-                    var searcheContent = '';
-                    if(that.indVue.searchVal ){
-                    	searcheContent = that.indVue.searchVal;
+            var searcheContent = '';
+          if(that.indVue.searchVal ){
+          	searcheContent = that.indVue.searchVal;
+          }
+            $.ajax({
+                type: 'GET',
+                url: 'findNetRedListPage?pageNo='+serPage+'&pageSize='+size+'&content=' + searcheContent,
+                success: function(data){
+                	var obj = JSON.parse(data);
+                    if(obj){
+                    	if (obj.list.length > 0){
+                        	that.indVue.searchArr = that.indVue.searchArr.concat(obj.list);
+                    	}else {
+	//                            // 锁定
+	//                            me.lock();
+	//                            // 无数据
+	//                            me.noData();
+	//                    		
+                    	}
+                    // 如果没有数据
+                    }else{
                     }
-                    $.ajax({
-                        type: 'GET',
-                        url: 'findNetRedListPage?pageNo='+page+'&pageSize='+size+'&content=' + searcheContent,
-                        dataType: 'json',
-                        success: function(data){
-                        	var obj = JSON.parse(data);
-                            if(obj){
-                            	if (obj.list.length > 0){
-                                	that.indVue.supporter = that.indVue.supporter.concat(obj.list);
-                            	}else {
-                                    // 锁定
-                                    me.lock();
-                                    // 无数据
-                                    me.noData();
-                            		
-                            	}
-                            // 如果没有数据
-                            }else{
-                            }
-                            // 为了测试，延迟1秒加载
-                            setTimeout(function(){
-                                // 插入数据到页面，放到最后面
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        // 插入数据到页面，放到最后面
 
-                                // 每次数据插入，必须重置
-                                me.resetload();
-                            },1000);
-                        },
-                        error: function(xhr, type){
-                        	 // 锁定
-                            me.lock();
-                            // 无数据
-                            me.noData();
-                            // 即使加载出错，也得重置
-                            me.resetload();
-                        }
-                    });
+                        // 每次数据插入，必须重置
+//                        me.resetload();
+                    },1000);
+                },
+                error: function(xhr, type){
+//                	 // 锁定
+//                    me.lock();
+//                    // 无数据
+//                    me.noData();
+//                    // 即使加载出错，也得重置
+//                    me.resetload();
                 }
             });
+//            serLoad = $('.i-search-info').dropload({
+//                scrollArea : $('.i-search-info'),
+//                loadDownFn : function(me){
+//                    page++;
+//                    // 拼接HTML
+//                    var searcheContent = '';
+//                    if(that.indVue.searchVal ){
+//                    	searcheContent = that.indVue.searchVal;
+//                    }
+//                    $.ajax({
+//                        type: 'GET',
+//                        url: 'findNetRedListPage?pageNo='+page+'&pageSize='+size+'&content=' + searcheContent,
+//                        success: function(data){
+//                        	var obj = JSON.parse(data);
+//                            if(obj){
+//                            	if (obj.list.length > 0){
+//                                	that.indVue.supporter = that.indVue.supporter.concat(obj.list);
+//                            	}else {
+//                                    // 锁定
+//                                    me.lock();
+//                                    // 无数据
+//                                    me.noData();
+//                            		
+//                            	}
+//                            // 如果没有数据
+//                            }else{
+//                            }
+//                            // 为了测试，延迟1秒加载
+//                            setTimeout(function(){
+//                                // 插入数据到页面，放到最后面
+//
+//                                // 每次数据插入，必须重置
+//                                me.resetload();
+//                            },1000);
+//                        },
+//                        error: function(xhr, type){
+//                        	 // 锁定
+//                            me.lock();
+//                            // 无数据
+//                            me.noData();
+//                            // 即使加载出错，也得重置
+//                            me.resetload();
+//                        }
+//                    });
+//                }
+//            });
         }
     }
     ind.init();
-
+    $(document).on('keydown',function (e) {
+    	if (e.keyCode == 13) {
+    		serPage = 0;
+	          setTimeout(function () {
+	        	  ind.initPopDropDown();
+		      }, 300);
+    	}
+    })
 })(Zepto)

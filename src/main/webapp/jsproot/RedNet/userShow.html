@@ -13,7 +13,7 @@
     <div id="usApp">
         <!-- fffaf9 -->
         <div class="us-top">
-            
+                <img v-bind:src="user.firstImage" alt="">
         </div>
         <div class="us-user-info">
             <p class="us-name" v-text="user.name"></p>
@@ -74,10 +74,10 @@
                 <span>我的支持者</span>
             </div>
             <!-- 无图片时显示 -->
-            <p v-if="user.nickName == ''">请点击“完善信息”按钮,完善后就可以拉票了</p>
+            <p v-if="user.voteUserUserNickName == ''">请点击“完善信息”按钮,完善后就可以拉票了</p>
     
             <!-- 支持者列表 -->
-            <div class="us-p-list" v-if="user.nickName != ''">
+            <div class="us-p-list" v-if="user.voteUserUserNickName != ''">
                 <ul class="aui-list aui-media-list" style="background-color: rgba(0,0,0,0)">
                     <li class="aui-list-item aui-list-item-middle ms-li" v-for="item in supportUser">
                         <div class="aui-media-list-item-inner">

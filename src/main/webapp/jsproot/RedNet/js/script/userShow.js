@@ -46,20 +46,7 @@
                         imagesArr: [],
                         endorsementImg: ['../../jsproot/RedNet/images/null.png']
                     },
-                    supportUser: [
-                        {
-                        	headImgUrl: '../../jsproot/RedNet/images/null.png',
-                        	voteUserUserNickName: 'ffff',
-                        	typeName: 123,
-                        	createTimeStr: 234
-                        },
-                        {
-                        	headImgUrl: '../../jsproot/RedNet/images/null.png',
-                        	voteUserUserNickName: 'ffff',
-                        	typeName: 123,
-                        	createTimeStr: 234
-                        }
-                    ]
+                    supportUser: []
                 },
                 methods: {
                 	getData: function () {
@@ -142,22 +129,17 @@
                     $.ajax({
                         type: 'GET',
                         url: '../../clientNew/weixin/supportNetRedWeixinUserList?pageNo='+page+'&pageSize='+size + '&netRedUserId=' + GetQueryString("netRedUserId"),
-                        dataType: 'json',
                         success: function(data){
                         	 var obj = JSON.parse(data);
-                             if(obj){
+                             if(obj.response.length != 0){
                             	 debugger
-                             	if (obj.list.length > 0){
-                                 	that.usVue.supporter = that.usVue.supporter.concat(obj.list);
-                             	}else {
-                                     // 锁定
-                                     me.lock();
-                                     // 无数据
-                                     me.noData();
-                             		
-                             	}
+                                 that.usVue.supportUser = that.usVue.supportUser.concat(obj.response);
                              // 如果没有数据
                              }else{
+                            	  // 锁定
+                                 me.lock();
+                                 // 无数据
+                                 me.noData();
                              }
                             // 为了测试，延迟1秒加载
                             setTimeout(function(){
