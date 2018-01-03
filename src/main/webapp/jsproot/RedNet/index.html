@@ -101,7 +101,7 @@
                     <p>喵~~~这里什么也没发现</p>
                 </div>
                 <ul style="padding:0 10px">
-                    <li class="sm-item" v-for="item in searchArr">
+                    <li class="sm-item" v-for="item in searchArr" v-on:click="showInfo">
                         <div class="sm-num" v-text="item.id"></div>
                         <img class="sm-img" v-bind:src="item.img" alt="">
                         <div class="sm-con">

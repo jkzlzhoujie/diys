@@ -271,11 +271,10 @@ public class UserOptionController extends ClientApiBaseController {
             String phone = request.getParameter("phone");
             int num = (int)((Math.random()*9+1)*100000);
             long time = System.currentTimeMillis();
-            //String oldCode = (String) CacheHelper.getInstance().get(mobile);
             SmsMessageUtil util = new SmsMessageUtil();
             if(util.sendMessage(phone, String.valueOf(num), "")){
                 object.setCode(Constant.RESPONSE_SUCCESS_CODE);
-                CachedValueAndTime(phone, num+"|"+time, 5*60);
+                CachedValueAndTimeSecond(phone, String.valueOf(num), 5*60);
                 object.setDesc("发送成功");
             }else{
                 object.setCode(Constant.RESPONSE_DEFAULT_ERROR);

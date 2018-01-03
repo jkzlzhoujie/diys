@@ -87,6 +87,11 @@ public class SimpleController implements Serializable {
 		 CacheHelper.getInstance().set(60*60*time, key, value); 
 	}
     
+  //传入缓存过期的时间,time单位s
+    public void CachedValueAndTimeSecond(String key, Object value, int time) {
+		 CacheHelper.getInstance().set(time, key, value); 
+	}
+    
     //memcache 缓存清除
     public void CachedRemove(String key) {
     	CacheHelper.getInstance().remove(key); 

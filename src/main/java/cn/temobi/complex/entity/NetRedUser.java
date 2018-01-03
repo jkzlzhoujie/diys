@@ -12,46 +12,26 @@ public class NetRedUser extends IdEntity{
 	private String city;//城市
 	private String town;//区县
 	private String selfIntroduction;//自我介绍
-	private int liveExperience;//直播经验  1 是 2 否
-	private int fansAmount;//粉丝数  1 ： 0-500  2：500-1000 3：1000以上 4 其他
+	private Integer liveExperience;//直播经验  1 是 2 否
+	private Integer fansAmount;//粉丝数  1 ： 0-500  2：500-1000 3：1000以上 4 其他
 	private String webSit;//展示地址
 	private String firstImage;//首图
 	private String welcomeWord;//欢迎词
 	private String thanksWord;//感谢词
 	private String callTanksWord;//答谢感谢词
-	private int gameRounds;//第几轮
+	private Integer gameRounds;//第几轮
 	private Date createTime;//报名时间
-	private long weichatUserId;//公众号关注用户
+	private Long weichatUserId;//公众号关注用户
 	private String[] lablesArr;
 	private String[] imagesArr;
 	
 	private String createTimeStr;//报名时间
-	private int count;
-	private int callCount;
-	private int rank;
+	private Integer count;
+	private Integer callCount;
+	private Integer rank;
 	
 	
-	
-	
-    public int getCount() {
-		return count;
-	}
-	public int getRank() {
-		return rank;
-	}
-	public void setRank(int rank) {
-		this.rank = rank;
-	}
-	public void setCount(int count) {
-		this.count = count;
-	}
-	public void setCallCount(int callCount) {
-		this.callCount = callCount;
-	}
-	public long getCallCount() {
-		return callCount;
-	}
-    public String getName() {
+	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
@@ -87,16 +67,16 @@ public class NetRedUser extends IdEntity{
 	public void setSelfIntroduction(String selfIntroduction) {
 		this.selfIntroduction = selfIntroduction;
 	}
-	public int getLiveExperience() {
+	public Integer getLiveExperience() {
 		return liveExperience;
 	}
-	public void setLiveExperience(int liveExperience) {
+	public void setLiveExperience(Integer liveExperience) {
 		this.liveExperience = liveExperience;
 	}
-	public int getFansAmount() {
+	public Integer getFansAmount() {
 		return fansAmount;
 	}
-	public void setFansAmount(int fansAmount) {
+	public void setFansAmount(Integer fansAmount) {
 		this.fansAmount = fansAmount;
 	}
 	public String getWebSit() {
@@ -129,10 +109,10 @@ public class NetRedUser extends IdEntity{
 	public void setCallTanksWord(String callTanksWord) {
 		this.callTanksWord = callTanksWord;
 	}
-	public int getGameRounds() {
+	public Integer getGameRounds() {
 		return gameRounds;
 	}
-	public void setGameRounds(int gameRounds) {
+	public void setGameRounds(Integer gameRounds) {
 		this.gameRounds = gameRounds;
 	}
 	public Date getCreateTime() {
@@ -141,17 +121,11 @@ public class NetRedUser extends IdEntity{
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	public long getWeichatUserId() {
+	public Long getWeichatUserId() {
 		return weichatUserId;
 	}
-	public void setWeichatUserId(long weichatUserId) {
+	public void setWeichatUserId(Long weichatUserId) {
 		this.weichatUserId = weichatUserId;
-	}
-	public String getCreateTimeStr() {
-		return createTimeStr;
-	}
-	public void setCreateTimeStr(String createTimeStr) {
-		this.createTimeStr = createTimeStr;
 	}
 	public String[] getLablesArr() {
 		return lablesArr;
@@ -165,6 +139,35 @@ public class NetRedUser extends IdEntity{
 	public void setImagesArr(String[] imagesArr) {
 		this.imagesArr = imagesArr;
 	}
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
+	}
+	public Integer getCount() {
+		return count;
+	}
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+	public Integer getCallCount() {
+		return callCount;
+	}
+	public void setCallCount(Integer callCount) {
+		this.callCount = callCount;
+	}
+	public Integer getRank() {
+		return rank;
+	}
+	public void setRank(Integer rank) {
+		this.rank = rank;
+	}
+	
+	
+	
+	
+   
 	
 	
 }

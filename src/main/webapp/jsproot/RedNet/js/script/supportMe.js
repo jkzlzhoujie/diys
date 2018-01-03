@@ -48,7 +48,7 @@
                              url: '../../clientNew/weixin/supportMeUserCount',
                              data: {
                             	 //参数
-                            	 netRedUserId:GetQueryString("netRedUserId")
+//                            	 netRedUserId:GetQueryString("netRedUserId")
                              },
                              success: function (result) {
                             	 var obj = JSON.parse(result);
@@ -81,7 +81,7 @@
                     // 拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: '../../clientNew/weixin/supportMeUserList?pageNo='+page+'&pageSize='+size+'&netRedUserId=' + GetQueryString("netRedUserId"),
+                        url: '../../clientNew/weixin/supportMeUserList?pageNo='+page+'&pageSize='+size,
                         success: function(result){
                         	var obj = JSON.parse(result);
                           	 if(obj.response.length >0){
@@ -119,7 +119,7 @@
 //                     拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: '../../clientNew/weixin/supportMeUserList?pageNo='+pageTwo+'&pageSize='+size+'&netRedUserId=' + GetQueryString("netRedUserId"),
+                        url: '../../clientNew/weixin/supportMeUserList?pageNo='+pageTwo+'&pageSize='+size,
                         success: function(data){
                         	var obj = JSON.parse(data);
                          	 if(obj.response.length >0){

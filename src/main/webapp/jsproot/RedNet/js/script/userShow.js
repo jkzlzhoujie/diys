@@ -23,6 +23,7 @@
                 el: '#usApp',
                 data: {
                     user: {
+                    	id: 0,
                     	name: '喵红',
                     	lablesArr: [
                             {
@@ -56,7 +57,7 @@
                              url: '../../clientNew/weixin/getNetRedUser',
                              data: {
                             	 //参数
-                            	 netRedUserId:GetQueryString("netRedUserId")
+//                            	 netRedUserId:GetQueryString("netRedUserId")
                              },
                              success: function (result) {
                             	 var data = JSON.parse(result);
@@ -64,8 +65,11 @@
                             		 that.user.id = data.id;
                             		 that.user.name = data.name;
                             		 that.user.lablesArr = data.lablesArr;
-                            		 that.user.imagesArr = data.imagesArr;
-                            		 that.user.firstImage = data.firstImage;
+                            		 that.user.firstImage =  data.firstImage;
+//                            		 $.each(data.imagesArr,function (k,o) {
+//                        				o ="http://" + o;
+//                        			 });
+                        			 that.user.imagesArr = data.imagesArr;
                             	 }
                              }
                          });
@@ -75,9 +79,7 @@
                              url: '../../clientNew/weixin/netRedRankAndCount',
                              data: {
                             	 //参数
-                            	 netRedUserId:GetQueryString("netRedUserId"),
-                            	 pageNo:1,
-                            	 pageSize:10
+//                            	 netRedUserId:GetQueryString("netRedUserId"),
                              },
                              success: function (result) {
                             	 var data = JSON.parse(result);
@@ -89,25 +91,10 @@
                              }
                          });
                          
-                       /*//数据请求 获取支持网红的用户列表
-                         $.ajax({
-                             url: '../../clientNew/weixin/supportNetRedWeixinUserList',
-                             data: {
-                            	 netRedUserId:GetQueryString("netRedUserId"),
-                            	 pageNo:1,
-                            	 pageSize:10
-                             },
-                             success: function (result) {
-                            	 var data = JSON.parse(result);
-                            	 if(data != null){
-                            		 that.supportUser = data.response;
-                            	 }
-                             }
-                         });*/
-                         
                     },
                     perfectInfo: function () {
-                    	window.location.href = '../../jsproot/RedNet/userForm.html?netRedUserId=' + this.user.id;
+                    	window.location.href = '../../clientNew/weixin/userFormPage';
+//                    	window.location.href = '../../jsproot/RedNet/userForm.html?netRedUserId=' + this.user.id;
                     },
                     goCanvassing: function () {
                         console.log('goCanvassing');
@@ -128,7 +115,7 @@
                     // 拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: '../../clientNew/weixin/supportNetRedWeixinUserList?pageNo='+page+'&pageSize='+size + '&netRedUserId=' + GetQueryString("netRedUserId"),
+                        url: '../../clientNew/weixin/supportNetRedWeixinUserList?pageNo='+page+'&pageSize='+size,
                         success: function(data){
                         	 var obj = JSON.parse(data);
                              if(obj.response.length != 0){

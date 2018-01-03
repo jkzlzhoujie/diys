@@ -100,7 +100,7 @@
                         var weuiActionsheet = $('#weui_actionsheet');
                         hideActionSheet(weuiActionsheet, mask);
                         var params = {
-                        		voteUserId: GetQueryString("voteUserId"),
+                        		//voteUserId: GetQueryString("voteUserId"),
                         		netRedUserId: id,
                         		count: 1,
                         		type: 1
@@ -114,12 +114,12 @@
                         	url: 'userVote',
                         	data: params,
                         	success: function (result) {
-                        		debugger
                         		var obj = JSON.parse(result);
-	                           	 if(obj.code == "00000"){
-	                           		 alert("投票成功");
+                        		alert(obj.code);
+	                           	 if(obj.code == "success"){
+	                           		 alert(obj.desc);
 	                           	 }else{
-	                           		 alert("投票失败，"+obj.desc);
+	                           		 alert(obj.desc);
 	                           	 }
                         	}
                         })
@@ -236,10 +236,6 @@
                     	if (obj.list.length > 0){
                         	that.indVue.searchArr = that.indVue.searchArr.concat(obj.list);
                     	}else {
-	//                            // 锁定
-	//                            me.lock();
-	//                            // 无数据
-	//                            me.noData();
 	//                    		
                     	}
                     // 如果没有数据

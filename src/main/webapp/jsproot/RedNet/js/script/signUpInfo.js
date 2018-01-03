@@ -5,7 +5,6 @@
 	     var r = window.location.search.substr(1).match(reg);
 	     if(r!=null)return  unescape(r[2]); return null;
 	}
-	
 	var toast = new auiToast({});
     var indexVue = new Vue({
         el: '#indexApp',
@@ -19,12 +18,7 @@
                 city: '',
                 phone: '',
                 selfIntroduction: '',
-                weichatUserId:'',
-                gameRounds:1,
-                fansAmount:0,
-                gameRounds:1,
-                weichatUserId:GetQueryString("voteUserId"),
-	            count:0    
+              //  weichatUserId:GetQueryString("voteUserId")  
                 
             },
             oneLevelId: '510000',
@@ -56,7 +50,7 @@
             getCode: function () {
                 if(!(/^1(3|4|5|7|8)\d{9}$/.test(this.user.phone))){ 
                     toast.fail({
-                        title: '手机号码有误，请重填',
+                    	title: '手机号码格式有误，请确认',
                         duration: 2000
                     });
                     return false; 
@@ -100,17 +94,25 @@
                     });
                     return;
                 }
+                if(!(/^1(3|4|5|7|8)\d{9}$/.test(this.user.phone))){ 
+                    toast.fail({
+                        title: '手机号码格式有误，请确认',
+                        duration: 2000
+                    });
+                    return false; 
+                } 
                //数据请求
                 $.ajax({
                     url: 'saveNetRedUser',
                     data: {
-                   	 userStr: JSON.stringify( this.user),
+                   	    userStr: JSON.stringify( this.user),
                         code: this.code
                     },
                     success: function (result) {
                    	 var obj = JSON.parse(result);
                    	 if(obj.code == "00000"){
-                   		window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + obj.response.id;
+                   		 alert("报名成功");
+                   		 window.location.href = 'userShowPage';
                    	 }else{
                    		 alert("报名失败," +obj.desc);
                    	 }

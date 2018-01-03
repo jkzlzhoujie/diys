@@ -46,7 +46,7 @@
                              url: 'iSupportNetRedUserList',
                              data: {
                             	 //参数
-                            	 voteUserId:GetQueryString("voteUserId")
+//                            	 voteUserId:GetQueryString("voteUserId")
                              },
                              success: function (result) {
                             	 var obj = JSON.parse(result);

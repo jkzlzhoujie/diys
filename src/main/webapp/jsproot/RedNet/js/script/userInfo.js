@@ -39,7 +39,7 @@
                 		$.ajax({
                 			url:'../../clientNew/weixin/getUserInfo',
                 			data: {
-                				id:GetQueryString('voteUserId')
+                				//id:GetQueryString('voteUserId')
                 			},
                 			success: function(result) {
                 				var obj = JSON.parse(result);
@@ -52,10 +52,15 @@
                 		})
                 	},
 	                meowGirl: function () {
-	                	window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + this.user.id;
+	                	 window.location.href = 'userShowPage';
+//	                	window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + this.user.id;
 	                },
 	                supportMe: function () {
-	                	window.location.href = '../../jsproot/RedNet/supportMe.html?netRedUserId=' + this.user.id;
+	                	window.location.href = 'supportMePage';
+//	                	window.location.href = '../../jsproot/RedNet/supportMe.html?netRedUserId=' + this.user.id;
+	                },
+	                meSupport: function (){
+	                	window.location.href = 'meSupportPage';
 	                }
 	                
 	            },

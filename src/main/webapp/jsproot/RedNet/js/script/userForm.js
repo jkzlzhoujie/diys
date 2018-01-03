@@ -50,15 +50,20 @@
                              url: '../../clientNew/weixin/getNetRedUser',
                              data: {
                             	 //参数
-                            	 netRedUserId:GetQueryString("netRedUserId")
+                            	// netRedUserId:GetQueryString("netRedUserId")
                              },
                              success: function (result) {
-                            	 var obj = JSON.parse(result);
-                            	 if(obj != null){
-                            		 that.user = obj;
+                            	 var data = JSON.parse(result);
+                            	 if(data != null){
+                            		 that.user = data;
+                            		 that.user.firstImage = data.firstImage;
                             		 $.each(that.user.lablesArr, function(k,o) {
                             			 that.checkList[o] = true;
                             		 });
+//                            		 $.each(data.imagesArr,function (k,o) {
+//                         				o = "http://" + o;
+//                         			 });
+                         			 that.user.imagesArr = data.imagesArr;
                             	 }
                              }
                          });
@@ -98,7 +103,8 @@
                            	 var obj = JSON.parse(result);
                            	 if(obj.code == "00000"){
                            		 alert("修改成功");
-                           		window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + obj.response.id;
+                           		 window.location.href = 'userShowPage';
+//                           		window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + obj.response.id;
                            	 }else{
                            		 alert("修改失败," +obj.desc);
                            	 }

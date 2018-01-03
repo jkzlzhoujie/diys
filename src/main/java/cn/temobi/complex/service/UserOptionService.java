@@ -18,11 +18,15 @@ import cn.temobi.complex.entity.NetRedUserLabImg;
 import cn.temobi.complex.entity.VoteRecord;
 import cn.temobi.core.common.Page;
 import cn.temobi.core.service.ServiceBase;
+import cn.temobi.core.util.PropertiesHelper;
 
 @SuppressWarnings({ "serial", "unchecked" })
 @Transactional
 @Service("userOptionService")
 public class UserOptionService extends ServiceBase{
+	
+	String host = PropertiesHelper.getProperty("properties/server_information.properties", "host_url");
+	
 	@Resource(name = "userOptionDao")
 	private UserOptionDao dao;
 	@Resource(name = "weixinAccessRecordDao")
@@ -56,7 +60,7 @@ public class UserOptionService extends ServiceBase{
 	    List<String> imgList = new ArrayList<String>();
 	    List<String> labList = new ArrayList<String>();
 	    for(NetRedUserLabImg img:imags){
-	        imgList.add( img.getImage());
+	        imgList.add(img.getImage());
 	    }
 	    for(NetRedUserLabImg lab : lables){
 	        labList.add( lab.getLableName()); 
