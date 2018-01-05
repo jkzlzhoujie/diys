@@ -103,7 +103,7 @@
                            	 var obj = JSON.parse(result);
                            	 if(obj.code == "00000"){
                            		 alert("修改成功");
-                           		 window.location.href = 'userShowPage';
+                           		 window.location.href = 'userShowPage?netRedUserId='+'';
 //                           		window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + obj.response.id;
                            	 }else{
                            		 alert("修改失败," +obj.desc);

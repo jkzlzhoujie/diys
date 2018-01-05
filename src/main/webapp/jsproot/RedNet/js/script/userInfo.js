@@ -52,7 +52,7 @@
                 		})
                 	},
 	                meowGirl: function () {
-	                	 window.location.href = 'userShowPage';
+	                	 window.location.href = 'userShowPage?netRedUserId='+'';
 //	                	window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + this.user.id;
 	                },
 	                supportMe: function () {

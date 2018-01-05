@@ -13,7 +13,7 @@
             codeBtnTxt: '获取验证码',
             isClick: true,
             user: {
-            	id:0,
+            	id: 0,
                 name: '',
                 city: '',
                 phone: '',
@@ -25,7 +25,7 @@
             twoLevelId: '510100',
             threeLevelId: '510105',
             code: '',
-            showTPSuc: true,//报名成功弹窗
+            showTPSuc: false,//报名成功弹窗
         },
         methods: {
             getArea: function (t) {
@@ -111,8 +111,9 @@
                     success: function (result) {
                    	 var obj = JSON.parse(result);
                    	 if(obj.code == "00000"){
-                   		 alert("报名成功");
-                   		 window.location.href = 'userShowPage';
+//                   		 alert("报名成功");
+                   		that.showTPSuc = true;
+                   		window.location.href = 'userShowPage?netRedUserId='+'';
                    	 }else{
                    		 alert("报名失败," +obj.desc);
                    	 }

@@ -20,6 +20,7 @@ import cn.temobi.core.util.PropertiesHelper;
 import cn.temobi.core.util.StringUtil;
 
 import com.aliyuncs.http.HttpRequest;
+import com.aliyuncs.http.HttpResponse;
 import com.google.gson.Gson;
 import com.salim.cache.CacheHelper;
 import com.sms.SmsMessageUtil;
@@ -61,9 +62,10 @@ import sun.misc.BASE64Decoder;
 @RequestMapping({"/weixin"})
 public class WeixinApiController extends ClientApiBaseController{
 	
-  private final String indexPage = "RedNet/index";
+  private final String indexPage = "redirect:/clientNew/weixin/netRedGame";
   private final String contextPath = "/diys/jsproot/RedNet/";
   private final String WEIXIN_userId = "current_weixinUser";
+  private final String SHOW_nerRedUserId = "nerRedUserId=";
   
   @Resource(name="weixinUserInfoService")
   private WeixinUserInfoService weixinUserInfoService;
@@ -84,9 +86,10 @@ public class WeixinApiController extends ClientApiBaseController{
    * 落地报名
    * @param request
    * @return
+ * @throws IOException 
    */
   @RequestMapping(value={"/landRegistration"}, method={RequestMethod.GET, RequestMethod.POST})
-  public String landRegistration(HttpServletRequest request){
+  public void landRegistration(HttpServletRequest request,HttpServletResponse response) throws IOException{
     String weiChatCode = request.getParameter("code");
     String userId = request.getParameter("userId");
     WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
@@ -105,25 +108,20 @@ public class WeixinApiController extends ClientApiBaseController{
     Map<String, Object> map = new HashMap();
     map.put("weichatUserId", userId);
     List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
-    String voteUserId = "";
     String status = "0";
-//    if ((netRedUsers != null) && (netRedUsers.size() > 0))
-//    {
-//      voteUserId = ((NetRedUser)netRedUsers.get(0)).getId().toString();
-//      status = "1";
-//    }
-//    else
-//    {
-//      voteUserId = userId;
-//    }
+    if (netRedUsers != null && netRedUsers.size() > 0){
+      status = "1";
+    }
     if (StringUtil.isNotEmpty(userId)){
       log.error("userId=" + userId);
-    }
-    else{
+    }else{
       log.error("微信授权用户信息错误！");
-      return "redNet/index";
+//      return indexPage;
+      response.sendRedirect("/diys/jsproot/RedNet/index.html");
     }
-	return "redNet/signUpinfo";
+    response.setContentType("text/xml;charset=UTF-8");
+    response.sendRedirect("/diys/jsproot/RedNet/video.html?status=" + status);
+//    return "redNet/video";
 //    return "redirect:/clientNew/weixin/signUpinfo?voteUserId=" + voteUserId;
   }
   
@@ -181,41 +179,54 @@ public class WeixinApiController extends ClientApiBaseController{
   
 
   @RequestMapping(value={"/testIndexPage"}, method={RequestMethod.GET, RequestMethod.POST})
-  public String testIndexPage(HttpServletRequest request, String voteUserId,Model model){
+  public String testIndexPage(HttpServletRequest request){
+	  HttpSession  session =  request.getSession();
+	  session.setAttribute(WEIXIN_userId, "8");
+	  return "RedNet/video";
+  }
+  
+  @RequestMapping(value={"/testResponsePage"}, method={RequestMethod.GET, RequestMethod.POST})
+  public void testResponsePage(HttpServletRequest request,HttpServletResponse response){
+	  try {
+		  HttpSession  session =  request.getSession();
+		  session.setAttribute(WEIXIN_userId, "8");
+		  response.setContentType("text/xml;charset=UTF-8");
+		  response.sendRedirect("/diys/jsproot/RedNet/video.html?status=1");
+	} catch (IOException e) {
+		log.error(e.getMessage());
+		e.printStackTrace();
+	}
+  }
+  
+  @RequestMapping(value={"/testPage"}, method={RequestMethod.GET, RequestMethod.POST})
+  public String test(HttpServletRequest request){
 	  HttpSession  session =  request.getSession();
 	  session.setAttribute(WEIXIN_userId, "8");
 	  return "RedNet/index";
   }
   
-  @RequestMapping(value={"/testPage"}, method={RequestMethod.GET, RequestMethod.POST})
-  public String test(HttpServletRequest request, String voteUserId,Model model){
-	  HttpSession  session =  request.getSession();
-	  session.setAttribute(WEIXIN_userId, "8");
-	  return "RedNet/userInfo";
-  }
-  
-  @RequestMapping(value={"/userShowPage"}, method={RequestMethod.GET, RequestMethod.POST})
-  public String userShowPage(HttpServletRequest request, String voteUserId,Model model){
-    return "RedNet/userShow";
+  @RequestMapping(value={"/posterPage"}, method={RequestMethod.GET, RequestMethod.POST})
+  public String posterPage(){
+    return "RedNet/poster";
   }
   
   @RequestMapping(value={"/userFormPage"}, method={RequestMethod.GET, RequestMethod.POST})
-  public String userFormPage(HttpServletRequest request, String voteUserId,Model model){
+  public String userFormPage(){
     return "RedNet/userForm";
   }
 
   @RequestMapping(value={"/signUpinfoPage"}, method={RequestMethod.GET, RequestMethod.POST})
-  public String signUpinfoPage(HttpServletRequest request, String voteUserId,Model model){
+  public String signUpinfoPage(){
     return "RedNet/signUpinfo";
   }
   
   @RequestMapping(value={"/supportMePage"}, method={RequestMethod.GET, RequestMethod.POST})
-  public String supportMePage(HttpServletRequest request, String voteUserId,Model model){
+  public String supportMePage(){
     return "RedNet/supportMe";
   }
   
   @RequestMapping(value={"/meSupportPage"}, method={RequestMethod.GET, RequestMethod.POST})
-  public String meSupportPage(HttpServletRequest request, String voteUserId,Model model){
+  public String meSupportPage(){
     return "RedNet/meSupport";
   }
   
@@ -267,12 +278,7 @@ public class WeixinApiController extends ClientApiBaseController{
   @RequestMapping(value={"/saveNetRedUser"}, method={RequestMethod.GET, RequestMethod.POST})
   public ResponseObject saveNetRedUser(HttpServletRequest request, String userStr, String code ){//String weixinUserId
     ResponseObject object = initResponseObject();
-//    object.setDesc("成功");
-//    object.setResponse("");
-//    object.setCode("00000");
-//    return object;
-    try
-    {
+    try{
       Gson gson = new Gson();
       log.error("用户 userStr" + userStr);
       NetRedUser user = (NetRedUser)gson.fromJson(userStr, NetRedUser.class);
@@ -288,7 +294,6 @@ public class WeixinApiController extends ClientApiBaseController{
       }
         HttpSession  session =  request.getSession();
    	    String userid = (String) session.getAttribute(WEIXIN_userId);
-   	    log.error("用户缓存 userId" + userid);
    	    user.setWeichatUserId(Long.valueOf(userid));
 	    String oldCode = (String)CacheHelper.getInstance().get(user.getPhone());
 	    log.error("用户 phone" + user.getPhone() +  " code="+oldCode + " ,");
@@ -400,11 +405,42 @@ public class WeixinApiController extends ClientApiBaseController{
 	  	Map<String, Object> map = new HashMap();
 	    map.put("weichatUserId", getSeeionUserId(request));
 	    List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
-	    log.error("nerUser: = " + netRedUsers.size());
 	    if(netRedUsers != null && netRedUsers.size() >0 ){
 	    	netUserId = netRedUsers.get(0).getId();
 	    }
+	    log.error("netUserId: = " + netUserId);
 	    return netUserId;
+  }
+  
+  
+  @RequestMapping(value={"/userShowPage"}, method={RequestMethod.GET, RequestMethod.POST})
+  public String userShowPage(HttpServletRequest request,String netRedUserId){
+	 
+	  log.error("个人 show ：" + netRedUserId);
+	  if(StringUtil.isNotEmpty(netRedUserId)){
+		  log.error("个人 222 ：" + netRedUserId);
+		  CachedValueAndTime( SHOW_nerRedUserId + getSeeionUserId(request), netRedUserId, 2);
+	  }else{
+		  log.error("个人 333 ：" + netRedUserId);
+		  CachedValueAndTime( SHOW_nerRedUserId + getSeeionUserId(request), String.valueOf(getNetRedUserIdByWeixinUserId(request)), 2);
+	  }
+	  log.error("个人 show ：" + getNetRedUserIdByWeixinUserId(request));
+      return "RedNet/userShow";
+  }
+  
+  @RequestMapping(value={"/netRedUserShowPage"}, method={RequestMethod.GET, RequestMethod.POST})
+  public String netRedUserShowPage(HttpServletRequest request,String netRedUserId){
+	 
+	  log.error("网红 show ：" + netRedUserId);
+	  if(StringUtil.isNotEmpty(netRedUserId)){
+		  log.error("网红 222 ：" + netRedUserId);
+		  CachedValueAndTime( SHOW_nerRedUserId + getSeeionUserId(request), netRedUserId, 2);
+	  }else{
+		  log.error("网红 333 ：" + netRedUserId);
+		  CachedValueAndTime( SHOW_nerRedUserId + getSeeionUserId(request), String.valueOf(getNetRedUserIdByWeixinUserId(request)), 2);
+	  }
+	  log.error("网红show ：" + getNetRedUserIdByWeixinUserId(request));
+      return "RedNet/netRedUserShow";
   }
   
   /**
@@ -415,13 +451,18 @@ public class WeixinApiController extends ClientApiBaseController{
   @RequestMapping(value={"/getNetRedUser"}, method={RequestMethod.GET, RequestMethod.POST})
   public NetRedUser getNetRedUser(HttpServletRequest request){//String netRedUserId
     NetRedUser netRedUser = null;
-    log.error("网红详情页 + = " + getNetRedUserIdByWeixinUserId(request));
-    netRedUser = userOptionService.getById( getNetRedUserIdByWeixinUserId(request));
-    netRedUser.setFirstImage(netRedUser.getFirstImage());
-    log.error("输出");
-    Gson gson = new Gson();
-    log.error("nerUser: = " + gson.toJson(netRedUser));
-    return netRedUser;
+    log.error("网红详情 ：" + (String)CacheHelper.getInstance().get(SHOW_nerRedUserId + getSeeionUserId(request)));
+    String netRedUserId = (String)CacheHelper.getInstance().get(SHOW_nerRedUserId + getSeeionUserId(request));
+    log.error("网红详情页 + = " + netRedUserId);
+    if(StringUtil.isNotEmpty(netRedUserId)){
+    	netRedUser = userOptionService.getById( Long.valueOf(netRedUserId));
+    	netRedUser.setFirstImage(netRedUser.getFirstImage());
+    	Gson gson = new Gson();
+    	log.error("网红 nerUser: = " + gson.toJson(netRedUser));
+    	return netRedUser;
+    }else{
+    	return null;
+    }
   }
   
   /**
@@ -530,7 +571,7 @@ public class WeixinApiController extends ClientApiBaseController{
       param.put("limit", Integer.valueOf(page.getPageSize()));
       param.put("offset", Integer.valueOf(page.getOffset()));
       param.put("netRedUserId", getNetRedUserIdByWeixinUserId(request));
-      
+      log.error("supportMe userId" + getNetRedUserIdByWeixinUserId(request));
       Page<VoteRecord> pageResult = new Page();
       pageResult = weixinVoteRecordService.getSupportMeVoteRecordPage(page, param);
       List<VoteRecord> voteRecordList = pageResult.getResult();
@@ -605,7 +646,7 @@ public class WeixinApiController extends ClientApiBaseController{
       param.put("limit", Integer.valueOf(page.getPageSize()));
       param.put("offset", Integer.valueOf(page.getOffset()));
       param.put("voteUserId", getSeeionUserId(request));
-      
+      log.error("I support :" + getSeeionUserId(request));
       Page<VoteRecord> pageResult = new Page();
       pageResult = weixinVoteRecordService.getISupportNetRedVoteRecordPage(page, param);
       List<VoteRecord> voteRecordList = pageResult.getResult();
@@ -902,8 +943,7 @@ public class WeixinApiController extends ClientApiBaseController{
     accessRecordService.save(record);
     if (StringUtil.isNotEmpty(userId)){
       log.error("userId=" + userId);
-    }else
-    {
+    }else{
       log.error("微信授权用户信息错误！");
       return indexPage;
     }
@@ -949,15 +989,9 @@ public class WeixinApiController extends ClientApiBaseController{
     searchMap.put("limit", Integer.valueOf(page.getPageSize()));
     searchMap.put("offset", Integer.valueOf(page.getOffset()));
     List<NetRedUser> list = new ArrayList();
+    
     Page<NetRedUser> result = userOptionService.findByPage(page, searchMap);
     list = result.getResult();
-    if (StringUtil.isNotEmpty(list)) {
-      map.put("list", list);
-      map.put("pageNo", Integer.valueOf(page.getPageNo()));
-      map.put("pageSize", Integer.valueOf(page.getPageSize()));
-      map.put("totalItems", Long.valueOf(page.getTotalItems()));
-      map.put("totalPages", Long.valueOf(page.getTotalPages()));
-    }
     for (NetRedUser user : list){
       Map<String, Object> param = new HashMap();
       param.put("netRedUserId", user.getId());

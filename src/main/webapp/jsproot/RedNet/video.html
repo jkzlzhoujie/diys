@@ -26,15 +26,17 @@
 		     var r = window.location.search.substr(1).match(reg);
 		     if(r!=null)return  unescape(r[2]); return null;
 		}
+		
         ;(function () {
-        	var id = GetQueryString('voteUserId');
         	var status = GetQueryString('status');
+        	 if (status == 1){
+	            	$('#bmBtn').html('我的报名信息')
+	         }
             $('#bmBtn').on('click', function () {
-	            if (status == '1'){
-	            	$(this).html('你已报名')
-	            	window.location.href = '../../jsproot/RedNet/userShow.html?netRedUserId=' + id;
+	            if (status == 1){
+	            	 window.location.href = '../../clientNew/weixin/userShowPage?netRedUserId='+'';
 	            } else {
-	            	window.location.href = '../../jsproot/RedNet/poster.html?voteUserId=' + id;
+	             	window.location.href = 'posterPage';
 	            }
             });
         })(Zepto)

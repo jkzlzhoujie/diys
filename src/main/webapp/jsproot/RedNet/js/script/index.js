@@ -95,7 +95,14 @@
                         }
                         this.type = n;
                     },
+                    
+                    showInfo: function (id) {
+                    	 //查看个人网红信息
+                    	 window.location.href = 'netRedUserShowPage?netRedUserId='+id;
+                    },
+                    
                     sendInfo: function (id) {//支持投票
+                    	var that = this;
                         var mask = $('#mask');
                         var weuiActionsheet = $('#weui_actionsheet');
                         hideActionSheet(weuiActionsheet, mask);
@@ -115,9 +122,14 @@
                         	data: params,
                         	success: function (result) {
                         		var obj = JSON.parse(result);
-                        		alert(obj.code);
 	                           	 if(obj.code == "success"){
-	                           		 alert(obj.desc);
+	                           		if (this.type == 2) {
+	                           			that.showTPCallSuc = true;
+	                           		}else{
+	                           			that.showTPSuc = true;
+	                           		}
+	                           	 }else if(obj.code == "moreFive"){
+	                           		that.showTPOverSuc = true;
 	                           	 }else{
 	                           		 alert(obj.desc);
 	                           	 }
@@ -167,7 +179,7 @@
                         this.showTPCallSuc = false;
                     },
                     wybm: function () {//我要报名
-                        window.location.href = '';//跳转到报名页
+                        window.location.href = 'signUpinfoPage';//跳转到报名页
                     }
                 },
                 created: function () {
@@ -224,9 +236,10 @@
         	serPage++;
             var that = this;
             var searcheContent = '';
-          if(that.indVue.searchVal ){
-          	searcheContent = that.indVue.searchVal;
-          }
+            if(that.indVue.searchVal ){
+          	  searcheContent = that.indVue.searchVal;
+            }
+            alert(searcheContent);
             $.ajax({
                 type: 'GET',
                 url: 'findNetRedListPage?pageNo='+serPage+'&pageSize='+size+'&content=' + searcheContent,

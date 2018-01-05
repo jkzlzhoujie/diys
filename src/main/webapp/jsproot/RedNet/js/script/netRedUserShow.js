@@ -64,15 +64,14 @@
                             		 alert("登录超时，请退出重新进入！");
                             	 }else{
                             		 var data = JSON.parse(result);
-                                	 if(data != null){
-                                		 that.user.id = data.id;
-                                		 that.user.name = data.name;
-                                		 that.user.lablesArr = data.lablesArr;
-                                		 that.user.firstImage =  data.firstImage;
-                            			 that.user.imagesArr = data.imagesArr;
-                                	 }
+	                            	 if(data != null){
+	                            		 that.user.id = data.id;
+	                            		 that.user.name = data.name;
+	                            		 that.user.lablesArr = data.lablesArr;
+	                            		 that.user.firstImage =  data.firstImage;
+	                        			 that.user.imagesArr = data.imagesArr;
+	                            	 }
                             	 }
-                            	 
                              }
                          });
                          
