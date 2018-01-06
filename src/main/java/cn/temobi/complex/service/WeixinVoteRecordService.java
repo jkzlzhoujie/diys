@@ -95,7 +95,7 @@ public class WeixinVoteRecordService extends ServiceBase{
 			param.put("createTime", "yes");
 			List<VoteRecord> voteRecords = WeixinVoteRecordDao.findByMap(param);
 			if(voteRecords !=null && voteRecords.size()>=5){
-				object.setCode("fail");
+				object.setCode("moreFive");
 	    		object.setDesc("亲！你今天的免费票已用完，可以继续为他打CALL助力哦！");
 	    		return object;
 			}

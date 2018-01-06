@@ -75,7 +75,7 @@
                              }
                          });
                          
-                       //数据请求 获取用户等级
+//                       //数据请求 获取用户等级
                          $.ajax({
                              url: '../../clientNew/weixin/netRedRankAndCount',
                              data: {

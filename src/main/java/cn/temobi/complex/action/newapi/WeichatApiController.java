@@ -92,20 +92,6 @@ public class WeichatApiController extends ClientApiBaseController{
 			weixinUserInfo = getWeixinUserInfo(weiChatCode,weixinUserInfo);
 			userId = weixinUserInfo.getId().toString();
 		}
-		
-//		else{
-//			Object sessionUser = request.getSession().getAttribute(Constant.WEICHAT_NETRED_USER);
-//			if(sessionUser != null){
-//				userId = sessionUser.toString();
-//			}else{
-//				if(weixinUserInfo != null && weixinUserInfo.getId() != null ){
-//					userId = weixinUserInfo.getId().toString();
-//				}else{
-//					userId =  request.getParameter("userId");
-//				}
-//			}
-//		}
-		
     	if(StringUtil.isNotEmpty(userId)){
     		log.error("userId=" + userId);
     		model.addAttribute("userId",userId);
@@ -155,74 +141,6 @@ public class WeichatApiController extends ClientApiBaseController{
 
 	
 	
-	/**
-	 * 充值支付
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping(value="/payRecharge", method = {RequestMethod.GET, RequestMethod.POST })
-	public String payRecharge(HttpServletRequest request,Model model) {
-		WeixinClientUtil weixinClientUtil = new WeixinClientUtil();
-		String requestUrl = request.getRequestURL().toString(); 
-    	String access_token = "";
-    	String jsapi_ticket = "";
-    	access_token = getTokenFromDB();
-    	jsapi_ticket = getJsapiTicketFromDB();
-		Map<String, Object>  configMap = weixinClientUtil.getWxConfig(request,requestUrl,access_token,jsapi_ticket);
-		if(configMap != null && configMap.size() > 0){
-			if(configMap.get("new_access_token") != null){
-				updateTokenToDB(configMap.get("new_access_token").toString());
-			}
-			if(configMap.get("new_jsapi_ticket") != null){
-				updateJsapiTicketDB(configMap.get("new_jsapi_ticket").toString());
-			}
-			model.addAttribute("appId",configMap.get("appId"));
-			model.addAttribute("configTimestamp",configMap.get("timestamp"));
-			model.addAttribute("configNonceStr",configMap.get("nonceStr"));
-			model.addAttribute("signature",configMap.get("signature"));
-			model.addAttribute("userId",request.getParameter("userId"));
-		}
-		return "weichat/index/rechargePrice";
-	}
-	
-	
-	/**
-	 * 获取付款充值h5 付款参数
-	 * @param request
-	 * @param model
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/getRechargePayParam", method = {RequestMethod.GET,RequestMethod.POST})
-	public @ResponseBody List<WxSign>  getRechargePayParam(HttpServletRequest request) {
-		List<WxSign> wxSignList = new ArrayList<WxSign>();
-		WxSign wxSign = new WxSign();
-		Map<String, Object> returnMap = new HashMap<String, Object>();
-		ResponseObject object = initResponseObject();
-		
-		object = weixinClientApiService.reCharge(request, object);
-		
-		returnMap = (Map<String, Object>) object.getResponse();
-		
-		//封装h5页面调用参数
-		Map<String ,Object > signMap=new HashMap<String ,Object >();
-        String nonceStr = UUID.randomUUID().toString().substring(0, 15);
-        long timestamp = System.currentTimeMillis() / 1000;
-        String prepayid = returnMap.get("prepayid").toString();
-        signMap.put("appId", WeixinConfigure.APPID);
-        signMap.put("timeStamp", timestamp+"");
-        signMap.put("package", "prepay_id="+prepayid);
-        signMap.put("signType", "MD5");
-        signMap.put("nonceStr", nonceStr);
-        String paySign = Signature.getSign(signMap);
-        wxSign.setPaytimestamp(timestamp+"");
-        wxSign.setPaynonceStr( nonceStr);
-        wxSign.setPaySign(paySign );
-        wxSign.setPaypackage("prepay_id="+prepayid);
-        wxSignList.add(wxSign);
-	    return wxSignList;
-	}
 	
 	
 	

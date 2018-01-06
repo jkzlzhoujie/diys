@@ -5,7 +5,12 @@
 	     var r = window.location.search.substr(1).match(reg);
 	     if(r!=null)return  unescape(r[2]); return null;
 	}
-	
+    // 页数
+    var page = 0;
+    var pageTwo = 0;
+    // 每页展示5个
+    var size = 5;
+    
 	var imgs = {
         hImg: ['../../jsproot/RedNet/images/h-click.png','../../jsproot/RedNet/images/h.png'],
         xImg: ['../../jsproot/RedNet/images/x.png','../../jsproot/RedNet/images/x-click.png']
@@ -42,21 +47,21 @@
                     getData: function () {
                     	var that = this;
                         //数据请求
-                         $.ajax({
-                             url: 'iSupportNetRedUserList',
-                             data: {
-                            	 //参数
-//                            	 voteUserId:GetQueryString("voteUserId")
-                             },
-                             success: function (result) {
-                            	 var obj = JSON.parse(result);
-                            	 if(obj.code == "00000"){
-                            		 that.supporter = obj.response;
-                            	 }else{
-                            		 that.supporter = [];
-                            	 }
-                             }
-                         });
+//                         $.ajax({
+//                             url: 'iSupportNetRedUserList?pageNo='+page+'&pageSize='+size,
+//                             data: {
+//                            	 //参数
+////                            	 voteUserId:GetQueryString("voteUserId")
+//                             },
+//                             success: function (result) {
+//                            	 var obj = JSON.parse(result);
+//                            	 if(obj.code == "00000"){
+//                            		 that.supporter = obj.response;
+//                            	 }else{
+//                            		 that.supporter = [];
+//                            	 }
+//                             }
+//                         });
                     },
                     sendFab: function () {
                         //数据请求
@@ -95,17 +100,6 @@
                         var mask = $('#mask');
                         var weuiActionsheet = $('#weui_actionsheet');
                         hideActionSheet(weuiActionsheet, mask);
-                        //支持投票
-                        //数据请求
-                        // $.ajax({
-                        //     url: '',
-                        //     data: {
-                        //参数
-                        //     },
-                        //     success: function () {
-        
-                        //     }
-                        // });
                     },
                     add: function () {
                         this.number += 1;
@@ -123,22 +117,47 @@
             });
         },
         initScroll: function () {//上拉加载分页
-            var me = this;
-            me.scroll = new auiScroll({
-                listen: true,
-                distance: 20
-            },function(ret){
-                //数据请求
-                // $.ajax({
-                //     url: '',
-                //     data: {
-                //参数
-                //     },
-                //     success: function () {
-
-                //     }
-                // });
-               console.log(ret)
+            var that = this;
+            $('.sm-body').dropload({
+                scrollArea : $('.call-list'),
+                loadDownFn : function(me){
+                    page++;
+                    // 拼接HTML
+                    $.ajax({
+                        type: 'GET',
+                        url: 'iSupportNetRedUserList?pageNo='+page+'&pageSize='+size,
+                        data: {
+                          	 //参数
+//                          	 voteUserId:GetQueryString("voteUserId")
+                       },
+                        success: function(result){
+                        	var obj = JSON.parse(result);
+                          	 if(obj.response.length >0){
+                           		that.smVue.supporter = that.smVue.supporter.concat(obj.response);
+                            }else{
+                            	$('.dropload-load').html('暂无数据');
+                            	 // 锁定
+                              me.lock();
+                              // 无数据
+                              me.noData();
+                            }
+                            // 为了测试，延迟1秒加载
+                            setTimeout(function(){
+                                // 插入数据到页面，放到最后面
+                                // 每次数据插入，必须重置
+                                me.resetload();
+                            },1000);
+                        },
+                        error: function(xhr, type){
+                        	 // 锁定
+                            me.lock();
+                            // 无数据
+                            me.noData();
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                        }
+                    });
+                }
             });
         }
     };

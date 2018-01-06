@@ -57,7 +57,7 @@
         // 如果加载下方，事先在下方插入DOM
         if(me.opts.loadDownFn != ''){
             me.$element.append('<div class="'+me.opts.domDown.domClass+'">'+me.opts.domDown.domRefresh+'</div>');
-            me.$domDown = $('.'+me.opts.domDown.domClass);
+            me.$domDown = me.opts.scrollArea.find('.'+me.opts.domDown.domClass);
         }
 
         // 计算提前加载距离

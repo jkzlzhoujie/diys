@@ -46,14 +46,8 @@ public class WeixinClientApiService extends ServiceBase{
 	 * @param object
 	 * @return
 	 */
-	public ResponseObject reCharge(HttpServletRequest request,ResponseObject object) {
-	    	String priceStr = request.getParameter("price");
-	    	String userId = request.getParameter("userId");
-	    	if(StringUtil.isEmpty(priceStr)  || StringUtil.isEmpty(userId)){
-	    		return object;
-	    	}
+	public ResponseObject reCharge(HttpServletRequest request,ResponseObject object,double price ,String userId) {
 	    	int payType = Integer.valueOf(1);
-	    	double price =  CommonUtil.nvlDouble(priceStr);
 	    	WeixinUserInfo weixinUserInfo = weixinUserInfoDao.getById(Long.valueOf(userId));
 	    	if(weixinUserInfo == null){
 	    		log.error("用户有误！");

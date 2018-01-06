@@ -7,61 +7,67 @@
     <title>我支持的</title>
     <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/weui.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/dropload.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
+    <style>
+    	.sm-body{
+    		position:absolute;
+    		top: 0;
+    		left: 0;
+    		right: 0;
+    		bottom: 0;
+    	}
+    </style>
 </head>
 <body style="background:#fbf0ef">
-    <section class="aui-refresh-content">
-        <div class="aui-content">
-            <div id="smApp" class="sm-body">
-                <div class="sm-item" v-for="item in supporter">
-                    <div class="sm-num" v-text="item.netRedUserId"></div>
-                    <img class="sm-img" v-bind:src="item.firstImage" alt="">
-                    <div class="sm-con">
-                        <div class="sm-name" v-text="item.netRedUserName"></div>
-                        <div class="sm-count"><span class="sm-count-num" v-text="item.count"></span><span class="sm-piao">票</span></div>
-                        <div class="sm-btn" v-on:click="sendFab(item.netRedUserId)">投票</div>
-                    </div>
-                </div>
+     <div id="smApp" class="sm-body">
+         <div class="sm-item" v-for="item in supporter">
+             <div class="sm-num" v-text="item.netRedUserId"></div>
+             <img class="sm-img" v-bind:src="item.firstImage" alt="">
+             <div class="sm-con">
+                 <div class="sm-name" v-text="item.netRedUserName"></div>
+                 <div class="sm-count"><span class="sm-count-num" v-text="item.count"></span><span class="sm-piao">票</span></div>
+                 <div class="sm-btn" v-on:click="sendFab(item.netRedUserId)">投票</div>
+             </div>
+         </div>
 
 
-                <div id="actionSheet_wrap">
-                    <div class="weui_mask_transition" id="mask"></div>
-                    <div class="weui_actionsheet" id="weui_actionsheet">
-                        <div class="weui_actionsheet_cell">支持小朵朵网红 <i id="actionsheet_cancel"></i></div>
-                        <div class="weui_actionsheet_menu">
-                            <div class="i-lw-list">
-                                <div class="i-lw-h" v-on:click="selLw(1)">
-                                    <img alt="" v-bind:src="hImg">
-                                    <div class="i-pop-tit-one">免费鲜花</div>
-                                    <div class="i-pop-tit-two">每天1票</div>
-                                </div>
-                                <div class="i-lw-x" v-on:click="selLw(2)">
-                                    <img v-bind:src="xImg" alt="">
-                                    <div class="i-pop-tit-one">打CALL助力+10</div>
-                                    <div class="i-pop-tit-two">数量不限</div>
-                                </div>
-                            </div>
-                            <div class="i-num" v-if="type == 2">
-                                <p class="i-num-tit">输入或者修改礼物数量</p>
-                                <div class="i-num-num">
-                                    <div class="num-btn i-j-num" v-on:click="reduce">-</div>
-                                    <input type="number" class="i-num-val" v-model="number">
-                                    <div class="num-btn i-p-num" v-on:click="add">+</div>
-                                </div>
-                            </div>
-                            <div class="ind-btn" style="padding:10px 30px 20px 30px">
-                                <div class="aui-btn aui-btn-block" v-on:click="sendInfo">支持投票</div>
-                            </div>
-                            <p class="i-pop-b">本活动最终解释权归红U联盟组委会所有</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+         <div id="actionSheet_wrap">
+             <div class="weui_mask_transition" id="mask"></div>
+             <div class="weui_actionsheet" id="weui_actionsheet">
+                 <div class="weui_actionsheet_cell">支持小朵朵网红 <i id="actionsheet_cancel"></i></div>
+                 <div class="weui_actionsheet_menu">
+                     <div class="i-lw-list">
+                         <div class="i-lw-h" v-on:click="selLw(1)">
+                             <img alt="" v-bind:src="hImg">
+                             <div class="i-pop-tit-one">免费鲜花</div>
+                             <div class="i-pop-tit-two">每天1票</div>
+                         </div>
+                         <div class="i-lw-x" v-on:click="selLw(2)">
+                             <img v-bind:src="xImg" alt="">
+                             <div class="i-pop-tit-one">打CALL助力+10</div>
+                             <div class="i-pop-tit-two">数量不限</div>
+                         </div>
+                     </div>
+                     <div class="i-num" v-if="type == 2">
+                         <p class="i-num-tit">输入或者修改礼物数量</p>
+                         <div class="i-num-num">
+                             <div class="num-btn i-j-num" v-on:click="reduce">-</div>
+                             <input type="number" class="i-num-val" v-model="number">
+                             <div class="num-btn i-p-num" v-on:click="add">+</div>
+                         </div>
+                     </div>
+                     <div class="ind-btn" style="padding:10px 30px 20px 30px">
+                         <div class="aui-btn aui-btn-block" v-on:click="sendInfo">支持投票</div>
+                     </div>
+                     <p class="i-pop-b">本活动最终解释权归红U联盟组委会所有</p>
+                 </div>
+             </div>
+         </div>
+     </div>
     <script src="../../jsproot/RedNet/js/plugins/vue.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
-    <script src="../../jsproot/RedNet/js/plugins/aui-scroll.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/dropload.min.js"></script>
     <script src="../../jsproot/RedNet/js/script/meSupport.js"></script>
 </body>
 </html>

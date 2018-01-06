@@ -146,6 +146,52 @@
     <script src="../../jsproot/RedNet/js/plugins/vue.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/aui-popup.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/dropload.min.js"></script>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>  
+    <script type="text/javascript">  
+	    //参数是后台传过来的，签名加密，随机数，时间戳等全部后台处理好  
+	    function onBridgeReady(p, uId){  
+	    	var price = p;
+	    	var userId = uId;
+           $.post('/sshc/client/weiChatAppointment/getRechargePayParam?price='+price+'&userId=' + userId,function(data){
+				if(data != null){
+		            
+		             var appId =  '';  
+		             var timeStamp = '';  
+		             var nonceStr =  '';   
+		             var paypackage = '';  
+		             $.each(eval(data), function(i, item) {  
+		             	  appId =  item.appId;  
+			              timeStamp = item.paytimestamp;
+			              nonceStr = item.paynonceStr;  
+			              paypackage = item.paypackage;  
+			              sign = item.paySign; 
+                    }); 
+					 
+                     wx.ready(function(){  
+			            wx.chooseWXPay({  
+				                timestamp: timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符  
+				                nonceStr: nonceStr, // 支付签名随机串，不长于 32 位  
+				                package: paypackage, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）  
+				                signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'  
+				                paySign: sign, // 支付签名  
+				                success: function (res) {  
+				                    // 支付成功后的回调函数  
+				                    //使用以下方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。  
+				                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {       
+		                                  alert("支付成功");                
+		                             }else{  
+		                                  alert("支付失败");  
+		                                  alert(res.err_msg);
+		                             }  
+				                }  
+				            });  
+            		   });  
+            		   
+				}
+			});
+	    }
+	</script>  
+	
     <script src="../../jsproot/RedNet/js/script/index.js"></script>
 </body>
 </html>

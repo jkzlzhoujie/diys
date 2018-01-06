@@ -21,16 +21,7 @@
                     	firstImage: '../../jsproot/images/null.png',
                         name: '张三',
                         city: '厦门',
-                        lables: [{
-                            value: '颜值',
-                            color: 'blue'
-                        }, {
-                            value: '喵女郎',
-                            color: 'red'
-                        }, {
-                            value: '才艺',
-                            color: 'green'
-                        }]
+                        lables: []
                     }
                 },
                 methods: {

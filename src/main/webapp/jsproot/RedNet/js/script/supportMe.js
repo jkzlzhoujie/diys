@@ -26,18 +26,27 @@
                 el: '#msApp',
                 data: {
                     chackOne: true,
-                    callNum: 123,
-                    pNum: 454,
+                    callNum: 0,
+                    pNum: 0,
+                    callNumPer: 0,
+                    pNumPer: 0,
                     callArr: [],
                     pArr: []
                 },
                 methods: {
-                    changeTab: function () {
+                    changeTab: function (n) {
                         this.chackOne = !this.chackOne;
+                        if (n == 1) {
+                            $('.call-list').show();
+                            $('.piao-list').hide();
+                        } else {
+                            $('.call-list').hide();
+                            $('.piao-list').show();
+                        }
                         if (!me.isOne) {
-                            setTimeout(function () {
+//                            setTimeout(function () {
                                 me.loadPiaoList();
-                            }, 300);
+//                            }, 500);
                         }
                         me.isOne = true;
                     },
@@ -81,7 +90,7 @@
                     // 拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: '../../clientNew/weixin/supportMeUserList?pageNo='+page+'&pageSize='+size,
+                        url: '../../clientNew/weixin/supportMeUserList?type=2' + '&pageNo='+page+'&pageSize='+size,
                         success: function(result){
                         	var obj = JSON.parse(result);
                           	 if(obj.response.length >0){
@@ -90,7 +99,7 @@
                             	 // 锁定
                               me.lock();
                               // 无数据
-                             me.noData();
+                            me.noData();
                             }
                             // 为了测试，延迟1秒加载
                             setTimeout(function(){
@@ -111,15 +120,17 @@
                 }
             });
         },
-        loadPiaoList: function () { var that = this;
+        loadPiaoList: function () { 
+        	var that = this;
             $('.piao-list').dropload({
                 scrollArea : $('.piao-list'),
                 loadDownFn : function(me){
+                	debugger
                 	pageTwo++;
 //                     拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: '../../clientNew/weixin/supportMeUserList?pageNo='+pageTwo+'&pageSize='+size,
+                        url: '../../clientNew/weixin/supportMeUserList?type=1' + '&pageNo='+page+'&pageSize='+size,
                         success: function(data){
                         	var obj = JSON.parse(data);
                          	 if(obj.response.length >0){

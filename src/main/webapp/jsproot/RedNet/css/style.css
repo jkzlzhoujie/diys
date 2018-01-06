@@ -145,6 +145,26 @@ input.code-inp{
     color: #bdd757;
     border: 1px solid #bdd757;
 }
+.yellow{
+    color: #ff8040;
+    border: 1px solid #ff8040;
+}
+.blink{
+    color: #ffaad5;
+    border: 1px solid #ffaad5;
+}
+.ls{
+    color: #be77ff;
+    border: 1px solid #be77ff;
+}
+.ygl{
+    color: #a8ff44;
+    border: 1px solid #a8ff44;
+}
+.gh{
+    color: #977c00;
+    border: 1px solid #977c00;
+}
 .u-check{
     width: 49%;
     text-align: center;
@@ -321,6 +341,7 @@ input.code-inp{
     top: 2.2rem;
     bottom: 0;
     left: 0;
+    -webkit-overflow-scrolling : touch;
 }
 .ms-con-item {
     position: absolute;
@@ -331,6 +352,7 @@ input.code-inp{
     overflow-x: hidden;
     overflow-y: auto; 
     z-index: 10;
+    -webkit-overflow-scrolling : touch;
 }
 #msApp{
     position: absolute;
@@ -364,6 +386,7 @@ input.code-inp{
 }
 .us-top{
     height: 13rem;
+    overflow:hidden;
 }
 .us-user-info{
     background: #fff;
@@ -380,14 +403,14 @@ input.code-inp{
     margin-bottom: 28px;
 }
 .us-tz-item{
-    width: 38px;
-    height: 15px;
-    line-height: 13px;
+height: 15px;
+    line-height: 11px;
     text-align: center;
     font-size: 10px;
     display: inline-block;
     border-radius: 4px;
     margin-right: 10px;
+    padding: 2px 5px;
 }
 .us-num-list{
     padding: 0px 2px 20px 2px;
@@ -401,6 +424,7 @@ input.code-inp{
     margin: 0 2.9%;
     position: relative;
     color: #f6889c;
+    vertical-align: middle;
 }
 .us-num-item div:first-child{
     background: #f8879c;
@@ -1063,6 +1087,7 @@ overflow: auto;
     bottom: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 .i-s-null{
     font-size: 17px;
@@ -1154,6 +1179,8 @@ overflow: auto;
 .p-btn{
 }
 .zy_media,.zy_media video{
+	width: 100%;
+	height: 100%;
     position: absolute;
     top: 0;
     left: 0;

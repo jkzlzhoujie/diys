@@ -1,4 +1,18 @@
 ;(function ($) {
+	$.ajax({
+		url: 'getPayparam',
+		data: {},
+		success: function () {
+	        wx.config({
+	            debug: false,
+	            appId: 'appId',
+	            timestamp: 'configTimestamp',	// 必填，生成签名的时间戳
+	            nonceStr: 'configNonceStr',	// 必填，生成签名的随机串
+	            signature: 'signature',// 必填，签名，见附录1
+	            jsApiList: ['chooseWXPay']
+	        });
+		}
+	});
 	
 	function GetQueryString(name)
 	{
@@ -113,6 +127,8 @@
                         		type: 1
                         }
                         if (this.type == 2) {
+                        	debugger
+                        	onBridgeReady('p', 'uid');
                         	alert('暂不支持');
                         	return;
                         }
