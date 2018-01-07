@@ -24,10 +24,11 @@ import com.aliyuncs.http.HttpResponse;
 import com.google.gson.Gson;
 import com.salim.cache.CacheHelper;
 import com.sms.SmsMessageUtil;
+import com.tencent.common.NetRedConfigure;
 import com.tencent.common.Signature;
 import com.weichat.common.CommonUtil;
+import com.weichat.common.NetRedWeixinClientUtil;
 import com.weichat.common.Token;
-import com.weichat.common.WeixinClientUtil;
 import com.weichat.common.WeixinUser;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -193,7 +194,7 @@ public class WeixinApiController extends ClientApiBaseController{
   public String testIndexPage(HttpServletRequest request){
 	  HttpSession  session =  request.getSession();
 	  session.setAttribute(WEIXIN_userId, "8");
-	  return "RedNet/index";
+	  return "RedNet/userInfo";
   }
   
   @RequestMapping(value={"/testResponsePage"}, method={RequestMethod.GET, RequestMethod.POST})
@@ -290,7 +291,6 @@ public class WeixinApiController extends ClientApiBaseController{
   public ResponseObject saveNetRedUser(HttpServletRequest request, String userStr, String code ){//String weixinUserId
     ResponseObject object = initResponseObject();
     try{
-    	 
 	      Gson gson = new Gson();
 	      log.error("用户 userStr" + userStr);
 	      NetRedUser user = (NetRedUser)gson.fromJson(userStr, NetRedUser.class);
@@ -304,16 +304,17 @@ public class WeixinApiController extends ClientApiBaseController{
 	          user.setTown(address[2]);
 	        }
 	      }
-	      
+	     
 	    HttpSession  session =  request.getSession();
 	    String userid = (String) session.getAttribute(WEIXIN_userId);
-	    
+	    log.error("用户 userStr22" + userid);
 	    String oldCommitInfo = (String)CacheHelper.getInstance().get(user.getPhone() + userid);
-	    if (StringUtils.equals(user.getPhone(), oldCommitInfo)){
-	    	object.setCode("10000");
-	    	object.setCode("您已提交，等待审核中");
+	    if (oldCommitInfo!=null && StringUtils.equals(user.getPhone(), oldCommitInfo)){
+	    	object.setCode("00000");
+	    	object.setDesc("您已提交，等待审核中");
 	    	return object;
 	    }
+	    log.error("用户 userStr33" + userStr);
 	    CachedValueAndTimeSecond(user.getPhone() + userid, user.getPhone(), 10);
        
    	    user.setWeichatUserId(Long.valueOf(userid));
@@ -331,7 +332,7 @@ public class WeixinApiController extends ClientApiBaseController{
 	      user.setGameRounds(1);
 	      log.error("用户--- " + gson.toJson(user));
 	      userOptionService.save(user);
-	      
+	      log.error("用户-成功-- " + gson.toJson(user));
 	      object.setDesc("成功");
 	      object.setResponse(user);
 	      object.setCode("00000");
@@ -470,6 +471,7 @@ public class WeixinApiController extends ClientApiBaseController{
     NetRedUser netRedUser = null;
     String netRedUserId = (String)CacheHelper.getInstance().get(SHOW_nerRedUserId + getSeeionUserId(request));
     log.error("网红详情页 + = " + netRedUserId);
+    netRedUserId = "2";
     if(StringUtil.isNotEmpty(netRedUserId)){
     	netRedUser = userOptionService.getById( Long.valueOf(netRedUserId));
     	netRedUser.setFirstImage(netRedUser.getFirstImage());
@@ -725,17 +727,23 @@ public class WeixinApiController extends ClientApiBaseController{
     return object;
   }
   
+  /**
+   * 获取支付参数
+   * @param request
+   * @return
+   */
   @ResponseBody
   @RequestMapping(value={"/getPayparam"}, method={RequestMethod.GET, RequestMethod.POST})
   public Map<String,Object>  payRecharge(HttpServletRequest request) {
-    WeixinClientUtil weixinClientUtil = new WeixinClientUtil();
+	
+	NetRedWeixinClientUtil netRedWeixinClientUtil = new NetRedWeixinClientUtil();
     String requestUrl = request.getRequestURL().toString();
     String access_token = "";
     String jsapi_ticket = "";
     access_token = getToken();
     jsapi_ticket = getJsapiTicketFromDB();
     Map<String,Object> map = new HashMap<String, Object>();
-    Map<String, Object> configMap = WeixinClientUtil.getWxConfig(request, requestUrl, access_token, jsapi_ticket);
+    Map<String, Object> configMap = netRedWeixinClientUtil.getWxConfig(request, requestUrl, access_token, jsapi_ticket);
     if ((configMap != null) && (configMap.size() > 0)){
       if (configMap.get("new_access_token") != null) {
         updateTokenToDB(configMap.get("new_access_token").toString());
@@ -752,6 +760,12 @@ public class WeixinApiController extends ClientApiBaseController{
     return map;
   }
   
+  /**
+   * 支付接口
+   * @param request
+   * @param price
+   * @return
+   */
   @RequestMapping(value={"/payRecharge"}, method={RequestMethod.GET, RequestMethod.POST})
   @ResponseBody
   public List<WxSign> getRechargePayParam(HttpServletRequest request,String price){
@@ -761,15 +775,12 @@ public class WeixinApiController extends ClientApiBaseController{
     ResponseObject object = initResponseObject();
     double priceNum = Double.valueOf(price);
     object = weixinClientApiService.reCharge(request, object,priceNum,String.valueOf(getSeeionUserId(request)) );
-    
     returnMap = (Map)object.getResponse();
-    
-
     Map<String, Object> signMap = new HashMap();
     String nonceStr = UUID.randomUUID().toString().substring(0, 15);
     long timestamp = System.currentTimeMillis() / 1000L;
     String prepayid = returnMap.get("prepayid").toString();
-    signMap.put("appId", "wx7a7bc6c16b83c47d");
+    signMap.put("appId", NetRedConfigure.APPID);
     signMap.put("timeStamp", timestamp);
     signMap.put("package", "prepay_id=" + prepayid);
     signMap.put("signType", "MD5");
@@ -1041,6 +1052,10 @@ public class WeixinApiController extends ClientApiBaseController{
     Map<String, Object> searchMap = new HashMap();
     searchMap.put("limit", Integer.valueOf(page.getPageSize()));
     searchMap.put("offset", Integer.valueOf(page.getOffset()));
+    
+    if (StringUtil.isNotEmpty(content)) {
+    	searchMap.put("name", content);
+    }
     List<NetRedUser> list = new ArrayList();
     
     Page<NetRedUser> result = userOptionService.findByPage(page, searchMap);

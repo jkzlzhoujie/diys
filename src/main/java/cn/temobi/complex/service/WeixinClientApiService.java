@@ -47,7 +47,6 @@ public class WeixinClientApiService extends ServiceBase{
 	 * @return
 	 */
 	public ResponseObject reCharge(HttpServletRequest request,ResponseObject object,double price ,String userId) {
-	    	int payType = Integer.valueOf(1);
 	    	WeixinUserInfo weixinUserInfo = weixinUserInfoDao.getById(Long.valueOf(userId));
 	    	if(weixinUserInfo == null){
 	    		log.error("用户有误！");
@@ -73,17 +72,14 @@ public class WeixinClientApiService extends ServiceBase{
 			passMap.put("productDetail", "打call付款");
 			passMap.put("orderNo", orderNo);
 			passMap.put("ip", request.getRemoteAddr());
-//			passMap.put("ip", "127.0.0.1");
 			log.error("userId= " + weixinUserInfo.getId() + ",openId" +weixinUserInfo.getOpenId());
 			if(weixinUserInfo.getOpenId()!=null){
 				passMap.put("openId", weixinUserInfo.getOpenId());
 			}
 			Map<String, Object> returnMap = null;
-			if(1 == payType){
-	    		returnMap = OrderUtil.getWeixinInfo(passMap,price);
-	    	}else if(2 == payType){
-	    		returnMap = OrderUtil.getAliInfo(passMap,price);
-	    	}
+			
+	    	returnMap = OrderUtil.getNetRedWeixinInfo(passMap,price);
+	    	
 	    	String code = CommonUtil.nvl(returnMap.get("code"));
 			if(StringUtil.isNotEmpty(code) && "1".equals(code)){
 				object.setCode(Constant.RESPONSE_DEFAULT_ERROR);

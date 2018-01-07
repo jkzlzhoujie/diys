@@ -24,22 +24,9 @@
                 data: {
                     user: {
                     	id: 0,
-                    	name: '喵红',
-                    	lablesArr: [
-                            {
-                                value: '颜值',
-                                color: 'blue'
-                            },
-                            {
-                                value: '喵女郎',
-                                color: 'red'
-                            },
-                            {
-                                value: '才艺',
-                                color: 'green'
-                            }
-                        ],
-                        number: '123',
+                    	name: '',
+                    	lablesArr: [],
+                        number: '',
                         ranking: '0',
                         count: '0',
                         callCount: '0',
@@ -65,11 +52,64 @@
                             	 }else{
                             		 var data = JSON.parse(result);
 	                            	 if(data != null){
-	                            		 that.user.id = data.id;
-	                            		 that.user.name = data.name;
-	                            		 that.user.lablesArr = data.lablesArr;
-	                            		 that.user.firstImage =  data.firstImage;
-	                        			 that.user.imagesArr = data.imagesArr;
+                                		 var labels = [];
+                                		 $.each(data.lablesArr, function (k, o) {
+                                			 switch (o) {
+                                			 	case 'cyVal':
+                                			 		labels.push({
+                                			 			color: 'blue',
+                                			 			value: '才艺'
+                                			 		})
+                                			 		break;
+                                			 	case 'yzVal':
+                                			 		labels.push({
+                                			 			color: 'red',
+                                			 			value: '颜值'
+                                			 		})
+                                			 		break;
+                                			 	case 'ssVal':
+                                			 		labels.push({
+                                			 			color: 'green',
+                                			 			value: '时尚达人'
+                                			 		})
+                                			 		break;
+                                			 	case 'mzVal':
+                                			 		labels.push({
+                                			 			color: 'yellow',
+                                			 			value: '美妆达人'
+                                			 		})
+                                			 		break;
+                                			 	case 'gxVal':
+                                			 		labels.push({
+                                			 			color: 'blink',
+                                			 			value: '搞笑达人'
+                                			 		})
+                                			 		break;
+                                			 	case 'msVal':
+                                			 		labels.push({
+                                			 			color: 'ls',
+                                			 			value: '美食达人'
+                                			 		})
+                                			 		break;
+                                			 	case 'yxVal':
+                                			 		labels.push({
+                                			 			color: 'ygl',
+                                			 			value: '游戏达人'
+                                			 		})
+                                			 		break;
+                                			 	case 'qtVal':
+                                			 		labels.push({
+                                			 			color: 'gh',
+                                			 			value: '其他'
+                                			 		})
+                                			 		break;
+                                			 }
+                                		 })
+                                		 that.user.id = data.id;
+                                		 that.user.name = data.name;
+                                		 that.user.lablesArr = labels;
+                                		 that.user.firstImage =  data.firstImage;
+                            			 that.user.imagesArr = data.imagesArr;
 	                            	 }
                             	 }
                              }

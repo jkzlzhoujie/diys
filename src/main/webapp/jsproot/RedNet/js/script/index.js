@@ -2,13 +2,14 @@
 	$.ajax({
 		url: 'getPayparam',
 		data: {},
-		success: function () {
+		success: function (data) {
+			var result = JSON.parse(data);
 	        wx.config({
 	            debug: false,
-	            appId: 'appId',
-	            timestamp: 'configTimestamp',	// 必填，生成签名的时间戳
-	            nonceStr: 'configNonceStr',	// 必填，生成签名的随机串
-	            signature: 'signature',// 必填，签名，见附录1
+	            appId: result.appId,
+	            timestamp:  result.configTimestamp,	// 必填，生成签名的时间戳
+	            nonceStr:  result.configNonceStr,	// 必填，生成签名的随机串
+	            signature:  result.signature,// 必填，签名，见附录1
 	            jsApiList: ['chooseWXPay']
 	        });
 		}
@@ -127,8 +128,12 @@
                         		type: 1
                         }
                         if (this.type == 2) {
-                        	debugger
-                        	onBridgeReady('p', 'uid');
+                        	var price = this.number; 
+                        	if(price == 0){
+                        		alert('打call数不能少于1个');
+                        		return ;
+                        	}
+                        	onBridgeReady(price);
                         	alert('暂不支持');
                         	return;
                         }
@@ -255,7 +260,6 @@
             if(that.indVue.searchVal ){
           	  searcheContent = that.indVue.searchVal;
             }
-            alert(searcheContent);
             $.ajax({
                 type: 'GET',
                 url: 'findNetRedListPage?pageNo='+serPage+'&pageSize='+size+'&content=' + searcheContent,
@@ -263,6 +267,7 @@
                 	var obj = JSON.parse(data);
                     if(obj){
                     	if (obj.list.length > 0){
+                    		that.indVue.searchArr = [];
                         	that.indVue.searchArr = that.indVue.searchArr.concat(obj.list);
                     	}else {
 	//                    		

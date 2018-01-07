@@ -5,20 +5,45 @@
     <meta name="viewport" content="height=device-height,width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
     <title>网红大赛</title>
-    <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
-    <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
+    <link rel="stylesheet" href="./css/aui.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        #myVideo{
+            width: 100%;height: 100%; position: relative;overflow: hidden;
+        }
+        video{ object-fit: cover;}
+        .v-btn{
+            /* position: absolute; width: 100px;height: 100px; left: 50%;top: 50%; margin-left: -50px;margin-top: -50px; background: red;z-index: 100;color: #fff;text-align: center;font-size: 14px; line-height: 100px;border:none;
+        transition: all 1s ease;-webkit-transition: all 1s ease; */
+        }
+        #div,#endBtn{ position: absolute; width: 100px;height: 100px; left: 50%;top: 50%; margin-left: -50px;margin-top: -50px; background: red;z-index: 100;color: #fff;text-align: center;font-size: 14px; line-height: 100px;border:none;
+            transition: all 1s ease;-webkit-transition: all 1s ease;
+        }
+        #div.move{
+            transform: translate3d(0,-688px,0);
+            -webkit-transform: translate3d(0,-688px,0);
+        }
+        #endBtn{
+            transition: all 1s ease;-webkit-transition: all 1s ease;
+            transform: translate3d(0,688px,0);
+            -webkit-transform: translate3d(0,688px,0);
+        }
+        #endBtn.move{
+            transform: translate3d(0,0px,0);
+            -webkit-transform: translate3d(0,0,0);
+        }
+    </style>
 </head>
 <body>
-    <div class="zy_media">
-        <video src="../../jsproot/RedNet/images/v.mp4" controls="controls" autoplay="autoplay" webkit-playsinline>
-                您的浏览器不支持HTML5视频
-        </video>
-    </div> 
+    <div id="div">点击播放</div>
+    <video id="myVideo" src="./images/v.mp4" poster="./images/z.png" muted x-webkit-airplay="true" playsinline  webkit-playsinline="true"  x5-video-player-type="h5" >
+        您的浏览器不支持HTML5视频
+    </video>
+    <button id="endBtn">再次播放</button>
     <div class="v-btn">
         <div class="aui-btn aui-btn-block" id="bmBtn">我要报名</div>
     </div>
-    <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
-
+    <script src="./js/plugins/zepto.min.js"></script>
     <script>
     	function GetQueryString(name)
 		{
@@ -36,10 +61,24 @@
 	            if (status == 1){
 	            	 window.location.href = '../../clientNew/weixin/userShowPage?netRedUserId='+'';
 	            } else {
-	             	window.location.href = 'posterPage';
+	             	window.location.href = '../../clientNew/weixin/posterPage';
 	            }
             });
+            // $('#myVideo')[0].addEventListener('canplaythrough',function(){
+            //     $(this)[0].play();
+            // });
+            div.ontouchend = div.onclick = function(){
+                this.classList.add('move')
+                $('#myVideo')[0].play()
+            }
+            endBtn.ontouchend = endBtn.onclick = function(){
+                this.classList.remove('move')
+                $('#myVideo')[0].play()
+            }
+            $('#myVideo')[0].addEventListener('ended',function(){
+            endBtn.classList.add('move')
+            })
         })(Zepto)
-    </script>   
+    </script>     
 </body>
 </html>

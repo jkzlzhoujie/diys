@@ -26,6 +26,7 @@
             threeLevelId: '510105',
             code: '',
             showTPSuc: false,//报名成功弹窗
+            isTrue: false
         },
         methods: {
             getArea: function (t) {
@@ -86,6 +87,7 @@
                 } 
             },
             sendInfo: function () {
+            	 var that = this;
                 this.checkData();
                 if (this.code == '') {
                     toast.fail({
@@ -101,6 +103,10 @@
                     });
                     return false; 
                 } 
+                if (this.isTrue) {
+                	return;
+                }
+            	this.isTrue = true;
                //数据请求
                 $.ajax({
                     url: 'saveNetRedUser',
@@ -109,6 +115,7 @@
                         code: this.code
                     },
                     success: function (result) {
+                    	that.isTrue = false;
                    	 var obj = JSON.parse(result);
                    	 if(obj.code == "00000"){
 //                   		 alert("报名成功");

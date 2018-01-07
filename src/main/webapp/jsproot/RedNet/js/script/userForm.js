@@ -56,7 +56,7 @@
                             	 var data = JSON.parse(result);
                             	 if(data != null){
                             		 that.user = data;
-                            		 that.user.firstImage = data.firstImage;
+                            		 that.user.firstImage = data.firstImage == null ? '' : data.firstImage;
                             		 $.each(that.user.lablesArr, function(k,o) {
                             			 that.checkList[o] = true;
                             		 });

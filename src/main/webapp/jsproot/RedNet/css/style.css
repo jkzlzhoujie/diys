@@ -1109,6 +1109,8 @@ overflow: auto;
     left: 0;
     z-index: 10;
     background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    
 }
 .pop-suc-con{
     width: 15.75rem;
@@ -1189,9 +1191,9 @@ overflow: auto;
     overflow: hidden;
     z-index: 5;
 }
-.v-btn{
-    position: absolute;
-    z-index: 10;
+.v-btn {
+    position: fixed;
+    z-index: 999;
     left: 15px;
     bottom: 30px;
     right: 15px;
@@ -1207,4 +1209,56 @@ overflow: auto;
 }
 .i-top{
     background-image: url(../images/dshb.jpg);
+}
+.weui_mask_transition{
+    z-index: 1000;
+}
+.weui_actionsheet{
+z-index: 9999;
+}
+.dm-mian{
+
+height: 43px;
+
+display: inline-block;
+
+position: absolute;
+
+overflow: hidden;
+}
+.dm-head{
+    
+height: 43px;
+    
+width: 43px;
+    
+border: 1px solid #fbd0da;
+    
+border-radius: 100%;
+    
+display: inline-block;
+    
+position: absolute;
+    
+left: 0;
+    
+top: 0;
+}
+.dm-con{
+    
+height: 33px;
+    
+line-height: 32px;
+    
+padding-left: 55px;
+    
+margin-top: 5px;
+    
+padding-right: 15px;
+    
+background: rgba(255,255,255,0.5);
+    
+border: 1px solid  #fbd0da;
+    
+border-radius: 20px;
 }

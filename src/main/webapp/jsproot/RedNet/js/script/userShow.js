@@ -1,3 +1,37 @@
+var parentDom = $('#usTop'),
+pW = parentDom.width(),
+pH = parentDom.height(),
+numId = 0;
+function init(opt) {
+    var msgDom = $('<div class="dm-mian" id="dm' + numId + '">' +
+                    '<img src="' + opt.img + '" alt="" class="dm-head">'+
+                    '<div class="dm-con">' + opt.msg + '</div>'+
+                '</div>');
+    var lcW = pW;
+    msgDom.css('top', Math.floor(Math.random() * (pH - 30)) + 'px');
+    if (parentDom.children().last().hasClass('dm-mian')) {
+        var l = parentDom.children().last();
+        // console.log(l.offset().left + '-' + lcW);
+        if ((l.offset().left + l.width()) > lcW) {
+            lcW += ((l.offset().left + l.width()) - lcW);
+        }
+    }
+    msgDom.css('transform', 'translateX(' + lcW + 'px)');
+    $('#usTop').append(msgDom);
+    (function (n, ln) {
+        var lnum = ln;
+        var tim = setInterval(function() {
+            lnum--;
+            if (lnum <= (0 - $('#dm' + n).width())) {
+                clearInterval(tim);
+                $('#dm' + n).remove();
+            }
+            $('#dm' + n).css('transform', 'translateX(' + lnum + 'px)');
+        }, 20);
+    })(numId, lcW);
+    numId++;
+}
+
 ;(function ($) { 
 	
 	function GetQueryString(name)
@@ -121,7 +155,7 @@
                              url: '../../clientNew/weixin/netRedRankAndCount',
                              data: {
                             	 //参数
-                            	 netRedUserId:GetQueryString("netRedUserId"),
+//                            	 netRedUserId:GetQueryString("netRedUserId"),
                              },
                              success: function (result) {
                             	 var data = JSON.parse(result);
@@ -144,6 +178,11 @@
                 },
                 
                 created: function () {
+                    //弹幕：执行一次弹出一个消息
+                    init({
+                        img: './images/null.png',
+                        msg: '喵网红'
+                    });
                     this.getData();
                 } 
             });
@@ -161,7 +200,6 @@
                         success: function(data){
                         	 var obj = JSON.parse(data);
                              if(obj.response.length != 0){
-                            	 debugger
                                  that.usVue.supportUser = that.usVue.supportUser.concat(obj.response);
                              // 如果没有数据
                              }else{

@@ -41,7 +41,11 @@
                     hImg: imgs.hImg[0],
                     xImg: imgs.xImg[0],
                     type: 1,//投票类型：1：鲜花，2：打CALL
-                    number: 0//打CALL数
+                    number: 0,//打CALL数,
+                    showTPSuc: false,//投票成功弹窗
+                    showTPOverSuc: false,//票数用完弹窗
+                    showTPCallSuc: false,//打call成功
+                    selId: ''
                 },
                 methods: {
                     getData: function () {
@@ -63,7 +67,7 @@
 //                             }
 //                         });
                     },
-                    sendFab: function () {
+                    sendFab: function (id) {
                         //数据请求
                         // $.ajax({
                         //     url: '',
@@ -74,6 +78,7 @@
         
                         //     }
                         // });
+                    	this.selId = id;
                         var mask = $('#mask');
                         var weuiActionsheet = $('#weui_actionsheet');
                         weuiActionsheet.addClass('weui_actionsheet_toggle');
@@ -97,9 +102,46 @@
                         this.type = n;
                     },
                     sendInfo: function () {
+                    	var that =  this;
                         var mask = $('#mask');
                         var weuiActionsheet = $('#weui_actionsheet');
                         hideActionSheet(weuiActionsheet, mask);
+
+                        var params = {
+                            //voteUserId: GetQueryString("voteUserId"),
+                            netRedUserId: this.selId,
+                            count: 1,
+                            type: 1
+                        }
+                        if (this.type == 2) {
+                            var price = this.number; 
+                            if(price == 0){
+                                alert('打call数不能少于1个');
+                                return ;
+                            }
+                            onBridgeReady(price);
+                            alert('暂不支持');
+                            return;
+                        }
+                        //支持投票
+                        $.ajax({
+                            url: 'userVote',
+                            data: params,
+                            success: function (result) {
+                                var obj = JSON.parse(result);
+                                    if(obj.code == "success"){
+	                                    if (this.type == 2) {
+	                                        that.showTPCallSuc = true;
+	                                    }else{
+	                                        that.showTPSuc = true;
+	                                    }
+                                    }else if(obj.code == "moreFive"){
+                                    	that.showTPOverSuc = true;
+                                    }else{
+                                        alert(obj.desc);
+                                    }
+                            }
+                        })
                     },
                     add: function () {
                         this.number += 1;
@@ -109,6 +151,20 @@
                         if (this.number < 0) {
                             this.number = 0;
                         }
+                    },
+                    wtdc: function () {
+                        this.showTP();
+                        this.showTPOverSuc = false;
+                        this.showTPSuc = false;
+                        this.showTPCallSuc = false;
+                    },
+                    gbtpcg: function () {
+                        this.showTPOverSuc = false;
+                        this.showTPSuc = false;
+                        this.showTPCallSuc = false;
+                    },
+                    wybm: function () {//我要报名
+                        window.location.href = 'signUpinfoPage';//跳转到报名页
                     }
                 },
                 created: function () {
