@@ -293,6 +293,16 @@ public class CommonUtil {
     }
     
     
+    public String getNewJsapiTicket(String access_token){
+    	String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+ access_token + "&type=jsapi";
+    	JSONObject json = httpsRequest(url, "GET", null);
+    	String jsapi_ticket = "";
+    	if (json != null) {  
+    		jsapi_ticket = json.getString("ticket");  
+    	}  
+    	return jsapi_ticket ;
+    }
+    
     /**
 	 * @param args
 	 */

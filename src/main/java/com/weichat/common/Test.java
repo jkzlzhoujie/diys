@@ -18,7 +18,7 @@ public class Test {
 //		String AppSecret = "ba922a07c2766cd59f5ed03acf938c8d";
 		
 		String APPID = "wx7a7bc6c16b83c47d";
-		String AppSecret = "886487a13204d88c55214bbaff76b0c3";
+		String AppSecret = "7e1e2d26a1032f33f9601d7efa330a02";
 		CommonUtil commonUtil = new CommonUtil();
         String accessToken = commonUtil.getToken();
         /**

@@ -1,5 +1,6 @@
 package cn.temobi.complex.action.bo;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salim.cache.CacheHelper;
 
+import cn.temobi.complex.dao.UserOptionDao;
 import cn.temobi.complex.entity.CirclePost;
 import cn.temobi.complex.entity.CmDesignerInfo;
 import cn.temobi.complex.entity.CmUserInfo;
 import cn.temobi.complex.entity.NetRedUser;
+import cn.temobi.complex.entity.NetRedUserLabImg;
 import cn.temobi.complex.entity.WeixinUserInfo;
 import cn.temobi.complex.service.CmUserInfoService;
 import cn.temobi.complex.service.UserOptionService;
@@ -40,6 +43,8 @@ public class NetRedUserController extends BoBaseController{
 	private UserOptionService service;
 	@Resource(name="weixinUserInfoService")
 	private WeixinUserInfoService weixinUserInfoService;
+	@Resource(name = "userOptionService")
+	private UserOptionService userOptionService;
 	
 	@RequestMapping(value = "/netRedUserInfoList")
 		public String findPage(HttpServletRequest request,
@@ -120,12 +125,14 @@ public class NetRedUserController extends BoBaseController{
 	
 	@RequestMapping(value = "/netRedUserEdit")
 	public String designerEdit(HttpServletRequest request, ModelMap model) {
-		
-		
 		try {
 			String id = request.getParameter("id");
             if (StringUtil.isNotEmpty(id)) {
                 NetRedUser netRedUser = service.getById(Long.parseLong(id));
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日 hh时mm分ss秒");
+                if(netRedUser !=null && netRedUser.getCreateTime() != null ){
+                	netRedUser.setCreateTimeStr(sdf2.format(netRedUser.getCreateTime()));
+                }
 				model.addAttribute("entity", netRedUser);
 			}
 		}catch (Exception e) {
@@ -140,7 +147,9 @@ public class NetRedUserController extends BoBaseController{
 	
 		String id = request.getParameter("id");
 		if (StringUtil.isNotEmpty(user.getId())) {
-            service.update(user);
+			 NetRedUser netRedUser = service.getById(Long.parseLong(id));
+			 netRedUser.setGameRounds(user.getGameRounds());
+            service.update(netRedUser);
         } else {
                 service.save(user);
         }

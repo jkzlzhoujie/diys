@@ -33,59 +33,95 @@
       <div class="table-show-content">
         <table class="table-show" >
 	     	<tr>
-     			<td width="50%" align="right">姓名</td>
-	     		<td width="50%"><input type="text" name="name" value="${(entity.name)!''}" class="inputtext"/></td>
-	     	</tr>
-	     	<tr>
+     			<td width="25%" align="right">姓名</td>
+	     		<td width="25%"><input type="text" name="name" readonly="readonly" value="${(entity.name)!''}" class="inputtext"/></td>
 	     		<td align="right">手机号</td>
-	     		<td><input type="text" name="phone" id="phone" value="${(entity.phone)!''}" class="inputtext"/></td>
+	     		<td><input type="text" name="phone" id="phone"  readonly="readonly"  value="${(entity.phone)!''}" class="inputtext"/></td>
 	     	</tr>
 	     	<tr>
      			<td  align="right">城市</td>
-	     		<td><input type="text" name="city" value="${(entity.city)!''}" class="inputtext"/></td>
-	     	</tr>
-	     	<tr>
+	     		<td><input type="text" name="city"  readonly="readonly"  value="${(entity.city)!''}" class="inputtext"/></td>
 	     		<td align="right">自我介绍</td>
-	     		<td><input type="text" name="phone" id="selfIntroduction" value="${(entity.selfIntroduction)!''}" class="inputtext"/></td>
+	     		<td><input type="text" name="phone"  readonly="readonly"  id="selfIntroduction" value="${(entity.selfIntroduction)!''}" class="inputtext"/></td>
 	     	</tr>
 	     	<tr>
      			<td  align="right">直播经验</td>
-	     		<td ><input type="text" name="liveExperience" value="${(entity.name)!''}" class="inputtext"/></td>
-	     	</tr>
-	     	<tr>
+	     		<td >
+	     			<select id="liveExperience" name="liveExperience" disabled="disabled" class="inputstyle">
+   						<option
+   							<#if entity?? && "1" == "${entity.liveExperience!''}">selected="selected"</#if> value="1">是
+   						</option>
+   						<option
+   							<#if entity?? && "2" == "${entity.liveExperience!''}">selected="selected"</#if> value="2">否
+   						</option>
+           			</select>
+           		</td>
 	     		<td align="right">粉丝量</td>
-	     		<td><input type="text" name="fansAmount" id="fansAmount" value="${(entity.fansAmount)!''}" class="inputtext"/></td>
+	     		<td>
+	     		<select id="liveExperience" name="liveExperience" disabled="disabled" class="inputstyle">
+   						<option
+   							<#if entity?? && "1" == "${entity.fansAmount!''}">selected="selected"</#if> value="1">0-500
+   						</option>
+   						<option
+   							<#if entity?? && "2" == "${entity.fansAmount!''}">selected="selected"</#if> value="2">500-1000
+   						</option>
+   						<option
+   							<#if entity?? && "1" == "${entity.fansAmount!''}">selected="selected"</#if> value="3">1000以上
+   						</option>
+   						<option
+   							<#if entity?? && "2" == "${entity.fansAmount!''}">selected="selected"</#if> value="4">其他
+   						</option>
+           			</select>
+	     		</td>
 	     	</tr>
 	     	
 	     	<tr>
-     			<td width="50%" align="right">展示地址</td>
-	     		<td width="50%"><input type="text" name="webSit" value="${(entity.webSit)!''}" class="inputtext"/></td>
-	     	</tr>
-	     	<tr>
+     			<td align="right">展示地址</td>
+	     		<td ><input type="text" name="webSit"  readonly="readonly"  value="${(entity.webSit)!''}" class="inputtext"/></td>
 	     		<td align="right">形象首图</td>
-	     		<td><input type="text" name="firstImage" id="firstImage" value="${(entity.firstImage)!''}" class="inputtext"/></td>
+	     		<td>
+	     			<img alt=""  src="${(entity.firstImage)!''}" width="200px";height="100px">
+	     		</td>
 	     	</tr>
 	     	
 	     	<tr>
-     			<td width="50%" align="right">欢迎词</td>
-	     		<td width="50%"><input type="text" name="welcomeWord" value="${(entity.welcomeWord)!''}" class="inputtext"/></td>
+	     		<td colspan="4" align="center">
+	     			<#list entity.imagesArr as image>
+	     					<img alt="" src="${image}" width="200px";height="100px">
+					</#list>
+	     		</td>
 	     	</tr>
+	     	
 	     	<tr>
+     			<td align="right">欢迎词</td>
+	     		<td ><input type="text" name="welcomeWord"  readonly="readonly"  value="${(entity.welcomeWord)!''}" class="inputtext"/></td>
 	     		<td align="right">感谢词</td>
-	     		<td><input type="text" name="thanksWord" value="${(entity.thanksWord)!''}" class="inputtext"/></td>
+	     		<td><input type="text" name="thanksWord"  readonly="readonly"  value="${(entity.thanksWord)!''}" class="inputtext"/></td>
 	     	</tr>
 	     	
 	     	<tr>
-     			<td width="50%" align="right">答谢感谢词</td>
-	     		<td width="50%"><input type="text" name="callTanksWord" value="${(entity.callTanksWord)!''}" class="inputtext"/></td>
-	     	</tr>
-	     	<tr>
+     			<td align="right">答谢感谢词</td>
+	     		<td ><input type="text" name="callTanksWord"  readonly="readonly"  value="${(entity.callTanksWord)!''}" class="inputtext"/></td>
 	     		<td align="right">报名时间</td>
-	     		<td><input type="text" name="createTimeStr" value="${(entity.createTimeStr)!''}" class="inputtext"/></td>
+	     		<td><input type="text" name="createTimeStr"  readonly="readonly"  value="${(entity.createTimeStr)!''}" class="inputtext"/></td>
 	     	</tr>
 	     	<tr>
-		          <td align="right"><input type="submit" value="提交"  class="btn-submit" /></td>
-		          <td><input type="reset" value="重置" class="btn-submit" /></td>
+	     		<td align="right">审核状态：</td>
+		     	<td >
+		     		<select id="gameRounds" name="gameRounds" class="inputstyle">
+   						<option 
+   							<#if (entity?? && "0" == "${entity.gameRounds!''}") || (entity??) == false >selected="selected"</#if> value="0">待审核
+   						</option>
+   						<option 
+   							<#if entity?? && "1" == "${entity.gameRounds!''}">selected="selected"</#if> value="1">进入第一轮
+   						</option>
+   						<option 
+   							<#if entity?? && "2" == "${entity.gameRounds!''}">selected="selected"</#if> value="2">进入第二轮
+   						</option>
+           			</select>
+		     	</td>
+		        <td align="right"><input type="submit" value="提交"  class="btn-submit" /></td>
+		        <td><input type="reset" value="重置" class="btn-submit" /></td>
 	     	</tr>
         </table>
         </div>

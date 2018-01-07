@@ -15,6 +15,8 @@ import com.alipay.sign.RSA;
 import com.alipay.util.AlipayCore;
 import com.tencent.WXPay;
 import com.tencent.common.Configure;
+import com.tencent.common.NetRedConfigure;
+import com.tencent.common.NetRedSignature;
 import com.tencent.common.RandomStringGenerator;
 import com.tencent.common.Signature;
 import com.tencent.common.Util;
@@ -50,6 +52,40 @@ public class OrderUtil {
 						DateUtils.YYYY_MM_DD_HH_MM_SS).getTime() / 1000);
 				returnMap.put("package", "Sign=WXPay");
 				returnMap.put("sign", Signature.getSign(returnMap));
+				returnMap.put("packageStr", "Sign=WXPay");
+				returnMap.put("orderNo", orderNo);
+				return returnMap;
+			}
+		}catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		returnMap.put("code", "1");
+		return returnMap;
+	}
+	
+	
+	
+public static Map<String, Object> getNetRedWeixinInfo(Map<String, Object> map,double price) {
+		
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		String productDes = map.get("productDes").toString();
+		String productDetail = map.get("productDetail").toString();
+		String productExt = "";
+		String orderNo = map.get("orderNo").toString();
+		String ip = map.get("ip").toString();
+		ReqData reqData = new ReqData(productDes, productExt, orderNo,(new Double(price*100)).intValue(), Constant.wx_notify_url, ip, "APP", productDetail);
+		try {
+			String responseString = WXPay.requestUnifiedorderService(reqData);
+			log.error(responseString);
+			if (StringUtil.isNotEmpty(responseString)) {
+				ResData resData = (ResData) Util.getObjectFromXML(responseString,ResData.class);
+				returnMap.put("prepayid", resData.getPrepay_id());
+				returnMap.put("appid", NetRedConfigure.getAppid());
+				returnMap.put("partnerid", NetRedConfigure.getMchid());
+				returnMap.put("noncestr", RandomStringGenerator.getRandomStringByLength(32));
+				returnMap.put("timestamp", DateUtils.parse(DateUtils.getCurrDateTimeStr(),DateUtils.YYYY_MM_DD_HH_MM_SS).getTime() / 1000);
+				returnMap.put("package", "Sign=WXPay");
+				returnMap.put("sign", NetRedSignature.getSign(returnMap));
 				returnMap.put("packageStr", "Sign=WXPay");
 				returnMap.put("orderNo", orderNo);
 				return returnMap;

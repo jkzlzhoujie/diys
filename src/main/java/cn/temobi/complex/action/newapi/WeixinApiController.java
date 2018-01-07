@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.salim.cache.CacheHelper;
 import com.sms.SmsMessageUtil;
 import com.tencent.common.NetRedConfigure;
+import com.tencent.common.NetRedSignature;
 import com.tencent.common.Signature;
 import com.weichat.common.CommonUtil;
 import com.weichat.common.NetRedWeixinClientUtil;
@@ -48,6 +49,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -194,7 +197,7 @@ public class WeixinApiController extends ClientApiBaseController{
   public String testIndexPage(HttpServletRequest request){
 	  HttpSession  session =  request.getSession();
 	  session.setAttribute(WEIXIN_userId, "8");
-	  return "RedNet/userInfo";
+	  return "RedNet/index";
   }
   
   @RequestMapping(value={"/testResponsePage"}, method={RequestMethod.GET, RequestMethod.POST})
@@ -329,7 +332,7 @@ public class WeixinApiController extends ClientApiBaseController{
 	        object.setDesc("手机号已注册");
 	        return object;
 	      }
-	      user.setGameRounds(1);
+	      user.setGameRounds(0);
 	      log.error("用户--- " + gson.toJson(user));
 	      userOptionService.save(user);
 	      log.error("用户-成功-- " + gson.toJson(user));
@@ -471,7 +474,6 @@ public class WeixinApiController extends ClientApiBaseController{
     NetRedUser netRedUser = null;
     String netRedUserId = (String)CacheHelper.getInstance().get(SHOW_nerRedUserId + getSeeionUserId(request));
     log.error("网红详情页 + = " + netRedUserId);
-    netRedUserId = "2";
     if(StringUtil.isNotEmpty(netRedUserId)){
     	netRedUser = userOptionService.getById( Long.valueOf(netRedUserId));
     	netRedUser.setFirstImage(netRedUser.getFirstImage());
@@ -685,6 +687,8 @@ public class WeixinApiController extends ClientApiBaseController{
       param.put("voteUserId", getSeeionUserId(request));
       log.error("I support :" + getSeeionUserId(request));
       Page<VoteRecord> pageResult = new Page();
+      
+      param.put("netStatus", 0);
       pageResult = weixinVoteRecordService.getISupportNetRedVoteRecordPage(page, param);
       List<VoteRecord> voteRecordList = pageResult.getResult();
       object.setResponse(voteRecordList);
@@ -741,7 +745,7 @@ public class WeixinApiController extends ClientApiBaseController{
     String access_token = "";
     String jsapi_ticket = "";
     access_token = getToken();
-    jsapi_ticket = getJsapiTicketFromDB();
+    jsapi_ticket = getJsapiTicketFromDB(access_token);
     Map<String,Object> map = new HashMap<String, Object>();
     Map<String, Object> configMap = netRedWeixinClientUtil.getWxConfig(request, requestUrl, access_token, jsapi_ticket);
     if ((configMap != null) && (configMap.size() > 0)){
@@ -785,7 +789,7 @@ public class WeixinApiController extends ClientApiBaseController{
     signMap.put("package", "prepay_id=" + prepayid);
     signMap.put("signType", "MD5");
     signMap.put("nonceStr", nonceStr);
-    String paySign = Signature.getSign(signMap);
+    String paySign = NetRedSignature.getSign(signMap);
     wxSign.setPaytimestamp(String.valueOf(timestamp));
     wxSign.setPaynonceStr(nonceStr);
     wxSign.setPaySign(paySign);
@@ -816,11 +820,17 @@ public class WeixinApiController extends ClientApiBaseController{
         if (sysParameter.getUpdateWhen().getTime() > date.getTime()) {
           access_token = sysParameter.getValue();
         }
+      }else{
+          CommonUtil commonUtil = new CommonUtil();
+          String new_access_token = commonUtil.getToken();
+          updateTokenToDB(new_access_token);
+          access_token = new_access_token;
       }
     }else{
       CommonUtil commonUtil = new CommonUtil();
       String new_access_token = commonUtil.getToken();
       updateTokenToDB(new_access_token);
+      access_token = new_access_token;
     }
     return access_token;
   }
@@ -843,22 +853,24 @@ public class WeixinApiController extends ClientApiBaseController{
     return new_access_token;
   }
   
-  public String getJsapiTicketFromDB(){
+  public String getJsapiTicketFromDB(String access_token){
     String jsapi_ticket = "";
     Map<String, String> map = new HashMap();
     map.clear();
     map.put("code", "jsapi_ticket");
     List<SysParameter> spList = sysParameterService.findByMap(map);
-    if ((spList != null) && (spList.size() > 0))
-    {
+    if ((spList != null) && (spList.size() > 0)){
       SysParameter sysParameter = (SysParameter)spList.get(0);
-      if ((sysParameter.getValue() != null) && (sysParameter.getUpdateWhen() != null))
-      {
+      if ((sysParameter.getValue() != null) && (sysParameter.getUpdateWhen() != null)) {
         Date date = new Date();
         if (sysParameter.getUpdateWhen().getTime() > date.getTime()) {
           jsapi_ticket = sysParameter.getValue();
         }
       }
+    }else{
+    	CommonUtil commonUtil = new CommonUtil();
+    	jsapi_ticket= commonUtil.getNewJsapiTicket(access_token);  
+    	updateJsapiTicketDB(jsapi_ticket);
     }
     return jsapi_ticket;
   }
@@ -965,6 +977,11 @@ public class WeixinApiController extends ClientApiBaseController{
   }
   
   
+  /**
+   * 获取当前 微信用户
+   * @param request
+   * @return
+   */
   public long getSeeionUserId(HttpServletRequest request){
 	  HttpSession session = request.getSession();
 	  Object obj = session.getAttribute(WEIXIN_userId);
@@ -1053,6 +1070,7 @@ public class WeixinApiController extends ClientApiBaseController{
     searchMap.put("limit", Integer.valueOf(page.getPageSize()));
     searchMap.put("offset", Integer.valueOf(page.getOffset()));
     
+    searchMap.put("netStatus", 0);
     if (StringUtil.isNotEmpty(content)) {
     	searchMap.put("name", content);
     }

@@ -72,6 +72,7 @@ public class WeixinClientApiService extends ServiceBase{
 			passMap.put("productDetail", "打call付款");
 			passMap.put("orderNo", orderNo);
 			passMap.put("ip", request.getRemoteAddr());
+			passMap.put("ip", "127.0.0.1");
 			log.error("userId= " + weixinUserInfo.getId() + ",openId" +weixinUserInfo.getOpenId());
 			if(weixinUserInfo.getOpenId()!=null){
 				passMap.put("openId", weixinUserInfo.getOpenId());

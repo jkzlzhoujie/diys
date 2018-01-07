@@ -1,11 +1,13 @@
 package com.tencent.common;
 
 /**
- * Date: 2017/10/29
+ * User: janseny
+ * Date: 2018/01/06
  * Time: 14:40
- * 这里放置微信公众号各种配置数据
+ * 喵网红公众号
+ * 这里放置各种配置数据
  */
-public class WeixinConfigure {
+public class NetRedConfigure {
 
 	//sdk的版本号
 	private static final String sdkVersion = "java sdk 1.0.1";
@@ -28,22 +30,21 @@ public class WeixinConfigure {
 	private static String ip = "";
 	public static String UNIFIEDORDER_API = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 	public static String HttpsRequestClassName = "com.tencent.common.HttpsRequest";
-	
 
 	public static void setKey(String key) {
-		WeixinConfigure.key = key;
+		NetRedConfigure.key = key;
 	}
 
 	public static void setAppID(String appID) {
-		WeixinConfigure.appID = appID;
+		NetRedConfigure.appID = appID;
 	}
 
 	public static void setMchID(String mchID) {
-		WeixinConfigure.mchID = mchID;
+		NetRedConfigure.mchID = mchID;
 	}
 
 	public static void setIp(String ip) {
-		WeixinConfigure.ip = ip;
+		NetRedConfigure.ip = ip;
 	}
 
 	public static String getKey(){
