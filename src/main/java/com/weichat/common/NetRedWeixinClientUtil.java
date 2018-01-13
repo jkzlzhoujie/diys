@@ -50,6 +50,8 @@ public class NetRedWeixinClientUtil {
         }
         String signature = "";  
         // 注意这里参数名必须全部小写，且必须有序  
+        
+        requestUrl = "http://www.hehuanginfo.com/diys/clientNew/weixin/meSupportPage";
         String sign = "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonceStr+ "&timestamp=" + timestamp + "&url=" + requestUrl;  
         log.error("sign = " + sign);
         try {  

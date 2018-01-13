@@ -180,130 +180,130 @@ public class OrderApiController extends ClientApiBaseController {
 		ResponseObject object = initResponseObject();
 		object.setCode(Constant.RESPONSE_PARAMS_ERROR);
 		object.setDesc("参数错误");
-		try {
-			String userId = request.getParameter("userId");
-			if (StringUtil.isEmpty(userId)) {
-				return object;
-			}
-			String clientId = request.getParameter("clientId");
-			if (StringUtil.isEmpty(clientId)) {
-				return object;
-			}
-			String amount = request.getParameter("amount");
-			if (StringUtil.isEmpty(amount)) {
-				return object;
-			}
-			String type = request.getParameter("type");
-			if (StringUtil.isEmpty(type)) {
-				return object;
-			}
-			String commodityInfoId = request.getParameter("commodityInfoId");
-			if (StringUtil.isEmpty(commodityInfoId)) {
-				return object;
-			}
-			String orderNo = request.getParameter("orderNo");
-			if (StringUtil.isEmpty(orderNo)) {
-				return object;
-			}
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("orderNo", orderNo);
-			List<PmTopicJoinProducts> list = pmTopicJoinProductsService.findByMap(map);
-			PmTopicJoinProducts pmTopicJoinProducts;
-			if(list != null && list.size() > 0)
-			{
-				pmTopicJoinProducts = list.get(0);
-				if(!pmTopicJoinProducts.getJoinType().equals(commodityInfoId))
-				{
-					return object;
-				}
-				
-				if(!userId.equals(pmTopicJoinProducts.getUserId()+""))
-				{
-					return object;
-				}
-			}else{
-				return object;
-			}
-			List<Order> orderlist = orderService.findByMap(map);
-			Order order;
-			if(orderlist != null && orderlist.size() > 0)
-			{
-				order = orderlist.get(0);
-				if(!userId.equals(order.getUserId()+""))
-				{
-					return object;
-				}
-			}else{
-				return object;
-			}
-			
-			PmCommodityInfo pmCommodityInfo = pmCommodityInfoService.getById(Long.parseLong(commodityInfoId));
-			if (StringUtil.isEmpty(pmCommodityInfo)) {
-				return object;
-			}
-			String price = Double.parseDouble(amount) / 100+"";
-			if(!amount.equals(pmCommodityInfo.getPrice()))
-			{
-				return object;
-			}
-			PmCommodity pmCommodity	= pmCommodityService.getById(pmCommodityInfo.getCommodityId());
-			String productDes = pmCommodityInfo.getName();
-			String productDetail = pmCommodity.getDetail();
-			String productExt = request.getParameter("productExt");
-			ReqData reqData = new ReqData(productDes, productExt, orderNo,
-					Integer.parseInt(amount),
-					Constant.HOST_URL+"/diys/client/order/notify",
-					IpUtil.getIp(request), "APP", productDetail);
-			String responseString = WXPay.requestUnifiedorderService(reqData);
-			log.error(responseString);
-			
-			if(StringUtil.isNotEmpty(responseString))
-			{
-				ResData resData = (ResData) Util.getObjectFromXML(responseString,
-						ResData.class);
-//				//订单保存
-//				Order order = new Order();
-//				order.setAmount(price);
-//				order.setClientId(Long.parseLong(clientId));
-//				order.setOrderNo(orderNo);
-//				order.setUserId(Long.parseLong(userId));
-//				order.setType(type);
+//		try {
+//			String userId = request.getParameter("userId");
+//			if (StringUtil.isEmpty(userId)) {
+//				return object;
+//			}
+//			String clientId = request.getParameter("clientId");
+//			if (StringUtil.isEmpty(clientId)) {
+//				return object;
+//			}
+//			String amount = request.getParameter("amount");
+//			if (StringUtil.isEmpty(amount)) {
+//				return object;
+//			}
+//			String type = request.getParameter("type");
+//			if (StringUtil.isEmpty(type)) {
+//				return object;
+//			}
+//			String commodityInfoId = request.getParameter("commodityInfoId");
+//			if (StringUtil.isEmpty(commodityInfoId)) {
+//				return object;
+//			}
+//			String orderNo = request.getParameter("orderNo");
+//			if (StringUtil.isEmpty(orderNo)) {
+//				return object;
+//			}
+//			Map<String, String> map = new HashMap<String, String>();
+//			map.put("orderNo", orderNo);
+//			List<PmTopicJoinProducts> list = pmTopicJoinProductsService.findByMap(map);
+//			PmTopicJoinProducts pmTopicJoinProducts;
+//			if(list != null && list.size() > 0)
+//			{
+//				pmTopicJoinProducts = list.get(0);
+//				if(!pmTopicJoinProducts.getJoinType().equals(commodityInfoId))
+//				{
+//					return object;
+//				}
+//				
+//				if(!userId.equals(pmTopicJoinProducts.getUserId()+""))
+//				{
+//					return object;
+//				}
+//			}else{
+//				return object;
+//			}
+//			List<Order> orderlist = orderService.findByMap(map);
+//			Order order;
+//			if(orderlist != null && orderlist.size() > 0)
+//			{
+//				order = orderlist.get(0);
+//				if(!userId.equals(order.getUserId()+""))
+//				{
+//					return object;
+//				}
+//			}else{
+//				return object;
+//			}
+//			
+//			PmCommodityInfo pmCommodityInfo = pmCommodityInfoService.getById(Long.parseLong(commodityInfoId));
+//			if (StringUtil.isEmpty(pmCommodityInfo)) {
+//				return object;
+//			}
+//			String price = Double.parseDouble(amount) / 100+"";
+//			if(!amount.equals(pmCommodityInfo.getPrice()))
+//			{
+//				return object;
+//			}
+//			PmCommodity pmCommodity	= pmCommodityService.getById(pmCommodityInfo.getCommodityId());
+//			String productDes = pmCommodityInfo.getName();
+//			String productDetail = pmCommodity.getDetail();
+//			String productExt = request.getParameter("productExt");
+////			ReqData reqData = new ReqData(productDes, productExt, orderNo,
+////					Integer.parseInt(amount),
+////					Constant.HOST_URL+"/diys/client/order/notify",
+////					IpUtil.getIp(request), "APP", productDetail);
+////			String responseString = WXPay.requestUnifiedorderService(reqData);
+////			log.error(responseString);
+////			
+////			if(StringUtil.isNotEmpty(responseString))
+////			{
+////				ResData resData = (ResData) Util.getObjectFromXML(responseString,
+////						ResData.class);
+////				//订单保存
+////				Order order = new Order();
+////				order.setAmount(price);
+////				order.setClientId(Long.parseLong(clientId));
+////				order.setOrderNo(orderNo);
+////				order.setUserId(Long.parseLong(userId));
+////				order.setType(type);
+////				order.setPayType("1");
+////				order.setStatus("0");
+////				order.setCommodityId(pmCommodity.getId());
+////				order.setCommodityInfoId(pmCommodityInfo.getId());
+////				order.setProductId(pmTopicJoinProducts.getProductId());
+////				orderService.save(order);
 //				order.setPayType("1");
-//				order.setStatus("0");
-//				order.setCommodityId(pmCommodity.getId());
-//				order.setCommodityInfoId(pmCommodityInfo.getId());
-//				order.setProductId(pmTopicJoinProducts.getProductId());
-//				orderService.save(order);
-				order.setPayType("1");
-				orderService.update(order);
-				
-				Map<String, Object> returnMap = new HashMap<String, Object>();
-				returnMap.put("prepayid", resData.getPrepay_id());
-				returnMap.put("appid", Configure.getAppid());
-				returnMap.put("partnerid", Configure.getMchid());
-				returnMap.put("noncestr",
-						RandomStringGenerator.getRandomStringByLength(32));
-				returnMap.put(
-						"timestamp",
-						DateUtils.parse(DateUtils.getCurrDateTimeStr(),
-								DateUtils.YYYY_MM_DD_HH_MM_SS).getTime() / 1000);
-				returnMap.put("package", "Sign=WXPay");
-				returnMap.put("sign", Signature.getSign(returnMap));
-				returnMap.put("packageStr", "Sign=WXPay");
-				returnMap.put("orderNo", orderNo);
-				object.setCode(Constant.RESPONSE_SUCCESS_CODE);
-		    	object.setDesc("成功");
-		    	object.setResponse(returnMap);
-			}else{
-				object.setCode(Constant.RESPONSE_DEFAULT_ERROR);//
-    			object.setDesc("获取失败");
-			}
-			
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			object.setCode(Constant.RESPONSE_ERROR_CODE);
-			object.setDesc("服务器有点忙，请稍后再试");
-		}
+//				orderService.update(order);
+//				
+//				Map<String, Object> returnMap = new HashMap<String, Object>();
+//				returnMap.put("prepayid", resData.getPrepay_id());
+//				returnMap.put("appid", Configure.getAppid());
+//				returnMap.put("partnerid", Configure.getMchid());
+//				returnMap.put("noncestr",
+//						RandomStringGenerator.getRandomStringByLength(32));
+//				returnMap.put(
+//						"timestamp",
+//						DateUtils.parse(DateUtils.getCurrDateTimeStr(),
+//								DateUtils.YYYY_MM_DD_HH_MM_SS).getTime() / 1000);
+//				returnMap.put("package", "Sign=WXPay");
+//				returnMap.put("sign", Signature.getSign(returnMap));
+//				returnMap.put("packageStr", "Sign=WXPay");
+//				returnMap.put("orderNo", orderNo);
+//				object.setCode(Constant.RESPONSE_SUCCESS_CODE);
+//		    	object.setDesc("成功");
+//		    	object.setResponse(returnMap);
+//			}else{
+//				object.setCode(Constant.RESPONSE_DEFAULT_ERROR);//
+//    			object.setDesc("获取失败");
+//			}
+//			
+//		} catch (Exception e) {
+//			log.error(e.getMessage());
+//			object.setCode(Constant.RESPONSE_ERROR_CODE);
+//			object.setDesc("服务器有点忙，请稍后再试");
+//		}
 		 return object;
 	}
 

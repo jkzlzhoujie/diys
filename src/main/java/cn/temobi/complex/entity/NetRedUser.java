@@ -29,6 +29,7 @@ public class NetRedUser extends IdEntity{
 	private Integer count;
 	private Integer callCount;
 	private Integer rank;
+	private String area;//区域 1 厦门 2 福州 3 泉州 4漳州
 	
 	
 	public String getName() {
@@ -162,6 +163,12 @@ public class NetRedUser extends IdEntity{
 	}
 	public void setRank(Integer rank) {
 		this.rank = rank;
+	}
+	public String getArea() {
+		return area;
+	}
+	public void setArea(String area) {
+		this.area = area;
 	}
 	
 	

@@ -24,6 +24,7 @@
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(voteUserId)">and vr.voteUserId = #{voteUserId}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(type)">and vr.type = #{type}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and vr.id = #{id}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(netStatus)">and nru.gameRounds != #{netStatus}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(createTime)">
 			   <![CDATA[ and to_days(vr.createTime) = to_days(now()) ]]> 
 			</if>
@@ -98,12 +99,19 @@
 	
 	<!-- 我支持的  -->
 	<select id="getISupportNetRedVoteRecordPage" parameterType="map" resultType="cn.temobi.complex.entity.VoteRecord" useCache="false">
-		SELECT sum(count),vr.netRedUserId,nru.name as netRedUserName,nru.firstImage from vote_record vr 
+		SELECT sum(count) as count,vr.netRedUserId,nru.name as netRedUserName,nru.firstImage from vote_record vr 
 		LEFT JOIN net_red_user nru on vr.netRedUserId = nru.id
 		<include refid="sql_where"/>
 		GROUP BY vr.netRedUserId
 		ORDER BY count desc 
 		limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="findBySupportNetRedPage" parameterType="map"  resultType="cn.temobi.complex.entity.VoteRecord"  useCache="false">
+		SELECT vr.*,wu.nickname as voteUserUserNickName,wu.headImgUrl FROM vote_record vr 
+		LEFT JOIN weichat_user wu on wu.id = vr.voteUserId
+		<include refid="sql_where"></include>
+		order by vr.id desc limit #{limit} offset #{offset}
 	</select>
 	
 </mapper>

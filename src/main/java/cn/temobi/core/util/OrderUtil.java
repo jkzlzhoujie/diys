@@ -13,6 +13,7 @@ import cn.temobi.core.common.Constant;
 import com.alipay.config.AlipayConfig;
 import com.alipay.sign.RSA;
 import com.alipay.util.AlipayCore;
+import com.google.gson.Gson;
 import com.tencent.WXPay;
 import com.tencent.common.Configure;
 import com.tencent.common.NetRedConfigure;
@@ -35,20 +36,59 @@ public class OrderUtil {
 		String productExt = "";
 		String orderNo = map.get("orderNo").toString();
 		String ip = map.get("ip").toString();
-		ReqData reqData = new ReqData(productDes, productExt, orderNo,(new Double(price*100)).intValue(), Constant.wx_notify_url, ip, "APP", productDetail);
+//		ReqData reqData = new ReqData(productDes, productExt, orderNo,(new Double(price*100)).intValue(), Constant.wx_notify_url, ip, "APP", productDetail);
+//		try {
+//			String responseString = WXPay.requestUnifiedorderService(reqData);
+//			log.error(responseString);
+//			if (StringUtil.isNotEmpty(responseString)) {
+//				ResData resData = (ResData) Util.getObjectFromXML(responseString,
+//						ResData.class);
+//				returnMap.put("prepayid", resData.getPrepay_id());
+//				returnMap.put("appid", Configure.getAppid());
+//				returnMap.put("partnerid", Configure.getMchid());
+//				returnMap.put("noncestr", RandomStringGenerator
+//						.getRandomStringByLength(32));
+//				returnMap.put("timestamp", DateUtils.parse(
+//						DateUtils.getCurrDateTimeStr(),
+//						DateUtils.YYYY_MM_DD_HH_MM_SS).getTime() / 1000);
+//				returnMap.put("package", "Sign=WXPay");
+//				returnMap.put("sign", Signature.getSign(returnMap));
+//				returnMap.put("packageStr", "Sign=WXPay");
+//				returnMap.put("orderNo", orderNo);
+//				return returnMap;
+//			}
+//		}catch (Exception e) {
+//			log.error(e.getMessage());
+//		}
+		returnMap.put("code", "1");
+		return returnMap;
+	}
+	
+public static Map<String, Object> getNetRedWeixinInfo(Map<String, Object> map,double price) {
+		
+		Map<String, Object> returnMap = new HashMap<String, Object>();
+		String productDes = map.get("productDes").toString();
+		String productDetail = map.get("productDetail").toString();
+		String productExt = "";
+		String orderNo = map.get("orderNo").toString();
+		String ip = map.get("ip").toString();
+		String openId = map.get("openId").toString();
+		log.error("微信付款" + Constant.wx_notify_url);
+		//公众号支付 JSAPI , App支付 APP
+		Gson gson  = new Gson();
+		log.error("参数为："+ gson.toJson(map));
+		log.error("wx_notify_url："+ Constant.wx_notify_url);
+		ReqData reqData = new ReqData(openId,productDes, productExt, orderNo,(new Double(price*100)).intValue(), Constant.wx_notify_url, ip, "JSAPI", productDetail);
 		try {
 			String responseString = WXPay.requestUnifiedorderService(reqData);
 			log.error(responseString);
 			if (StringUtil.isNotEmpty(responseString)) {
-				ResData resData = (ResData) Util.getObjectFromXML(responseString,
-						ResData.class);
+				ResData resData = (ResData) Util.getObjectFromXML(responseString,ResData.class);
 				returnMap.put("prepayid", resData.getPrepay_id());
 				returnMap.put("appid", Configure.getAppid());
 				returnMap.put("partnerid", Configure.getMchid());
-				returnMap.put("noncestr", RandomStringGenerator
-						.getRandomStringByLength(32));
-				returnMap.put("timestamp", DateUtils.parse(
-						DateUtils.getCurrDateTimeStr(),
+				returnMap.put("noncestr", RandomStringGenerator.getRandomStringByLength(32));
+				returnMap.put("timestamp", DateUtils.parse(DateUtils.getCurrDateTimeStr(),
 						DateUtils.YYYY_MM_DD_HH_MM_SS).getTime() / 1000);
 				returnMap.put("package", "Sign=WXPay");
 				returnMap.put("sign", Signature.getSign(returnMap));
@@ -62,41 +102,6 @@ public class OrderUtil {
 		returnMap.put("code", "1");
 		return returnMap;
 	}
-	
-	
-	
-public static Map<String, Object> getNetRedWeixinInfo(Map<String, Object> map,double price) {
-		
-		Map<String, Object> returnMap = new HashMap<String, Object>();
-		String productDes = map.get("productDes").toString();
-		String productDetail = map.get("productDetail").toString();
-		String productExt = "";
-		String orderNo = map.get("orderNo").toString();
-		String ip = map.get("ip").toString();
-		ReqData reqData = new ReqData(productDes, productExt, orderNo,(new Double(price*100)).intValue(), Constant.wx_notify_url, ip, "APP", productDetail);
-		try {
-			String responseString = WXPay.requestUnifiedorderService(reqData);
-			log.error(responseString);
-			if (StringUtil.isNotEmpty(responseString)) {
-				ResData resData = (ResData) Util.getObjectFromXML(responseString,ResData.class);
-				returnMap.put("prepayid", resData.getPrepay_id());
-				returnMap.put("appid", NetRedConfigure.getAppid());
-				returnMap.put("partnerid", NetRedConfigure.getMchid());
-				returnMap.put("noncestr", RandomStringGenerator.getRandomStringByLength(32));
-				returnMap.put("timestamp", DateUtils.parse(DateUtils.getCurrDateTimeStr(),DateUtils.YYYY_MM_DD_HH_MM_SS).getTime() / 1000);
-				returnMap.put("package", "Sign=WXPay");
-				returnMap.put("sign", NetRedSignature.getSign(returnMap));
-				returnMap.put("packageStr", "Sign=WXPay");
-				returnMap.put("orderNo", orderNo);
-				return returnMap;
-			}
-		}catch (Exception e) {
-			log.error(e.getMessage());
-		}
-		returnMap.put("code", "1");
-		return returnMap;
-	}
-	
 	
 	public static Map<String, Object> getAliInfo(Map<String, Object> map,double price) {
 		Map<String, Object> returnMap = new HashMap<String, Object>();

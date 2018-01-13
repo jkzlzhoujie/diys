@@ -1,17 +1,13 @@
 package com.tencent.common;
 
-import org.jsoup.helper.DataUtil;
 import org.xml.sax.SAXException;
 
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -69,7 +65,7 @@ public class NetRedSignature {
         result += "key=" + NetRedConfigure.getKey();
         //Util.log("Sign Before MD5:" + result);
         result = MD5.MD5Encode(result).toUpperCase();
-        //Util.log("Sign Result:" + result);
+        Util.log("Sign Result:" + result);
         return result;
     }
 

@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import com.tencent.common.WeixinConfigure;
 
-import cn.temobi.core.common.Constant;
 
 
 /**

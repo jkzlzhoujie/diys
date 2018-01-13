@@ -1,11 +1,13 @@
 package cn.temobi.complex.action.newapi;
 
 import cn.temobi.complex.entity.AccessRecord;
+import cn.temobi.complex.entity.NetRedGameBanner;
 import cn.temobi.complex.entity.NetRedUser;
 import cn.temobi.complex.entity.SysParameter;
 import cn.temobi.complex.entity.VoteRecord;
 import cn.temobi.complex.entity.WeixinUserInfo;
 import cn.temobi.complex.entity.WxSign;
+import cn.temobi.complex.service.NetRedGameBannerService;
 import cn.temobi.complex.service.SysParameterService;
 import cn.temobi.complex.service.UserOptionService;
 import cn.temobi.complex.service.WeixinAccessRecordService;
@@ -71,6 +73,12 @@ public class WeixinApiController extends ClientApiBaseController{
   private final String WEIXIN_userId = "current_weixinUser";
   private final String WEICHAT_CODE = "WEICHAT_CODE";
   private final String SHOW_nerRedUserId = "nerRedUserId=";
+  private final String GameArea = "GameArea=";
+  private final String Xiamen = "1";
+  private final String Fuzhou = "2";
+  private final String Quanzhou = "3";
+  private final String Zhangzhou = "4";
+  
   
   @Resource(name="weixinUserInfoService")
   private WeixinUserInfoService weixinUserInfoService;
@@ -86,9 +94,12 @@ public class WeixinApiController extends ClientApiBaseController{
   private WeixinVoteRecordService recordService;
   @Resource(name="weixinVoteRecordService")
   private WeixinVoteRecordService weixinVoteRecordService;
+  @Resource(name="netRedGameBannerService")
+  private NetRedGameBannerService netRedGameBannerService;
+
   
   /**
-   * 落地报名
+   * 落地报名-厦门赛区
    * @param request
    * @return
  * @throws IOException 
@@ -98,10 +109,57 @@ public class WeixinApiController extends ClientApiBaseController{
     String weiChatCode = request.getParameter("code");
     String userId = request.getParameter("userId");
     HttpSession  session =  request.getSession();
-    
+    session.setAttribute(GameArea, Xiamen);
+//    log.error("落地报名");
+//    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
+//    	userId = (String) session.getAttribute(WEIXIN_userId);
+//    }else{
+//    	session.setAttribute(WEICHAT_CODE, weiChatCode);
+//    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+//        log.error("weiChatCode= " + weiChatCode);
+//        log.error("userId= " + userId);
+//        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
+//          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
+//          userId = weixinUserInfo.getId().toString();
+//        }
+//        session.setAttribute(WEIXIN_userId, userId);
+//    }
+//    log.error("userId = " + userId);
+//    AccessRecord record = new AccessRecord();
+//    record.setCreateTime(new Date());
+//    record.setAttentionUserId(Long.valueOf(userId));
+//    accessRecordService.save(record);
+//    Map<String, Object> map = new HashMap();
+//    map.put("weichatUserId", userId);
+//    List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
+    String status = "0";
+//    if (netRedUsers != null && netRedUsers.size() > 0){
+//      status = "1";
+//    }
+//    if (StringUtil.isNotEmpty(userId)){
+//      log.error("userId=" + userId);
+//    }else{
+//      log.error("微信授权用户信息错误！");
+//      response.sendRedirect("/diys/jsproot/RedNet/index.html");
+//    }
+    response.setContentType("text/xml;charset=UTF-8");
+    response.sendRedirect("/diys/jsproot/RedNet/video.html?status=" + status);
+  }
+  
+  /**
+   * 落地报名-福州赛区
+   * @param request
+   * @return
+ * @throws IOException 
+   */
+  @RequestMapping(value={"/landRegistrationFuzhou"}, method={RequestMethod.GET, RequestMethod.POST})
+  public void landRegistrationFuzhou(HttpServletRequest request,HttpServletResponse response) throws IOException{
+    String weiChatCode = request.getParameter("code");
+    String userId = request.getParameter("userId");
+    HttpSession  session =  request.getSession();
+    session.setAttribute(GameArea, Fuzhou);
     log.error("落地报名");
     if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
-    	 log.error("落地报名-----");
     	userId = (String) session.getAttribute(WEIXIN_userId);
     }else{
     	session.setAttribute(WEICHAT_CODE, weiChatCode);
@@ -115,7 +173,6 @@ public class WeixinApiController extends ClientApiBaseController{
         session.setAttribute(WEIXIN_userId, userId);
     }
     log.error("userId = " + userId);
-    
     AccessRecord record = new AccessRecord();
     record.setCreateTime(new Date());
     record.setAttentionUserId(Long.valueOf(userId));
@@ -131,13 +188,106 @@ public class WeixinApiController extends ClientApiBaseController{
       log.error("userId=" + userId);
     }else{
       log.error("微信授权用户信息错误！");
-//      return indexPage;
       response.sendRedirect("/diys/jsproot/RedNet/index.html");
     }
     response.setContentType("text/xml;charset=UTF-8");
     response.sendRedirect("/diys/jsproot/RedNet/video.html?status=" + status);
-//    return "redNet/video";
-//    return "redirect:/clientNew/weixin/signUpinfo?voteUserId=" + voteUserId;
+  }
+  
+  /**
+   * 落地报名-泉州赛区
+   * @param request
+   * @return
+ * @throws IOException 
+   */
+  @RequestMapping(value={"/landRegistrationQuanzhou"}, method={RequestMethod.GET, RequestMethod.POST})
+  public void landRegistrationQuanzhou(HttpServletRequest request,HttpServletResponse response) throws IOException{
+    String weiChatCode = request.getParameter("code");
+    String userId = request.getParameter("userId");
+    HttpSession  session =  request.getSession();
+    session.setAttribute(GameArea, Quanzhou);
+    log.error("落地报名");
+    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
+    	userId = (String) session.getAttribute(WEIXIN_userId);
+    }else{
+    	session.setAttribute(WEICHAT_CODE, weiChatCode);
+    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+        log.error("weiChatCode= " + weiChatCode);
+        log.error("userId= " + userId);
+        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
+          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
+          userId = weixinUserInfo.getId().toString();
+        }
+        session.setAttribute(WEIXIN_userId, userId);
+    }
+    log.error("userId = " + userId);
+    AccessRecord record = new AccessRecord();
+    record.setCreateTime(new Date());
+    record.setAttentionUserId(Long.valueOf(userId));
+    accessRecordService.save(record);
+    Map<String, Object> map = new HashMap();
+    map.put("weichatUserId", userId);
+    List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
+    String status = "0";
+    if (netRedUsers != null && netRedUsers.size() > 0){
+      status = "1";
+    }
+    if (StringUtil.isNotEmpty(userId)){
+      log.error("userId=" + userId);
+    }else{
+      log.error("微信授权用户信息错误！");
+      response.sendRedirect("/diys/jsproot/RedNet/index.html");
+    }
+    response.setContentType("text/xml;charset=UTF-8");
+    response.sendRedirect("/diys/jsproot/RedNet/video.html?status=" + status);
+  }
+  
+  /**
+   * 落地报名-漳州赛区
+   * @param request
+   * @return
+ * @throws IOException 
+   */
+  @RequestMapping(value={"/landRegistrationZhangzhou"}, method={RequestMethod.GET, RequestMethod.POST})
+  public void landRegistrationZhangzhou(HttpServletRequest request,HttpServletResponse response) throws IOException{
+    String weiChatCode = request.getParameter("code");
+    String userId = request.getParameter("userId");
+    HttpSession  session =  request.getSession();
+    session.setAttribute(GameArea, Zhangzhou);
+    log.error("落地报名");
+    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
+    	userId = (String) session.getAttribute(WEIXIN_userId);
+    }else{
+    	session.setAttribute(WEICHAT_CODE, weiChatCode);
+    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+        log.error("weiChatCode= " + weiChatCode);
+        log.error("userId= " + userId);
+        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
+          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
+          userId = weixinUserInfo.getId().toString();
+        }
+        session.setAttribute(WEIXIN_userId, userId);
+    }
+    log.error("userId = " + userId);
+    AccessRecord record = new AccessRecord();
+    record.setCreateTime(new Date());
+    record.setAttentionUserId(Long.valueOf(userId));
+    accessRecordService.save(record);
+    Map<String, Object> map = new HashMap();
+    map.put("weichatUserId", userId);
+    List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
+    String status = "0";
+    if (netRedUsers != null && netRedUsers.size() > 0){
+      status = "1";
+    }
+    if (StringUtil.isNotEmpty(userId)){
+      log.error("userId=" + userId);
+    }else{
+      log.error("微信授权用户信息错误！");
+      response.sendRedirect("/diys/jsproot/RedNet/index.html");
+    }
+    response.setContentType("text/xml;charset=UTF-8");
+    response.sendRedirect("/diys/jsproot/RedNet/video.html?status=" + status);
   }
   
   private WeixinUserInfo getWeixinUserInfo(String code, WeixinUserInfo cmUserInfo) {
@@ -334,6 +484,8 @@ public class WeixinApiController extends ClientApiBaseController{
 	      }
 	      user.setGameRounds(0);
 	      log.error("用户--- " + gson.toJson(user));
+	      
+	      user.setArea(session.getAttribute(GameArea).toString());
 	      userOptionService.save(user);
 	      log.error("用户-成功-- " + gson.toJson(user));
 	      object.setDesc("成功");
@@ -738,7 +890,7 @@ public class WeixinApiController extends ClientApiBaseController{
    */
   @ResponseBody
   @RequestMapping(value={"/getPayparam"}, method={RequestMethod.GET, RequestMethod.POST})
-  public Map<String,Object>  payRecharge(HttpServletRequest request) {
+  public Map<String,Object>  getPayparam(HttpServletRequest request) {
 	
 	NetRedWeixinClientUtil netRedWeixinClientUtil = new NetRedWeixinClientUtil();
     String requestUrl = request.getRequestURL().toString();
@@ -772,7 +924,7 @@ public class WeixinApiController extends ClientApiBaseController{
    */
   @RequestMapping(value={"/payRecharge"}, method={RequestMethod.GET, RequestMethod.POST})
   @ResponseBody
-  public List<WxSign> getRechargePayParam(HttpServletRequest request,String price){
+  public List<WxSign> payRecharge(HttpServletRequest request,String price){
     List<WxSign> wxSignList = new ArrayList();
     WxSign wxSign = new WxSign();
     Map<String, Object> returnMap = new HashMap();
@@ -808,6 +960,7 @@ public class WeixinApiController extends ClientApiBaseController{
   }
   
   public String getToken(){
+	 CommonUtil commonUtil = new CommonUtil();
     String access_token = "";
     Map<String, String> map = new HashMap();
     map.clear();
@@ -815,19 +968,21 @@ public class WeixinApiController extends ClientApiBaseController{
     List<SysParameter> spList = sysParameterService.findByMap(map);
     if ((spList != null) && (spList.size() > 0)){
       SysParameter sysParameter = (SysParameter)spList.get(0);
-      if ((sysParameter.getValue() != null) && (sysParameter.getUpdateWhen() != null)) {
+      if (sysParameter.getValue() != null && sysParameter.getUpdateWhen() != null) {
         Date date = new Date();
         if (sysParameter.getUpdateWhen().getTime() > date.getTime()) {
           access_token = sysParameter.getValue();
+        }else{
+            String new_access_token = commonUtil.getToken();
+            updateTokenToDB(new_access_token);
+            access_token = new_access_token;
         }
       }else{
-          CommonUtil commonUtil = new CommonUtil();
           String new_access_token = commonUtil.getToken();
           updateTokenToDB(new_access_token);
           access_token = new_access_token;
       }
     }else{
-      CommonUtil commonUtil = new CommonUtil();
       String new_access_token = commonUtil.getToken();
       updateTokenToDB(new_access_token);
       access_token = new_access_token;
@@ -848,12 +1003,14 @@ public class WeixinApiController extends ClientApiBaseController{
         sysParameter.setValue(new_access_token);
         sysParameter.setUpdateWhen(calendar.getTime());
         sysParameterService.update(sysParameter);
+        log.error("新的token = " + new_access_token);
       }
     }
     return new_access_token;
   }
   
   public String getJsapiTicketFromDB(String access_token){
+	 CommonUtil commonUtil = new CommonUtil();
     String jsapi_ticket = "";
     Map<String, String> map = new HashMap();
     map.clear();
@@ -865,10 +1022,15 @@ public class WeixinApiController extends ClientApiBaseController{
         Date date = new Date();
         if (sysParameter.getUpdateWhen().getTime() > date.getTime()) {
           jsapi_ticket = sysParameter.getValue();
+        }else{
+        	jsapi_ticket= commonUtil.getNewJsapiTicket(access_token);  
+        	updateJsapiTicketDB(jsapi_ticket);
         }
+      }else{
+      	jsapi_ticket= commonUtil.getNewJsapiTicket(access_token);  
+      	updateJsapiTicketDB(jsapi_ticket);
       }
     }else{
-    	CommonUtil commonUtil = new CommonUtil();
     	jsapi_ticket= commonUtil.getNewJsapiTicket(access_token);  
     	updateJsapiTicketDB(jsapi_ticket);
     }
@@ -880,16 +1042,15 @@ public class WeixinApiController extends ClientApiBaseController{
     map.clear();
     map.put("code", "jsapi_ticket");
     List<SysParameter> spList = sysParameterService.findByMap(map);
-    if ((spList != null) && (spList.size() > 0))
-    {
+    if ((spList != null) && (spList.size() > 0)){
       SysParameter sysParameter = (SysParameter)spList.get(0);
-      if ((sysParameter.getValue() != null) && (sysParameter.getUpdateWhen() != null))
-      {
+      if ((sysParameter.getValue() != null) && (sysParameter.getUpdateWhen() != null)){
         Calendar calendar = Calendar.getInstance();
         calendar.add(13, 7200);
         sysParameter.setValue(new_jsapi_ticket);
         sysParameter.setUpdateWhen(calendar.getTime());
         sysParameterService.update(sysParameter);
+        log.error("新的new_jsapi_ticket = " + new_jsapi_ticket);
       }
     }
     return new_jsapi_ticket;
@@ -994,13 +1155,18 @@ public class WeixinApiController extends ClientApiBaseController{
 	  return 0;
   }
   
-  
+  /**
+   * 大赛首页 厦门赛区
+   * @param request
+   * @return
+   */
   @RequestMapping(value={"/netRedGame"}, method={RequestMethod.GET, RequestMethod.POST})
   public String netRedGame(HttpServletRequest request){
     String weiChatCode = request.getParameter("code");
     String userId = request.getParameter("userId");
     HttpSession  session =  request.getSession();
-    log.error("大赛首页");
+    session.setAttribute(GameArea, Xiamen);
+    log.error("大赛首页厦门");
     if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
     	 log.error("大赛首页-----");
     	userId = (String) session.getAttribute(WEIXIN_userId);
@@ -1029,10 +1195,175 @@ public class WeixinApiController extends ClientApiBaseController{
       return indexPage;
     }
     return "redNet/index";
-//    return "redirect:/clientNew/weixin/netRedGamePage?voteUserId=" + userId;
   }
   
- 
+  /**
+   * 大赛首页 福州赛区
+   * @param request
+   * @return
+   */
+  @RequestMapping(value={"/netRedGameFuzhou"}, method={RequestMethod.GET, RequestMethod.POST})
+  public String netRedGameFuzhou(HttpServletRequest request){
+    String weiChatCode = request.getParameter("code");
+    String userId = request.getParameter("userId");
+    HttpSession  session =  request.getSession();
+    session.setAttribute(GameArea, Fuzhou);
+    log.error("大赛首页福州");
+    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
+    	userId = (String) session.getAttribute(WEIXIN_userId);
+    }else{
+    	session.setAttribute(WEICHAT_CODE, weiChatCode);
+    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+        log.error("weiChatCode= " + weiChatCode);
+        log.error("userId= " + userId);
+        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
+          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
+          userId = weixinUserInfo.getId().toString();
+        }
+        session.setAttribute(WEIXIN_userId, userId);
+    }
+    log.error("userId = " + userId);
+    
+    session.setAttribute(WEIXIN_userId, userId);
+    AccessRecord record = new AccessRecord();
+    record.setCreateTime(new Date());
+    record.setAttentionUserId(Long.valueOf(userId));
+    accessRecordService.save(record);
+    if (StringUtil.isNotEmpty(userId)){
+      log.error("userId=" + userId);
+    }else{
+      log.error("微信授权用户信息错误！");
+      return indexPage;
+    }
+    return "redNet/index";
+  }
+  
+  /**
+   * 大赛首页 泉州赛区
+   * @param request
+   * @return
+   */
+  @RequestMapping(value={"/netRedGameQuanzhou"}, method={RequestMethod.GET, RequestMethod.POST})
+  public String netRedGameQuanzhou(HttpServletRequest request){
+    String weiChatCode = request.getParameter("code");
+    String userId = request.getParameter("userId");
+    HttpSession  session =  request.getSession();
+    session.setAttribute(GameArea, Quanzhou);
+    log.error("大赛首页泉州");
+    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
+    	userId = (String) session.getAttribute(WEIXIN_userId);
+    }else{
+    	session.setAttribute(WEICHAT_CODE, weiChatCode);
+    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+        log.error("weiChatCode= " + weiChatCode);
+        log.error("userId= " + userId);
+        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
+          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
+          userId = weixinUserInfo.getId().toString();
+        }
+        session.setAttribute(WEIXIN_userId, userId);
+    }
+    log.error("userId = " + userId);
+    
+    session.setAttribute(WEIXIN_userId, userId);
+    AccessRecord record = new AccessRecord();
+    record.setCreateTime(new Date());
+    record.setAttentionUserId(Long.valueOf(userId));
+    accessRecordService.save(record);
+    if (StringUtil.isNotEmpty(userId)){
+      log.error("userId=" + userId);
+    }else{
+      log.error("微信授权用户信息错误！");
+      return indexPage;
+    }
+    return "redNet/index";
+  }
+  
+  /**
+   * 大赛首页 漳州赛区
+   * @param request
+   * @return
+   */
+  @RequestMapping(value={"/netRedGameZhangzhou"}, method={RequestMethod.GET, RequestMethod.POST})
+  public String netRedGameZhangzhou(HttpServletRequest request){
+    String weiChatCode = request.getParameter("code");
+    String userId = request.getParameter("userId");
+    HttpSession  session =  request.getSession();
+    session.setAttribute(GameArea, Zhangzhou);
+    log.error("大赛首页漳州");
+    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
+    	userId = (String) session.getAttribute(WEIXIN_userId);
+    }else{
+    	session.setAttribute(WEICHAT_CODE, weiChatCode);
+    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+        log.error("weiChatCode= " + weiChatCode);
+        log.error("userId= " + userId);
+        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
+          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
+          userId = weixinUserInfo.getId().toString();
+        }
+        session.setAttribute(WEIXIN_userId, userId);
+    }
+    log.error("userId = " + userId);
+    
+    session.setAttribute(WEIXIN_userId, userId);
+    AccessRecord record = new AccessRecord();
+    record.setCreateTime(new Date());
+    record.setAttentionUserId(Long.valueOf(userId));
+    accessRecordService.save(record);
+    if (StringUtil.isNotEmpty(userId)){
+      log.error("userId=" + userId);
+    }else{
+      log.error("微信授权用户信息错误！");
+      return indexPage;
+    }
+    return "redNet/index";
+  }
+  
+  
+  /**
+   * 获取大赛广告banner
+   * @param request
+   * @return
+   */
+  @ResponseBody
+  @RequestMapping(value={"/getGameBanner"}, method={RequestMethod.GET, RequestMethod.POST})
+  public List<String> getGameBanner(HttpServletRequest request){
+	    Map<String, Object> map = new HashMap();
+	    map.put("type", "1");
+	    map.put("status", "1");
+	    List<NetRedGameBanner> netBanners = netRedGameBannerService.findByMap(map);
+	    List<String> bannerImages = new ArrayList<String>();
+	    if(netBanners !=null && netBanners.size()>0){
+	    	for(NetRedGameBanner banner:netBanners){
+	    		if(StringUtil.isNotEmpty(banner.getImageUrl())){
+	    			bannerImages.add(banner.getImageUrl());
+	    		}
+	    	}
+	    }
+	    return bannerImages;
+  }
+  
+  /**
+   * 获取活动介绍
+   * @param request
+   * @return
+   */
+  @ResponseBody
+  @RequestMapping(value={"/getGameIntroduce"}, method={RequestMethod.GET, RequestMethod.POST})
+  public String getGameIntroduce(HttpServletRequest request){
+	  Map<String, Object> map = new HashMap();
+	    map.put("type", "2");
+	    map.put("status", "1");
+	    List<NetRedGameBanner> netBanners = netRedGameBannerService.findByMap(map);
+	    String image = "";
+	    if(netBanners !=null && netBanners.size()>0){
+	    	if(StringUtil.isNotEmpty(netBanners.get(0).getImageUrl())){
+    			image = netBanners.get(0).getImageUrl();
+    		}
+	    }
+	    return image;
+  }
   
   @ResponseBody
   @RequestMapping(value={"/supperCount"}, method={RequestMethod.GET, RequestMethod.POST})
@@ -1058,7 +1389,8 @@ public class WeixinApiController extends ClientApiBaseController{
   @ResponseBody
   @RequestMapping(value={"/findNetRedListPage"}, method={RequestMethod.GET, RequestMethod.POST})
   public Map<String, Object> findNetRedListPage(HttpServletRequest request, String content, String pageSize, String pageNo){
-    Map<String, Object> map = new HashMap();
+	HttpSession session = request.getSession();  
+	Map<String, Object> map = new HashMap();
     if (StringUtil.isEmpty(pageNo)) {
       pageNo = "1";
     }
@@ -1071,6 +1403,9 @@ public class WeixinApiController extends ClientApiBaseController{
     searchMap.put("offset", Integer.valueOf(page.getOffset()));
     
     searchMap.put("netStatus", 0);
+    
+    searchMap.put("area", session.getAttribute(GameArea));
+    
     if (StringUtil.isNotEmpty(content)) {
     	searchMap.put("name", content);
     }

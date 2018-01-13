@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gson.Gson;
+
 import cn.temobi.complex.dao.AccountWalletLogDao;
 import cn.temobi.complex.dao.WeixinUserInfoDao;
 import cn.temobi.complex.entity.AccountWalletLog;
@@ -72,13 +74,14 @@ public class WeixinClientApiService extends ServiceBase{
 			passMap.put("productDetail", "打call付款");
 			passMap.put("orderNo", orderNo);
 			passMap.put("ip", request.getRemoteAddr());
-			passMap.put("ip", "127.0.0.1");
+//			passMap.put("ip", "127.0.0.1");
 			log.error("userId= " + weixinUserInfo.getId() + ",openId" +weixinUserInfo.getOpenId());
 			if(weixinUserInfo.getOpenId()!=null){
 				passMap.put("openId", weixinUserInfo.getOpenId());
 			}
 			Map<String, Object> returnMap = null;
 			
+			//微信支付
 	    	returnMap = OrderUtil.getNetRedWeixinInfo(passMap,price);
 	    	
 	    	String code = CommonUtil.nvl(returnMap.get("code"));

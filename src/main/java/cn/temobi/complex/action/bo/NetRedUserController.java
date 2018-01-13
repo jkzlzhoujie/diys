@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salim.cache.CacheHelper;
 
@@ -52,6 +53,7 @@ public class NetRedUserController extends BoBaseController{
 	        Map<String, Object> map = new HashMap<String, Object>();
 	        String id = request.getParameter("id");
 	        String name = request.getParameter("name");
+	        String area = request.getParameter("area");
 	        String pageSize = request.getParameter("pageSize");
 	        String pageNo = request.getParameter("pageNo");
 	        if (StringUtil.isEmpty(pageNo))
@@ -63,6 +65,7 @@ public class NetRedUserController extends BoBaseController{
 	        Map<String, Object> searchMap = new HashMap<String, Object>();
 	        searchMap.put("id", id);
 	        searchMap.put("name", name);
+	        searchMap.put("area", area);
 	        searchMap.put("limit", page.getPageSize());
 	        searchMap.put("offset", page.getOffset());
 	        List<NetRedUser> list = new ArrayList<NetRedUser>();
@@ -155,4 +158,17 @@ public class NetRedUserController extends BoBaseController{
         }
 		return "redirect:/Bo/netRed/netRedUserInfoList";
 	}
+	
+	
+	@RequestMapping(value="/netRedUserDelete",method={RequestMethod.GET,RequestMethod.POST})
+	public @ResponseBody String netRedUserDelete(HttpServletRequest request,Model model){
+		String id = request.getParameter("id");
+		if(StringUtil.isNotEmpty(id)){
+			service.delete(Long.parseLong(id));
+		}
+		return "";
+	}
+	
+	
+	
 }

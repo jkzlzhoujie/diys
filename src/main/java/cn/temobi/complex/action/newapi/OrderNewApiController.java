@@ -280,36 +280,13 @@ public class OrderNewApiController extends ClientApiBaseController{
 			String body = IOUtils.toString(inputStream, "UTF-8");
 			log.error("微信支付回调接口" + body);
 			if (StringUtil.isNotBlank(body)) {
-				ReturnData returnData = (ReturnData) Util.getObjectFromXML(
-						body, ReturnData.class);
-				
-				String orderNo =  returnData.getOut_trade_no();
+				ReturnData returnData = (ReturnData) Util.getObjectFromXML(body, ReturnData.class);
 				String code = "";
 				if (returnData.getResult_code().equals("SUCCESS")) {
 					code = "000000";
 				} else{
 					code = "100000";
 				}
-				Order order = orderService.callBack(orderNo, code);
-				
-				if (StringUtil.isNotEmpty(order) && returnData.getResult_code().equals("SUCCESS")) {
-					try {
-//						PushUtil.pullOneMessage("67", "亲，有一个新的订单支付成功，请及时处理！", "14", "", "");
-//						PushUtil.pullOneMessage("68", "亲，有一个新的订单支付成功，请及时处理！", "14", "", "");
-//						PushUtil.pullOneMessage("69", "亲，有一个新的订单支付成功，请及时处理！", "14", "", "");
-//						PushUtil.pullOneMessage("71", "亲，有一个新的订单支付成功，请及时处理！", "14", "", "");
-//						PushUtil.pullOneMessage("411", "亲，有一个新的订单支付成功，请及时处理！", "14", "", "");
-//						PushUtil.pullOneMessage("640", "亲，有一个新的订单支付成功，请及时处理！", "14", "", "");
-					
-						orderService.executeFuc(order);
-					} catch (Exception e) {
-						e.printStackTrace();
-						log.error(e.getMessage());
-					}
-				} 
-				
-				
-				
 			}
 			
 		} catch (Exception e) {
@@ -320,7 +297,6 @@ public class OrderNewApiController extends ClientApiBaseController{
 		try {
 			response.getWriter().write(data);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

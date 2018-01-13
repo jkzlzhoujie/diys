@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.temobi.complex.entity.WeiXinUserInfo">
+<mapper namespace="cn.temobi.complex.entity.WeixinUserInfo">
 	<cache type="org.mybatis.caches.ehcache.EhcacheCache" />
-	<resultMap type="WeiXinUserInfo" id="sql_resultMap">
+	
+	<resultMap type="WeixinUserInfo" id="sql_resultMap">
 		<id property="id" column="id" />
 		<result property="openId" column="openId" />
-		<result property="nickName" column="nick_name" />
+		<result property="nickname" column="nickname" />
 		<result property="sex" column="sex" />
 		<result property="city" column="city" />
-		<result property="headImageUrl" column="head_image_url" />
+		<result property="headImgUrl" column="headImgUrl" />
 		<result property="subscribe" column="subscribe" />
 		<result property="subscribeTime" column="subscribeTime" />
 	</resultMap>
@@ -19,7 +20,7 @@
 	
 	<sql id="sql_where">
 		<where>
-			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">and cui.nick_name like "%"#{nickName}"%"</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickname)">and cui.nickname like "%"#{nickname}"%"</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(city)">and cui.city = #{city}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sex)">and cui.sex = #{sex}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and cui.id = #{id}</if>
@@ -56,8 +57,8 @@
 	</select>
 	
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		insert into weichat_user(nick_name,sex,city,head_image_url,openId,nick_name,subscribe,subscribeTime) 
-		values(#{nickName},#{sex},#{city},#{headImageUrl},#{openId},#{nickName},NOW() )
+		insert into weichat_user(nickname,sex,city,headImgUrl,openId,subscribeTime) 
+		values(#{nickname},#{sex},#{city},#{headImgUrl},#{openId},NOW() )
 	</insert>
 	
 	<update id="update" >
@@ -65,8 +66,8 @@
 		<set>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(sex)">sex=#{sex},</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(city)">city=#{city},</if>
-			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(headImageUrl)">head_image_url=#{headImageUrl},</if>
-			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickName)">nick_name=#{nickName},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(headImgUrl)">headImgUrl=#{headImgUrl},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(nickname)">nickname=#{nickname},</if>
 		</set>
 		where id=#{id}
 	</update>

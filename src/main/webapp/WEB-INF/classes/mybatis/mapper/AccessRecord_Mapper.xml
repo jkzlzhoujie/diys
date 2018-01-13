@@ -52,8 +52,8 @@
 	</select>
 	
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
-		insert into access_record(netRedUserId,attentionUserId,create_time) 
-		values(#{netRedUserId},#{attentionUserId}},NOW() )
+		insert into access_record(netRedUserId,attentionUserId,createTime) 
+		values(#{netRedUserId},#{attentionUserId},NOW() )
 	</insert>
 	
 	<update id="update" >
@@ -68,5 +68,14 @@
 	<delete id="delete" flushCache="true">
 		delete from access_record where id=#{id}
 	</delete>
+	
+	
+	<select id="findNetRank" useCache="false"  resultType="cn.temobi.complex.entity.AccessRecord">
+		SELECT t.* FROM ( SELECT SUM(COUNT) AS COUNT,netRedUserId FROM vote_record GROUP BY netRedUserId )t 
+		<where>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(count)">and count > #{count}</if>
+		</where>
+		ORDER BY t.count DESC
+	</select>
 	
 </mapper>
