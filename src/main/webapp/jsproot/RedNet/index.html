@@ -8,13 +8,19 @@
     <link rel="stylesheet" href="../../jsproot/RedNet/css/aui.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/weui.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/weui2.css">
+    <link rel="stylesheet" href="../../jsproot/RedNet/css/swiper-3.4.2.min.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/dropload.css">
     <link rel="stylesheet" href="../../jsproot/RedNet/css/style.css">
 </head>
 <body style="background:#fbf0ef">
     <div id="indApp">
         <div class="i-top">
-            
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" v-for="item in ggImg"><img v-bind:src="item" alt=""></div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
         </div>
         <div class="aui-row aui-row-padded i-row" id="showActionSheet">
             <div class="aui-col-xs-4">
@@ -30,6 +36,11 @@
                 <div class="i-num" v-text="fwNum"></div>
             </div>
         </div>
+        
+        <div class="gg-div" style="margin-top: 0.9rem;">
+            <img v-bind:src="ggDiv" alt="">
+        </div>
+        
         <div class="i-search">
             <i class="aui-iconfont aui-icon-search i-search-img"></i>
             <input type="text" class="i-search-inp"/>
@@ -44,7 +55,7 @@
                 <div class="sm-con">
                     <div class="sm-name" v-text="item.name"></div>
                     <div class="sm-count"><span class="sm-count-num" v-text="item.count"></span><span class="sm-piao">票</span></div>
-                    <div class="sm-btn" v-on:click="sendFab(item.id,item.name)">投票</div>
+                    <div class="sm-btn" v-on:click="sendFab(item.id,item.name,item.firstImage,item.thanksWord)">投票</div>
                 </div>
             </div>
         </div>
@@ -106,50 +117,75 @@
                         <img class="sm-img" v-bind:src="item.img" alt=""  v-on:click="showInfo(item.id)">
                         <div class="sm-con">
                             <div class="sm-name" v-text="item.name"></div>
-                            <div class="sm-count"><span class="sm-count-num" v-text="item.pNum"></span><span class="sm-piao">票</span></div>
-                            <div class="sm-btn" v-on:click="sendFab(item.id)">投票</div>
+                            <div class="sm-count"><span class="sm-count-num" v-text="item.count"></span><span class="sm-piao">票</span></div>
+                            <div class="sm-btn" v-on:click="sendFab(item.id,item.name,item.firstImage,item.thanksWord)">投票</div>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
 
+        <div class="i-float-btn" v-on:click="wybm(sta)" v-text="showtext"></div>
 
-        <div class="pop-success" v-if="showTPSuc">
-            <div class="pop-suc-con p-tpcg">
-                <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
-                <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
-                <div class="pop-wybm-btn" v-on:click="wybm"></div>
+
+        <div class="pop-success" id="showTPSuc" style="display: none">
+            <div class="share-btn"></div>
+            <div class="pop-suc-con">
+                <div class="close-btn-con">
+                    <div class="close-btn-img" v-on:click="gbtpcg"></div>
+                </div>
+                <div class="msg-tpcg-con">
+
+                </div>
+                <div class="pop-tp-btns">
+                    <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                </div>
             </div>
         </div>
 
         
-        <div class="pop-success" v-if="showTPOverSuc">
-            <div class="pop-suc-con p-tpwk">
-                <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
-                <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
-                <div class="pop-wybm-btn" v-on:click="wybm"></div>
+        <div class="pop-success" id="showTPOverSuc" style="display: none">
+            <div class="pop-suc-con">
+                <div class="close-btn-con">
+                    <div class="close-btn-img" v-on:click="gbtpcg"></div>
+                </div>
+                <div class="msg-tpgz-con">
+
+                </div>
+                <div class="pop-tp-btns">
+                    <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                </div>
             </div>
         </div>
 
         
-        <div class="pop-success" v-if="showTPCallSuc">
-            <div class="pop-suc-con p-call-suc">
-                <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
-                <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
-                <div class="pop-wybm-btn" v-on:click="wybm"></div>
+        <div class="pop-success" id="showTPCallSuc" style="display: none">
+            <div class="pop-suc-con">
+                <div class="close-btn-con dc">
+                    <div class="close-btn-img dc" v-on:click="gbtpcg"></div>
+                </div>
+                <div class="msg-dc-con">
+                    <div class="pop-herad"><div class="xk"></div><img v-bind:src="seleclUser.img" alt=""></div>
+                    <div class="dc-con" v-text="seleclUser.thanksWord"></div>
+                    <div class="pop-wtdc-btn dc" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn dc" v-on:click="wybm"></div>
+                </div>
             </div>
         </div>
+        
     </div>
 
     <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/vue.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/aui-popup.js"></script>
+    <script src="../../jsproot/RedNet/js/plugins/swiper-3.4.2.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/dropload.min.js"></script>
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>  
     <script type="text/javascript">  
 	    //参数是后台传过来的，签名加密，随机数，时间戳等全部后台处理好  
-	    function onBridgeReady(price){ 
+	    function onBridgeReady(price, cb){ 
 	    price = 0.01; 
            $.post('/diys/clientNew/weixin/payRecharge?price='+price,function(data){
 				if(data != null){
@@ -165,7 +201,7 @@
 			              paypackage = item.paypackage;  
 			              sign = item.paySign; 
                     }); 
-					 
+					
                      wx.ready(function(){  
 			            wx.chooseWXPay({  
 				                timestamp: timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符  
@@ -174,17 +210,19 @@
 				                signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'  
 				                paySign: sign, // 支付签名  
 				                success: function (res) {  
+				                	cb && cb.call(this)
 				                    // 支付成功后的回调函数  
 				                    //使用以下方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。  
 				                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {       
-		                                  alert("支付成功");                
+		                                 // alert("支付成功");                
 		                             }else{  
-		                                  alert("支付失败");  
-		                                  alert(res.err_msg);
+		                                //  alert("支付失败");  
+		                                //  alert(res.err_msg);
 		                             }  
 				                }  
 				            });  
             		   });  
+            		   
             		   
 				}
 			});

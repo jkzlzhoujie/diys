@@ -102,7 +102,10 @@ public class NetRedGameBannerController extends BoBaseController{
 		String id = request.getParameter("id");
 		if (StringUtil.isNotEmpty(netRedGameBanner.getId()) &&  netRedGameBanner.getId() !=0) {
 			NetRedGameBanner gameBanner = netRedGameBannerService.getById(Long.parseLong(id));
-            netRedGameBannerService.update(netRedGameBanner);
+			gameBanner.setImageUrl(netRedGameBanner.getImageUrl());
+			gameBanner.setNote(netRedGameBanner.getNote());
+			gameBanner.setType(netRedGameBanner.getType());
+            netRedGameBannerService.update(gameBanner);
         } else {
         	netRedGameBanner.setStatus(1);
             netRedGameBannerService.save(netRedGameBanner);

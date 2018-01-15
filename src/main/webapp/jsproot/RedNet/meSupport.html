@@ -21,13 +21,13 @@
 </head>
 <body style="background:#fbf0ef">
      <div id="smApp" class="sm-body">
-         <div class="sm-item" v-for="item in supporter">
+         <div class="sm-item" v-for="(item,$index) in supporter">
              <div class="sm-num" v-text="item.netRedUserId"></div>
              <img class="sm-img" v-bind:src="item.firstImage" alt="">
              <div class="sm-con">
                  <div class="sm-name" v-text="item.netRedUserName"></div>
                  <div class="sm-count"><span class="sm-count-num" v-text="item.count"></span><span class="sm-piao">票</span></div>
-                 <div class="sm-btn" v-on:click="sendFab(item.netRedUserId)">投票</div>
+                 <div class="sm-btn" v-on:click="sendFab(item.netRedUserId,item.netRedUserName,item.firstImage,item.thanksWord,$index)">投票</div>
              </div>
          </div>
 
@@ -68,31 +68,53 @@
 
 
          
-        <div class="pop-success" v-if="showTPSuc">
-            <div class="pop-suc-con p-tpcg">
-                <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
-                <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
-                <div class="pop-wybm-btn" v-on:click="wybm"></div>
+        <div class="pop-success" id="showTPSuc" style="display: none">
+            <div class="share-btn"></div>
+            <div class="pop-suc-con">
+                <div class="close-btn-con">
+                    <div class="close-btn-img" v-on:click="gbtpcg"></div>
+                </div>
+                <div class="msg-tpcg-con">
+
+                </div>
+                <div class="pop-tp-btns">
+                    <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                </div>
             </div>
         </div>
 
         
-        <div class="pop-success" v-if="showTPOverSuc">
-            <div class="pop-suc-con p-tpwk">
-                <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
-                <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
-                <div class="pop-wybm-btn" v-on:click="wybm"></div>
+        <div class="pop-success" id="showTPOverSuc" style="display: none">
+            <div class="pop-suc-con">
+                <div class="close-btn-con">
+                    <div class="close-btn-img" v-on:click="gbtpcg"></div>
+                </div>
+                <div class="msg-tpgz-con">
+
+                </div>
+                <div class="pop-tp-btns">
+                    <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                </div>
             </div>
         </div>
 
         
-        <div class="pop-success" v-if="showTPCallSuc">
-            <div class="pop-suc-con p-call-suc">
-                <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
-                <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
-                <div class="pop-wybm-btn" v-on:click="wybm"></div>
+        <div class="pop-success" id="showTPCallSuc" style="display: none">
+            <div class="pop-suc-con">
+                <div class="close-btn-con dc">
+                    <div class="close-btn-img dc" v-on:click="gbtpcg"></div>
+                </div>
+                <div class="msg-dc-con">
+                    <div class="pop-herad"><div class="xk"></div><img v-bind:src="seleclUser.img" alt=""></div>
+                    <div class="dc-con" v-text="seleclUser.thanksWord"></div>
+                    <div class="pop-wtdc-btn dc" v-on:click="wtdc"></div>
+                    <div class="pop-wybm-btn dc" v-on:click="wybm"></div>
+                </div>
             </div>
         </div>
+        
     </div>
 
      </div>
@@ -100,5 +122,53 @@
     <script src="../../jsproot/RedNet/js/plugins/zepto.min.js"></script>
     <script src="../../jsproot/RedNet/js/plugins/dropload.min.js"></script>
     <script src="../../jsproot/RedNet/js/script/meSupport.js"></script>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>  
+    <script type="text/javascript">  
+	    //参数是后台传过来的，签名加密，随机数，时间戳等全部后台处理好  
+	    function onBridgeReady(price, cb){ 
+	    price = 0.01; 
+           $.post('/diys/clientNew/weixin/payRecharge?price='+price,function(data){
+				if(data != null){
+		            
+		             var appId =  '';  
+		             var timeStamp = '';  
+		             var nonceStr =  '';   
+		             var paypackage = '';  
+		             $.each(eval(data), function(i, item) {  
+		             	  appId =  item.appId;  
+			              timeStamp = item.paytimestamp;
+			              nonceStr = item.paynonceStr;  
+			              paypackage = item.paypackage;  
+			              sign = item.paySign; 
+                    }); 
+					
+                     wx.ready(function(){  
+			            wx.chooseWXPay({  
+				                timestamp: timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符  
+				                nonceStr: nonceStr, // 支付签名随机串，不长于 32 位  
+				                package: paypackage, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）  
+				                signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'  
+				                paySign: sign, // 支付签名  
+				                success: function (res) {  
+				                    // 支付成功后的回调函数  
+				                    //使用以下方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。  
+				                    cb && cb.call(this)
+				                    // 支付成功后的回调函数  
+				                    //使用以下方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。  
+				                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {       
+		                                 // alert("支付成功");                
+		                             }else{  
+		                                //  alert("支付失败");  
+		                                //  alert(res.err_msg);
+		                             }  
+				                }  
+				            });  
+            		   });  
+            		   
+            		   
+				}
+			});
+	    }
+	</script>  
 </body>
 </html>

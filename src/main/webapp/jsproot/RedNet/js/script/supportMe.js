@@ -130,7 +130,7 @@
 //                     拼接HTML
                     $.ajax({
                         type: 'GET',
-                        url: '../../clientNew/weixin/supportMeUserList?type=1' + '&pageNo='+page+'&pageSize='+size,
+                        url: '../../clientNew/weixin/supportMeUserList?type=1' + '&pageNo='+pageTwo+'&pageSize='+size,
                         success: function(data){
                         	var obj = JSON.parse(data);
                          	 if(obj.response.length >0){

@@ -1,4 +1,21 @@
 ;(function () {
+	
+	$.ajax({
+		url: 'getPayparam',
+		data: {},
+		success: function (data) {
+			var result = JSON.parse(data);
+	        wx.config({//测试工具  测试微信参数是否正确
+	            debug: false,
+	            appId: result.appId,
+	            timestamp:  result.configTimestamp,	// 必填，生成签名的时间戳
+	            nonceStr:  result.configNonceStr,	// 必填，生成签名的随机串
+	            signature:  result.signature,// 必填，签名，见附录1
+	            jsApiList: ['chooseWXPay']
+	        });
+		}
+	});
+	
 	function GetQueryString(name)
 	{
 	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
@@ -41,11 +58,18 @@
                     hImg: imgs.hImg[0],
                     xImg: imgs.xImg[0],
                     type: 1,//投票类型：1：鲜花，2：打CALL
-                    number: 0,//打CALL数,
+                    number: 1,//打CALL数,
                     showTPSuc: false,//投票成功弹窗
                     showTPOverSuc: false,//票数用完弹窗
                     showTPCallSuc: false,//打call成功
-                    selId: ''
+                    selId: '',
+                    seleclUser: {
+                    	id: '',
+                    	name: '',
+                    	img: '',
+                    	thanksWord: '',
+                    	index: ''
+                    }
                 },
                 methods: {
                     getData: function () {
@@ -67,29 +91,24 @@
 //                             }
 //                         });
                     },
-                    sendFab: function (id) {
-                        //数据请求
-                        // $.ajax({
-                        //     url: '',
-                        //     data: {
-                        //参数
-                        //     },
-                        //     success: function () {
-        
-                        //     }
-                        // });
+                    sendFab: function (id, name, img, tw,index) {
+                    	this.type = 1;
+                        this.hImg = imgs.hImg[0];
+                        this.xImg = imgs.xImg[0];
+                    	this.seleclUser.id = id;
+                    	this.seleclUser.name = name;
+                    	this.seleclUser.img = img;
+                    	this.seleclUser.thanksWord = (function () {
+                        	var str = '亲，谢谢您为我打CALL哦！';
+                        	if (tw != null && tw != '') {
+                        		return tw;
+                        	} else {
+                        		return str;
+                        	}
+                        })();
+                    	this.seleclUser.index = index;
                     	this.selId = id;
-                        var mask = $('#mask');
-                        var weuiActionsheet = $('#weui_actionsheet');
-                        weuiActionsheet.addClass('weui_actionsheet_toggle');
-                        mask.show().addClass('weui_fade_toggle').one('click', function () {
-                            hideActionSheet(weuiActionsheet, mask);
-                        });
-                        $('#actionsheet_cancel').one('click', function () {
-                            hideActionSheet(weuiActionsheet, mask);
-                        });
-                        weuiActionsheet.unbind('transitionend').unbind('webkitTransitionEnd');
-
+                        this.showTP();
                     },
                     selLw: function (n) {
                         if (n == 1) {
@@ -103,25 +122,53 @@
                     },
                     sendInfo: function () {
                     	var that =  this;
+                    	var price = 0;
                         var mask = $('#mask');
                         var weuiActionsheet = $('#weui_actionsheet');
                         hideActionSheet(weuiActionsheet, mask);
 
-                        var params = {
-                            //voteUserId: GetQueryString("voteUserId"),
-                            netRedUserId: this.selId,
-                            count: 1,
-                            type: 1
-                        }
+                        var params = {};
                         if (this.type == 2) {
-                            var price = this.number; 
+                        	price = this.number; 
                             if(price == 0){
                                 alert('打call数不能少于1个');
                                 return ;
                             }
-                            onBridgeReady(price);
-                            alert('暂不支持');
+                            params = {                     
+                                netRedUserId: this.selId,
+                                count: this.number,
+                                type: this.type
+                            }
+                            onBridgeReady(price, function () {
+//                              支持投票
+                              $.ajax({
+                              	url: 'userVote',
+                              	data: params,
+                              	success: function (result) {
+                              		var obj = JSON.parse(result);
+      	                           	 if(obj.code == "success"){
+                                    	var count = parseInt(that.supporter[that.seleclUser.index]['count']);
+	                                    if (that.type == 2) {
+	                                    	that.supporter[that.seleclUser.index]['count'] = count + (price * 10);
+	                                        $('#showTPCallSuc').show();
+	                                    }else{
+	                                    	that.supporter[that.seleclUser.index]['count'] = count + 1;
+	                                        $('#showTPSuc').show();
+	                                    }
+      	                           	 }else if(obj.code == "moreFive"){
+      	                                 $('#showTPOverSuc').show();
+      	                           	 }else{
+      	                           		 alert(obj.desc);
+      	                           	 }
+                              	}
+                              })
+                        	});
                             return;
+                        }
+                        params = {                     
+                            netRedUserId: this.selId,
+                            count: 1,
+                            type: this.type
                         }
                         //支持投票
                         $.ajax({
@@ -130,13 +177,16 @@
                             success: function (result) {
                                 var obj = JSON.parse(result);
                                     if(obj.code == "success"){
-	                                    if (this.type == 2) {
-	                                        that.showTPCallSuc = true;
+                                    	var count = parseInt(that.supporter[that.seleclUser.index]['count']);
+	                                    if (that.type == 2) {
+	                                    	that.supporter[that.seleclUser.index]['count'] = count + (price * 10);
+	                                        $('#showTPCallSuc').show();
 	                                    }else{
-	                                        that.showTPSuc = true;
+	                                    	that.supporter[that.seleclUser.index]['count'] = count + 1;
+	                                        $('#showTPSuc').show();
 	                                    }
                                     }else if(obj.code == "moreFive"){
-                                    	that.showTPOverSuc = true;
+                                        $('#showTPOverSuc').show();
                                     }else{
                                         alert(obj.desc);
                                     }
@@ -152,16 +202,28 @@
                             this.number = 0;
                         }
                     },
+                    showTP: function() {
+                        var mask = $('#mask');
+                        var weuiActionsheet = $('#weui_actionsheet');
+                        weuiActionsheet.addClass('weui_actionsheet_toggle');
+                        mask.show().addClass('weui_fade_toggle').one('click', function () {
+                            hideActionSheet(weuiActionsheet, mask);
+                        });
+                        $('#actionsheet_cancel').one('click', function () {
+                            hideActionSheet(weuiActionsheet, mask);
+                        });
+                        weuiActionsheet.unbind('transitionend').unbind('webkitTransitionEnd');
+                    },
                     wtdc: function () {
                         this.showTP();
-                        this.showTPOverSuc = false;
-                        this.showTPSuc = false;
-                        this.showTPCallSuc = false;
+                        $('#showTPOverSuc').hide();
+                        $('#showTPSuc').hide();
+                        $('#showTPCallSuc').hide();
                     },
                     gbtpcg: function () {
-                        this.showTPOverSuc = false;
-                        this.showTPSuc = false;
-                        this.showTPCallSuc = false;
+                        $('#showTPOverSuc').hide();
+                        $('#showTPSuc').hide();
+                        $('#showTPCallSuc').hide();
                     },
                     wybm: function () {//我要报名
                         window.location.href = 'signUpinfoPage';//跳转到报名页

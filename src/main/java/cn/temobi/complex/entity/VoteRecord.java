@@ -20,9 +20,16 @@ public class VoteRecord extends IdEntity{
 	private int callCountPer;//打call数
 	private String createTimeStr;
 	private String typeName;
+	private String thanksWord;
 	
 	
 	
+	public String getThanksWord() {
+		return thanksWord;
+	}
+	public void setThanksWord(String thanksWord) {
+		this.thanksWord = thanksWord;
+	}
 	public long getNetRedUserId() {
 		return netRedUserId;
 	}

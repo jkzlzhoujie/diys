@@ -119,7 +119,7 @@
                    	 var obj = JSON.parse(result);
                    	 if(obj.code == "00000"){
 //                   		 alert("报名成功");
-                   		that.showTPSuc = true;
+                   		$('#showTPSuc').show();
                    		window.location.href = 'userShowPage?netRedUserId='+'';
                    	 }else{
                    		 alert("报名失败," +obj.desc);
@@ -163,7 +163,7 @@
                 }
             },
             gbtpcg: function () {
-                this.showTPSuc = false;
+           		$('#showTPSuc').hide();
             },
             ljqw: function () {
                 window.location.href='';//跳转到报名成功页

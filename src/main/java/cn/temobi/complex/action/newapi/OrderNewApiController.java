@@ -270,11 +270,10 @@ public class OrderNewApiController extends ClientApiBaseController{
 	}
 	
 	
-	
+	@ResponseBody
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/weixinNotify", method = { RequestMethod.GET,
-			RequestMethod.POST })
-	public @ResponseBody void weixinNotify(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/weixinNotify", method = { RequestMethod.GET,RequestMethod.POST })
+	public void weixinNotify(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			InputStream inputStream = request.getInputStream(); // 模拟接收请求xml
 			String body = IOUtils.toString(inputStream, "UTF-8");

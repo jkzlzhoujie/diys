@@ -483,6 +483,7 @@ height: 15px;
     overflow-x: hidden;
     overflow-y: auto;
     margin-bottom: 53px;
+    -webkit-overflow-scrolling : touch;
 }
 .us-follow{
     position: relative;
@@ -895,7 +896,7 @@ margin-right: 11px;
 }
 .i-pop-tit-two{
     font-size: 10px;
-    color: #ff6cfe;
+    color: #f8879c;
 }
 .i-pop-b{
     width: 100%;
@@ -904,12 +905,9 @@ margin-right: 11px;
     font-size: 11px;
     padding: 5px 0 15px 0;
 }
-.i-num{
-
-}
 .num-btn{
-    
 position: absolute;
+background: #ECEAEB;
 }
 .i-num-tit{
     color: #323232;
@@ -934,11 +932,7 @@ top: 0;
 width: 40px;
 
 line-height: 1.5rem;
-
 bottom: 0;
-
-background: #d7d7d7;
-
 text-align: center;
 
 font-size: 28px;
@@ -962,9 +956,6 @@ top: 0;
 right: 0;
     
 bottom: 0;
-    
-background: #d7d7d7;
-    
 text-align: center;
     
 font-size: 25px;
@@ -1088,6 +1079,7 @@ overflow: auto;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: 45px;
 }
 .i-s-null{
     font-size: 17px;
@@ -1135,18 +1127,24 @@ overflow: auto;
     background-image: url(../images/bmcg.png)
 }
 .pop-wtdc-btn{
-    position: absolute;
-    width: 4.5rem;
-    height: 1.5rem;
+    width: 90px;
+    height: 30px;
     left: 3.5rem;
-    bottom: 0;
+    display: inline-block;
+    background-image: url(../images/call-for-her-btn.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 30px;
 }
 .pop-wybm-btn{
-    position: absolute;
-    width: 3.5rem;
-    height: 1.5rem;
-    right: 2.8rem;
-    bottom: 0;
+    width: 70px;
+    height: 30px;
+    background-image: url(../images/bm-btn.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: inline-block;
 }
 .close-btn-tpcg{
     position: absolute;
@@ -1207,9 +1205,6 @@ overflow: auto;
     height: 170px;
     background-image: url(../images/bmhb.jpg);
 }
-.i-top{
-    background-image: url(../images/dshb.jpg);
-}
 .weui_mask_transition{
     z-index: 1000;
 }
@@ -1262,3 +1257,157 @@ border: 1px solid  #fbd0da;
     
 border-radius: 20px;
 }
+    .swiper-container {
+        width: 100%;
+        height: 210px;
+    }
+	.swiper-slide img{
+		width: 100%;
+		height: 100%
+	}
+	
+    .i-float-btn{
+        width: 100%;
+        height: 40px;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        z-index: 10;
+        text-align: center;
+        line-height: 40px;
+        background-color: #F8869D;
+        color: #fff;
+        opacity: 0.8;
+    }
+      .gg-div img{
+        width: 100%;
+    }
+     .share-btn{
+        width: 31px;
+        height: 44px;
+        background-image: url(../images/share.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        float: right;
+        margin: 10px;
+    }
+    .close-btn-con{
+         width: 296px;
+    height: 110px;
+    position: relative;
+    margin: 0 auto;
+    }
+    
+    .close-btn-con::before{
+        content: ' ';
+        display: block;
+        width: 1px;
+        height: 100%;
+        position: absolute;
+        left: 50%;
+        top: 24px;
+        bottom: 0;
+        background: #F8869D;
+    }
+    .close-btn-img{
+        width: 24px;
+        height: 24px;
+        background-image: url(../images/pop-close.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0 auto;
+    }
+    .msg-tpcg-con{
+        width: 296px;
+        height: 228px;
+        background-image: url(../images/tpSuccess/tpcg.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0 auto;
+    }
+    .pop-tp-btns{
+        margin-top: 10px;
+        text-align: center;
+    }
+    .msg-tpgz-con{
+        width: 296px;
+        height: 228px;
+        background-image: url(../images/tpSuccess/tpgz.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0 auto;
+    }
+    .msg-dc-con{
+        width: 296px;
+        height: 228px;
+        background-image: url(../images/asdf.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        margin: 0 auto;
+        position: relative;
+    }
+    .pop-wtdc-btn.dc{
+        position: absolute;
+        bottom: 42px;
+        left: 89px;
+    }
+    .pop-wybm-btn.dc{
+        position: absolute;
+        bottom: 42px;
+        right: 45px;
+    }
+    .pop-herad{
+        width: 70px;
+        height: 70px;
+        position: absolute;
+        left: 133px;
+        top: 0;
+        overflow: hidden;
+        padding: 5px;
+    }
+    .pop-herad img{
+        width: 100%;
+        height: 100%;
+        border-radius: 100%;
+    }
+    .xk{
+        background-image: url(../images/asdf1.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        position: absolute;
+        left: 0;
+        right:0;
+        bottom: 0;
+        top: 0;
+    }
+    .close-btn-con.dc::before{
+         left: 170px;
+    }
+    .close-btn-img.dc{
+	    left: 159px;
+	    position: absolute;
+	    top: 0;
+    }
+	.dc-con{
+		position: absolute;
+	    width: 160px;
+	    height: 75px;
+	    top: 79px;
+	    left: 88px;
+	    overflow:hidden;
+	    color:#ee9625;
+	    display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		overflow: hidden;
+	}
+	button, .aui-btn{
+	    height: 2rem;
+    line-height: 2rem;
+	}

@@ -4,7 +4,7 @@
 		data: {},
 		success: function (data) {
 			var result = JSON.parse(data);
-	        wx.config({
+	        wx.config({//测试工具  测试微信参数是否正确
 	            debug: false,
 	            appId: result.appId,
 	            timestamp:  result.configTimestamp,	// 必填，生成签名的时间戳
@@ -53,28 +53,84 @@
             me.indVue = new Vue({
                 el: '#indApp',
                 data: {
-                    csNum: 123,
-                    tpNum: 545,
-                    fwNum: 789,
+                    csNum: 0,
+                    tpNum: 0,
+                    fwNum: 0,
                     supporter: [],//网红列表
                     hImg: imgs.hImg[0],
                     xImg: imgs.xImg[0],
                     type: 1,//投票类型：1：鲜花，2：打CALL
-                    number: 0,//打CALL数
+                    number: 1,//打CALL数
                     searchArr: [],
                     isShow: false,
                     searchVal: '',
                     seleclUser: {
                         name: '',
-                        id: ''
+                        id: '',
+                        img: '',
+                        thanksWord:''
                     },
                     showTPSuc: false,//投票成功弹窗
                     showTPOverSuc: false,//票数用完弹窗
-                    showTPCallSuc: false//打call成功
+                    showTPCallSuc: false,//打call成功
+                    ggImg: [],
+                    ggDiv: '',
+                    showtext: '我要报名',
+                    sta: ''
+                    
                 },
                 methods: {
                 	getData: function () {
                     	var that = this;
+                    	
+                    	$.ajax({
+                            url: 'isRegister',
+                            data: {
+                           	 //参数
+                            },
+                            success: function (result) {
+                            	if(result == 1){
+                            		that.showtext = '我的信息';
+                            		that.sta = '1';
+                            	}
+                            }
+                        });
+                    	
+
+                    	$.ajax({
+                            url: 'getGameBanner',
+                            data: {
+                           	 //参数
+                            },
+                            success: function (result) {
+                            	that.ggImg = JSON.parse(result);
+                        		setTimeout(function () {
+                                    var swiper = new Swiper('.swiper-container', {
+                                        paginationClickable: true,
+                                        speed: 300,
+                                        loop: true,
+                                        observer:true,
+                                        observeParents:true,
+                                        pagination: '.swiper-pagination',
+                                        autoplayDisableOnInteraction : false,
+                                        autoplay:1000
+                                    });
+                        		},300)
+                            }
+                        });
+                    	
+                    	$.ajax({
+                            url: 'getGameIntroduce',
+                            data: {
+                           	 //参数
+                            },
+                            success: function (result) {
+                            	that.ggDiv = result.substring(1,result.length - 1);
+                            }
+                        });
+                    	
+                    	
+                    	
                     	$.ajax({
                             url: 'supperCount',
                             data: {
@@ -95,9 +151,22 @@
                         });
                         
                     },
-                    sendFab: function (id,name) {
+                    sendFab: function (id,name, img, thanksWord) {
+                    	debugger
+                    	this.type = 1;
+                        this.hImg = imgs.hImg[0];
+                        this.xImg = imgs.xImg[0];
                         this.seleclUser.id = id;
                         this.seleclUser.name = name;
+                        this.seleclUser.img = img;
+                        this.seleclUser.thanksWord = (function () {
+                        	var str = '亲，谢谢您为我打CALL哦！';
+                        	if (thanksWord != null && thanksWord != '') {
+                        		return thanksWord;
+                        	} else {
+                        		return str;
+                        	}
+                        })();
                         this.showTP();
                     },
                     selLw: function (n) {
@@ -119,38 +188,103 @@
                     sendInfo: function (id) {//支持投票
                     	var that = this;
                         var mask = $('#mask');
+                        var price = 0;
                         var weuiActionsheet = $('#weui_actionsheet');
                         hideActionSheet(weuiActionsheet, mask);
-                        var params = {
-                        		//voteUserId: GetQueryString("voteUserId"),
-                        		netRedUserId: id,
-                        		count: 1,
-                        		type: 1
-                        }
+                        var params = {};
                         if (this.type == 2) {
-                        	var price = this.number; 
+                        	price = this.number; 
                         	if(price == 0){
                         		alert('打call数不能少于1个');
                         		return ;
-                        	}
-                        	onBridgeReady(price);
-                        	alert('暂不支持');
+                        	} 
+                        	params = {
+                        		netRedUserId: id,
+                        		count: this.number,
+                        		type: this.type
+                            }
+                        	onBridgeReady(price, function () {
+//                              支持投票
+                              $.ajax({
+                              	url: 'userVote',
+                              	data: params,
+                              	success: function (result) {
+                              		var obj = JSON.parse(result);
+      	                           	 if(obj.code == "success"){
+      	                           		 $.each(that.supporter, function (k, o) {
+      	                           			 if (o.id == id) {
+      	                           				 var count = parseInt(o.count);
+      	                           				 if (that.type == 2) {
+      	                           					that.supporter[k]['count'] = count + (price * 10);
+      	                           				 } else {
+      	                           					that.supporter[k]['count'] = count + 1;
+      	                           				 }
+      	                           			 }
+      	                           		 });
+      	                           		 $.each(that.searchArr, function (k, o) {
+      	                           			 if (o.id == id) {
+      	                           				 var count = parseInt(o.count);
+      	                           				 if (that.type == 2) {
+      	                           					that.searchArr[k]['count'] = count + (price * 10);
+      	                           				 } else {
+      	                           					that.searchArr[k]['count'] = count + 1;
+      	                           				 }
+      	                           			 }
+      	                           		 });
+      	                           		if (that.type == 2) {
+      	                                    $('#showTPCallSuc').show();
+      	                           		}else{
+      	                                    $('#showTPSuc').show();
+      	                           		}
+      	                           	 }else if(obj.code == "moreFive"){
+      	                                 $('#showTPOverSuc').show();
+      	                           	 }else{
+      	                           		 alert(obj.desc);
+      	                           	 }
+                              	}
+                              })
+                        	});
                         	return;
                         }
-                        //支持投票
+                    	params = {
+                    		netRedUserId: id,
+                    		count: 1,
+                    		type: this.type
+                        }
+//                        支持投票
                         $.ajax({
                         	url: 'userVote',
                         	data: params,
                         	success: function (result) {
                         		var obj = JSON.parse(result);
 	                           	 if(obj.code == "success"){
-	                           		if (this.type == 2) {
-	                           			that.showTPCallSuc = true;
+	                           		 $.each(that.supporter, function (k, o) {
+	                           			 if (o.id == id) {
+	                           				 var count = parseInt(o.count);
+	                           				 if (that.type == 2) {
+	                           					that.supporter[k]['count'] = count + (price * 10);
+	                           				 } else {
+	                           					that.supporter[k]['count'] = count + 1;
+	                           				 }
+	                           			 }
+	                           		 });
+	                           		 $.each(that.searchArr, function (k, o) {
+	                           			 if (o.id == id) {
+	                           				 var count = parseInt(o.count);
+	                           				 if (that.type == 2) {
+	                           					that.searchArr[k]['count'] = count + (price * 10);
+	                           				 } else {
+	                           					that.searchArr[k]['count'] = count + 1;
+	                           				 }
+	                           			 }
+	                           		 });
+	                           		if (that.type == 2) {
+	                                    $('#showTPCallSuc').show();
 	                           		}else{
-	                           			that.showTPSuc = true;
+	                                    $('#showTPSuc').show();
 	                           		}
 	                           	 }else if(obj.code == "moreFive"){
-	                           		that.showTPOverSuc = true;
+	                                 $('#showTPOverSuc').show();
 	                           	 }else{
 	                           		 alert(obj.desc);
 	                           	 }
@@ -167,6 +301,7 @@
                         }
                     },
                     cancelSer: function () {
+                        this.searchVal = '';
                         this.isShow = false;
                     },
                     clearVal: function () {
@@ -190,18 +325,22 @@
                     },
                     wtdc: function () {
                         this.showTP();
-                        this.showTPOverSuc = false;
-                        this.showTPSuc = false;
-                        this.showTPCallSuc = false;
+                        $('#showTPOverSuc').hide();
+                        $('#showTPSuc').hide();
+                        $('#showTPCallSuc').hide();
                     },
                     gbtpcg: function () {
-                        this.showTPOverSuc = false;
-                        this.showTPSuc = false;
-                        this.showTPCallSuc = false;
+                        $('#showTPOverSuc').hide();
+                        $('#showTPSuc').hide();
+                        $('#showTPCallSuc').hide();
                     },
-                    wybm: function () {//我要报名
-                        window.location.href = 'signUpinfoPage';//跳转到报名页
-                    }
+                    wybm: function (sta) {//我要报名
+                    	if (sta === '1'){
+	       	            	 window.location.href = '../../clientNew/weixin/userShowPage?netRedUserId='+'';
+	       	            } else {
+	       	            	window.location.href = 'signUpinfoPage';
+	       	            }
+                    	                    }
                 },
                 created: function () {
                     this.getData();
@@ -292,52 +431,6 @@
 //                    me.resetload();
                 }
             });
-//            serLoad = $('.i-search-info').dropload({
-//                scrollArea : $('.i-search-info'),
-//                loadDownFn : function(me){
-//                    page++;
-//                    // 拼接HTML
-//                    var searcheContent = '';
-//                    if(that.indVue.searchVal ){
-//                    	searcheContent = that.indVue.searchVal;
-//                    }
-//                    $.ajax({
-//                        type: 'GET',
-//                        url: 'findNetRedListPage?pageNo='+page+'&pageSize='+size+'&content=' + searcheContent,
-//                        success: function(data){
-//                        	var obj = JSON.parse(data);
-//                            if(obj){
-//                            	if (obj.list.length > 0){
-//                                	that.indVue.supporter = that.indVue.supporter.concat(obj.list);
-//                            	}else {
-//                                    // 锁定
-//                                    me.lock();
-//                                    // 无数据
-//                                    me.noData();
-//                            		
-//                            	}
-//                            // 如果没有数据
-//                            }else{
-//                            }
-//                            // 为了测试，延迟1秒加载
-//                            setTimeout(function(){
-//                                // 插入数据到页面，放到最后面
-//
-//                                // 每次数据插入，必须重置
-//                                me.resetload();
-//                            },1000);
-//                        },
-//                        error: function(xhr, type){
-//                        	 // 锁定
-//                            me.lock();
-//                            // 无数据
-//                            me.noData();
-//                            // 即使加载出错，也得重置
-//                            me.resetload();
-//                        }
-//                    });
-//                }
-//            });
         }
     }
     ind.init();

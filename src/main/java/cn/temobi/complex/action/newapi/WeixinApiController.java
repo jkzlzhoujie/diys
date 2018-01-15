@@ -110,38 +110,38 @@ public class WeixinApiController extends ClientApiBaseController{
     String userId = request.getParameter("userId");
     HttpSession  session =  request.getSession();
     session.setAttribute(GameArea, Xiamen);
-//    log.error("落地报名");
-//    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
-//    	userId = (String) session.getAttribute(WEIXIN_userId);
-//    }else{
-//    	session.setAttribute(WEICHAT_CODE, weiChatCode);
-//    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
-//        log.error("weiChatCode= " + weiChatCode);
-//        log.error("userId= " + userId);
-//        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
-//          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
-//          userId = weixinUserInfo.getId().toString();
-//        }
-//        session.setAttribute(WEIXIN_userId, userId);
-//    }
-//    log.error("userId = " + userId);
-//    AccessRecord record = new AccessRecord();
-//    record.setCreateTime(new Date());
-//    record.setAttentionUserId(Long.valueOf(userId));
-//    accessRecordService.save(record);
-//    Map<String, Object> map = new HashMap();
-//    map.put("weichatUserId", userId);
-//    List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
+    log.error("落地报名");
+    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
+    	userId = (String) session.getAttribute(WEIXIN_userId);
+    }else{
+    	session.setAttribute(WEICHAT_CODE, weiChatCode);
+    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+        log.error("weiChatCode= " + weiChatCode);
+        log.error("userId= " + userId);
+        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
+          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
+          userId = weixinUserInfo.getId().toString();
+        }
+        session.setAttribute(WEIXIN_userId, userId);
+    }
+    log.error("userId = " + userId);
+    AccessRecord record = new AccessRecord();
+    record.setCreateTime(new Date());
+    record.setAttentionUserId(Long.valueOf(userId));
+    accessRecordService.save(record);
+    Map<String, Object> map = new HashMap();
+    map.put("weichatUserId", userId);
+    List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
     String status = "0";
-//    if (netRedUsers != null && netRedUsers.size() > 0){
-//      status = "1";
-//    }
-//    if (StringUtil.isNotEmpty(userId)){
-//      log.error("userId=" + userId);
-//    }else{
-//      log.error("微信授权用户信息错误！");
-//      response.sendRedirect("/diys/jsproot/RedNet/index.html");
-//    }
+    if (netRedUsers != null && netRedUsers.size() > 0){
+      status = "1";
+    }
+    if (StringUtil.isNotEmpty(userId)){
+      log.error("userId=" + userId);
+    }else{
+      log.error("微信授权用户信息错误！");
+      response.sendRedirect("/diys/jsproot/RedNet/index.html");
+    }
     response.setContentType("text/xml;charset=UTF-8");
     response.sendRedirect("/diys/jsproot/RedNet/video.html?status=" + status);
   }
@@ -638,6 +638,24 @@ public class WeixinApiController extends ClientApiBaseController{
   }
   
   /**
+   * 获取用户是否注册
+   * @return
+   */
+  @ResponseBody
+  @RequestMapping(value={"/isRegister"}, method={RequestMethod.GET, RequestMethod.POST})
+  public int isRegister(HttpServletRequest request){ 
+	  	Map<String, Object> map = new HashMap();
+	    map.put("weichatUserId", getSeeionUserId(request));
+	    List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
+	    int status = 0;
+	    if (netRedUsers != null && netRedUsers.size() > 0){
+	      status = 1;
+	    }
+	    return status;
+  }
+  
+  
+  /**
    * 获取网红排名和得票数
    * @param request
    * @return
@@ -827,11 +845,6 @@ public class WeixinApiController extends ClientApiBaseController{
     object.setCode("10001");
     object.setDesc("参数错误");
     try {
-//      if (StringUtil.isEmpty(voteUserId))
-//      {
-//        object.setDesc("微信用户不能为空");
-//        return object;
-//      }
       Map<String, Object> param = new HashMap();
       Page page = new Page(pageNo, pageSize);
       param.put("limit", Integer.valueOf(page.getPageSize()));
@@ -1401,9 +1414,7 @@ public class WeixinApiController extends ClientApiBaseController{
     Map<String, Object> searchMap = new HashMap();
     searchMap.put("limit", Integer.valueOf(page.getPageSize()));
     searchMap.put("offset", Integer.valueOf(page.getOffset()));
-    
     searchMap.put("netStatus", 0);
-    
     searchMap.put("area", session.getAttribute(GameArea));
     
     if (StringUtil.isNotEmpty(content)) {
