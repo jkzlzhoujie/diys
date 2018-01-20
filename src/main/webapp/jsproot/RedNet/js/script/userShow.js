@@ -177,14 +177,14 @@ function init(opt) {
                     }
                 },
                 
-                created: function () {
-                    //弹幕：执行一次弹出一个消息
-                    init({
-                        img: './images/null.png',
-                        msg: '喵网红'
-                    });
-                    this.getData();
-                } 
+//                created: function () {
+//                    //弹幕：执行一次弹出一个消息
+//                    init({
+//                        img: './images/null.png',
+//                        msg: '喵网红'
+//                    });
+//                    this.getData();
+//                } 
             });
         },
         initDropDown: function () {

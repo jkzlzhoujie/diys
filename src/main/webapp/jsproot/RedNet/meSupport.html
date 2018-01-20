@@ -79,7 +79,7 @@
                 </div>
                 <div class="pop-tp-btns">
                     <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
-                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                    <div class="pop-wybm-btn" v-bind:class="{'showme': isShowMe}" v-on:click="wybm(isShowMe)"></div>
                 </div>
             </div>
         </div>
@@ -95,7 +95,7 @@
                 </div>
                 <div class="pop-tp-btns">
                     <div class="pop-wtdc-btn" v-on:click="wtdc"></div>
-                    <div class="pop-wybm-btn" v-on:click="wybm"></div>
+                    <div class="pop-wybm-btn" v-bind:class="{'showme': isShowMe}" v-on:click="wybm(isShowMe)"></div>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@
                     <div class="pop-herad"><div class="xk"></div><img v-bind:src="seleclUser.img" alt=""></div>
                     <div class="dc-con" v-text="seleclUser.thanksWord"></div>
                     <div class="pop-wtdc-btn dc" v-on:click="wtdc"></div>
-                    <div class="pop-wybm-btn dc" v-on:click="wybm"></div>
+                    <div class="pop-wybm-btn dc" v-bind:class="{'showme': isShowMe}" v-on:click="wybm(isShowMe)"></div>
                 </div>
             </div>
         </div>

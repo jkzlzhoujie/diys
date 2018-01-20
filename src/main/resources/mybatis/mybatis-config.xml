@@ -137,6 +137,8 @@
 		<typeAlias alias="WeixinUserInfo"  type="cn.temobi.complex.entity.WeixinUserInfo"/>
 		<typeAlias alias="VoteRecord"  type="cn.temobi.complex.entity.VoteRecord"/>
 		<typeAlias alias="AccessRecord"  type="cn.temobi.complex.entity.AccessRecord"/>
+		<typeAlias alias="NetRedUser" type="cn.temobi.complex.entity.NetRedUser" />
+		<typeAlias alias="NetRedGameBanner" type="cn.temobi.complex.entity.NetRedGameBanner" />
 		
 		
 		

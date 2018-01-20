@@ -1128,7 +1128,7 @@ overflow: auto;
 }
 .pop-wtdc-btn{
     width: 90px;
-    height: 30px;
+    height: 25px;
     left: 3.5rem;
     display: inline-block;
     background-image: url(../images/call-for-her-btn.png);
@@ -1139,12 +1139,35 @@ overflow: auto;
 }
 .pop-wybm-btn{
     width: 70px;
-    height: 30px;
+    height: 25px;
     background-image: url(../images/bm-btn.png);
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     display: inline-block;
+}
+.pop-wtdc-btn.dc{
+    width: 83px;
+    height: 22px;
+    background-image: url(../images/c1.png);
+    position: absolute;
+    bottom: 41px;
+    left: 69px;
+}
+.pop-wybm-btn.dc{
+    width: 65px;
+    height: 22px;
+    background-image: url(../images/b1.png);
+    position: absolute;
+    bottom: 41px;
+    right: 65px;
+}
+.pop-wybm-btn.showme{
+	
+    background-image: url(../images/123.png);
+}
+.pop-wtdc-btn.dc.showme{
+    background-image: url(../images/x1.png);
 }
 .close-btn-tpcg{
     position: absolute;
@@ -1204,6 +1227,8 @@ overflow: auto;
 .su-top{
     height: 170px;
     background-image: url(../images/bmhb.jpg);
+    position: relative;
+    z-index: -1;
 }
 .weui_mask_transition{
     z-index: 1000;
@@ -1351,24 +1376,15 @@ border-radius: 20px;
         margin: 0 auto;
         position: relative;
     }
-    .pop-wtdc-btn.dc{
-        position: absolute;
-        bottom: 42px;
-        left: 89px;
-    }
-    .pop-wybm-btn.dc{
-        position: absolute;
-        bottom: 42px;
-        right: 45px;
-    }
     .pop-herad{
-        width: 70px;
-        height: 70px;
-        position: absolute;
-        left: 133px;
-        top: 0;
-        overflow: hidden;
-        padding: 5px;
+		width: 75px;
+		height: 77px;
+		position: absolute;
+		left: 50%;
+		top: 0;
+		overflow: hidden;
+		padding: 5px;
+		transform: translateX(-50%);
     }
     .pop-herad img{
         width: 100%;
@@ -1387,19 +1403,19 @@ border-radius: 20px;
         top: 0;
     }
     .close-btn-con.dc::before{
-         left: 170px;
     }
     .close-btn-img.dc{
-	    left: 159px;
-	    position: absolute;
-	    top: 0;
+	    left: 50%;
+		position: absolute;
+		top: 0;
+		transform: translateX(-50%);
     }
 	.dc-con{
 		position: absolute;
 	    width: 160px;
 	    height: 75px;
 	    top: 79px;
-	    left: 88px;
+	    left: 70px;
 	    overflow:hidden;
 	    color:#ee9625;
 	    display: -webkit-box;
@@ -1410,4 +1426,13 @@ border-radius: 20px;
 	button, .aui-btn{
 	    height: 2rem;
     line-height: 2rem;
+	}
+	
+	.pop-ljqw-btn{
+	    width: 90px;
+	    height: 25px;
+	    position: absolute;
+	    bottom: 0;
+	    left: 52%;
+	    transform: translateX(-50%);
 	}

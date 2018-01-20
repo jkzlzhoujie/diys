@@ -1,0 +1,87 @@
+<body>
+<script type="text/javascript">
+	$(function(){
+			
+			$('#uploadImageUrl').uploadify({
+				'swf' : '/diyroot/js/uploadify/uploadify.swf',
+				'uploader' : domainName+'/diys/upload/banner',
+				'method' : 'post',
+				'overrideEvents' : ['onDialogClose'],// 不执行默认的onSelect事件
+				'width' : '70',
+				'height' : '22',
+				'fileTypeDesc' : '支持的格式：',
+				'fileTypeExts' : '*.png;*.jpg;',
+				'fileSizeLimit' : '10MB',
+				'removeTimeOut'  : 1,
+				'multi' : true,
+				'progressData' : 'percentage',
+				'buttonText' : '点击上传',
+				// 检测FLASH失败调用
+				'onFallback' : function() {
+					alert("您未安装FLASH控件，无法上传图片！请安装FLASH控件后再试。");
+				},
+				'onUploadSuccess':function(file, data, response){
+					$("#imageUrl").attr("value",data);
+					$("#imageUrl").next().hide();
+					document.getElementById("previewImageUrl").src=data;
+				},
+				'onSelectError':function(file, errorCode, errorMsg) {
+					 switch(errorCode) {
+					  	case -110:
+					  		$("#imageUrl").next().html("文件大小不大于10M");
+					  	 	$("#imageUrl").next().show();
+					  	 	alert("文件大小不大于10M");
+		                  break;
+		               case -120:
+		                   alert("文件 ["+file.name+"] 大小异常！");
+		                   break;
+		               case -130:
+		                   alert("文件 ["+file.name+"] 类型不正确！");
+		                   break;
+	          	 	}
+				}
+		});
+		
+	});
+</script>
+<div>
+	  <input type="button" name="close" class="jqmClose btn right btn-delete" value="关闭"  />
+      <div class="breadcrumb">当前位置：喵网红大赛管理> 喵网红Banner> 编辑</div>
+      <form action="/diys/Bo/netRedGameBanner/netRedGameBannerEditSave" method="post" id="registForm">
+       <input type="hidden" name="id" value="#{(entity.id)!0}" />
+      <div class="table-show-content">
+        <table class="table-show" >
+	     	<tr>
+     			<td width="45%" align="right">描述</td>
+	     		<td ><input type="text" name="note" width="400px"  value="${(entity.note)!''}" class="inputtext"/></td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">类型</td>
+	     		<td >
+	     			<select id="type" name="type" class="inputstyle">
+   						<option
+   							<#if entity?? && "1" == "${entity.type!''}">selected="selected"</#if> value="1">大赛广告banner
+   						</option>
+   						<option
+   							<#if entity?? && "2" == "${entity.type!''}">selected="selected"</#if> value="2">大赛介绍
+   						</option>
+           			</select>
+           		</td>
+	     	</tr>
+	     	<tr>
+	     		<td align="right">图片：</td>
+     			<td>
+		     		<input type="file" id="uploadImageUrl" name="uploadImageUrl" />
+		     		<input type="hidden" id="imageUrl" name="imageUrl" value="${(entity.imageUrl)!''}" class="inputtext" />
+			        <span class="tp"><img id="previewImageUrl" src="${(entity.imageUrl)!''}" width="220" height="150" /></span>
+	     		</td>
+	     	</tr>
+	     	<tr>
+		        <td align="right"><input type="submit" value="提交"  class="btn-submit" /></td>
+		        <td><input type="reset" value="重置" class="btn-submit" /></td>
+	     	</tr>
+        </table>
+        </div>
+      </form>
+    </div>
+<body>

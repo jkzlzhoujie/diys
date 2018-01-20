@@ -99,6 +99,55 @@ public class WeixinApiController extends ClientApiBaseController{
 
   
   /**
+   * 报名
+   * @param request
+   * @return
+ * @throws IOException 
+   */
+  @RequestMapping(value={"/registration"}, method={RequestMethod.GET, RequestMethod.POST})
+  public void registration(HttpServletRequest request,HttpServletResponse response) throws IOException{
+    String weiChatCode = request.getParameter("code");
+    String userId = request.getParameter("userId");
+    HttpSession  session =  request.getSession();
+    session.setAttribute(GameArea, Xiamen);
+    log.error("报名");
+    if(session.getAttribute(WEICHAT_CODE)!=null && session.getAttribute(WEICHAT_CODE).equals(weiChatCode)){
+    	userId = (String) session.getAttribute(WEIXIN_userId);
+    }else{
+    	session.setAttribute(WEICHAT_CODE, weiChatCode);
+    	WeixinUserInfo weixinUserInfo = new WeixinUserInfo();
+        log.error("weiChatCode= " + weiChatCode);
+        log.error("userId= " + userId);
+        if (StringUtil.isNotEmpty(weiChatCode) && StringUtil.isEmpty(userId)){
+          weixinUserInfo = getWeixinUserInfo(weiChatCode, weixinUserInfo);
+          userId = weixinUserInfo.getId().toString();
+        }
+        session.setAttribute(WEIXIN_userId, userId);
+    }
+    log.error("userId = " + userId);
+    AccessRecord record = new AccessRecord();
+    record.setCreateTime(new Date());
+    record.setAttentionUserId(Long.valueOf(userId));
+    accessRecordService.save(record);
+    Map<String, Object> map = new HashMap();
+    map.put("weichatUserId", userId);
+    List<NetRedUser> netRedUsers = userOptionService.findByMap(map);
+    String status = "0";
+    if (netRedUsers != null && netRedUsers.size() > 0){
+      status = "1";
+    }
+    if (StringUtil.isNotEmpty(userId)){
+      log.error("userId=" + userId);
+    }else{
+      log.error("微信授权用户信息错误！");
+      response.sendRedirect("/diys/jsproot/RedNet/index.html");
+    }
+    response.sendRedirect("/diys/clientNew/weixin/signUpinfoPage");
+  }
+  
+  
+  
+  /**
    * 落地报名-厦门赛区
    * @param request
    * @return
@@ -342,7 +391,18 @@ public class WeixinApiController extends ClientApiBaseController{
     response.sendRedirect("/diys/jsproot/RedNet/signUpinfo.html?voteUserId=" + voteUserId);
   }
   
+  
+  
+  
 
+  @RequestMapping(value={"/testRedirectPage"}, method={RequestMethod.GET, RequestMethod.POST})
+  public void testIndexPage(HttpServletRequest request,HttpServletResponse response) throws IOException{
+	  HttpSession  session =  request.getSession();
+	  session.setAttribute(WEIXIN_userId, "8");
+	  session.setAttribute(GameArea, Xiamen);
+	  response.sendRedirect("/diys/clientNew/weixin/signUpinfoPage");
+  }
+  
   @RequestMapping(value={"/testIndexPage"}, method={RequestMethod.GET, RequestMethod.POST})
   public String testIndexPage(HttpServletRequest request){
 	  HttpSession  session =  request.getSession();
@@ -367,8 +427,10 @@ public class WeixinApiController extends ClientApiBaseController{
   public String test(HttpServletRequest request){
 	  HttpSession  session =  request.getSession();
 	  session.setAttribute(WEIXIN_userId, "8");
-	  return "RedNet/userInfo";
+	  return "RedNet/meSupport";
   }
+  
+  
   
   @RequestMapping(value={"/posterPage"}, method={RequestMethod.GET, RequestMethod.POST})
   public String posterPage(){
@@ -445,7 +507,7 @@ public class WeixinApiController extends ClientApiBaseController{
     ResponseObject object = initResponseObject();
     try{
 	      Gson gson = new Gson();
-	      log.error("用户 userStr" + userStr);
+	      log.error("添加用户" + userStr);
 	      NetRedUser user = (NetRedUser)gson.fromJson(userStr, NetRedUser.class);
 	      if (user.getCity() != null){
 	        String[] address = user.getCity().split(",");
@@ -460,37 +522,36 @@ public class WeixinApiController extends ClientApiBaseController{
 	     
 	    HttpSession  session =  request.getSession();
 	    String userid = (String) session.getAttribute(WEIXIN_userId);
-	    log.error("用户 userStr22" + userid);
+	    log.error("用户 userStr" + userid);
 	    String oldCommitInfo = (String)CacheHelper.getInstance().get(user.getPhone() + userid);
 	    if (oldCommitInfo!=null && StringUtils.equals(user.getPhone(), oldCommitInfo)){
-	    	object.setCode("00000");
+	    	object.setCode("10001");
 	    	object.setDesc("您已提交，等待审核中");
 	    	return object;
 	    }
-	    log.error("用户 userStr33" + userStr);
-	    CachedValueAndTimeSecond(user.getPhone() + userid, user.getPhone(), 10);
-       
-   	    user.setWeichatUserId(Long.valueOf(userid));
 	    String oldCode = (String)CacheHelper.getInstance().get(user.getPhone());
 	    log.error("用户 phone" + user.getPhone() +  " code="+oldCode + " ,");
 	    if (StringUtils.equals(code, oldCode)){
 	      Map<String, String> map = new HashMap();
 	      map.put("phone", user.getPhone());
 	      List<NetRedUser> netRedList = userOptionService.findByMap(map);
-	      if ((netRedList != null) && (netRedList.size() > 1)){
+	      if (netRedList != null && netRedList.size() >= 1){
 	        object.setCode("10000");
 	        object.setDesc("手机号已注册");
 	        return object;
+	      }else{
+	    	  CacheHelper.getInstance().remove(user.getPhone());
+	    	  user.setGameRounds(0);
+	    	  user.setWeichatUserId(Long.valueOf(userid));
+	    	  log.error("用户--- " + gson.toJson(user));
+	    	  user.setArea(session.getAttribute(GameArea).toString());
+	    	  userOptionService.save(user);
+	    	  CachedValueAndTimeSecond(user.getPhone() + userid, user.getPhone(), 10);
+	    	  object.setDesc("成功");
+	    	  object.setResponse(user);
+	    	  object.setCode("00000");
+	    	  log.error("用户-成功-- " + gson.toJson(user));
 	      }
-	      user.setGameRounds(0);
-	      log.error("用户--- " + gson.toJson(user));
-	      
-	      user.setArea(session.getAttribute(GameArea).toString());
-	      userOptionService.save(user);
-	      log.error("用户-成功-- " + gson.toJson(user));
-	      object.setDesc("成功");
-	      object.setResponse(user);
-	      object.setCode("00000");
 	    }else{
 	      object.setCode("10000");
 	      object.setDesc("验证码错误,请重新输入");
@@ -651,7 +712,7 @@ public class WeixinApiController extends ClientApiBaseController{
 	    if (netRedUsers != null && netRedUsers.size() > 0){
 	      status = 1;
 	    }
-	    return status;
+	    return 1;
   }
   
   

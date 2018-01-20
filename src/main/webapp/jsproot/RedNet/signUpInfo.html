@@ -17,7 +17,7 @@
             <li class="aui-list-item">
                 <div class="aui-list-item-inner">
                     <div class="aui-list-item-label">
-                        姓&nbsp;&nbsp;&nbsp;名
+                        <i class="uf-req" style="padding-right:5px">*</i>姓&nbsp;&nbsp;&nbsp;名
                     </div>
                     <div class="aui-list-item-input">
                         <input type="text" placeholder="请填写姓名" v-model="user.name">
@@ -27,7 +27,7 @@
             <li class="aui-list-item">
                 <div class="aui-list-item-inner">
                     <div class="aui-list-item-label">
-                        城&nbsp;&nbsp;&nbsp;市
+                        <i class="uf-req" style="padding-right:5px">&nbsp;</i>城&nbsp;&nbsp;&nbsp;市
                     </div>
                     <div class="aui-list-item-input">
                         <input type="text" placeholder="请选择城市" v-model="user.city" readonly v-on:click="getArea()">
@@ -37,7 +37,7 @@
             <li class="aui-list-item">
                 <div class="aui-list-item-inner">
                     <div class="aui-list-item-label">
-                        手机号
+                        <i class="uf-req" style="padding-right:5px">*</i>手机号
                     </div>
                     <div class="aui-list-item-input">
                         <input type="number" placeholder="请填写手机号" v-model="user.phone">
@@ -47,7 +47,7 @@
             <li class="aui-list-item">
                 <div class="aui-list-item-inner">
                     <div class="aui-list-item-label">
-                        验证码
+                        <i class="uf-req" style="padding-right:5px">*</i>验证码
                     </div>
                     <div class="aui-list-item-input">
                         <input type="number" class="code-inp" placeholder="请输入验证码" v-model="code">
@@ -55,10 +55,35 @@
                     </div>
                 </div>
             </li>
+            
+            <li class="aui-list-item">
+                <div class="aui-list-item-inner">
+                    <div class="aui-list-item-label">
+                        <i class="uf-req" style="padding-right:5px">*</i>形象图
+                    </div>
+                    <div class="aui-list-item-input">
+						<div class="weui_uploader_bd">
+							<ul class="weui_uploader_files">
+                                <li class="weui_uploader_file" 
+                                    style="margin-top: 4px;margin-bottom: 0;"
+									v-if="user.firstImage.length > 0">
+									<img v-bind:src="user.firstImage" alt="">
+									<i class="uf-close-img" 
+										v-on:click="delImg"></i>
+								</li>
+							</ul>
+							<div class="weui_uploader_input_wrp" 
+								 style="width: 79px;height: 79px;margin-top: 4px;margin-bottom: 0;"> 
+								<input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg" multiple />
+							</div>
+						</div>
+                    </div>
+                </div>
+            </li>
             <li class="aui-list-item">
                 <div class="form-li">
                     <div class="form-label">
-                        自&nbsp;&nbsp;&nbsp;荐
+                        <i class="uf-req" style="padding-right:5px">&nbsp;</i>自&nbsp;&nbsp;&nbsp;荐
                     </div>
                     <div class="form-textarea">
                         <textarea placeholder="请填自我介绍或者参赛口号，将有风多粉丝支持你" v-model="user.selfIntroduction"></textarea>
@@ -74,7 +99,7 @@
         <div class="pop-success" id="showTPSuc" style="display:none">
             <div class="pop-suc-con p-bmcg">
                 <div class="close-btn-tpcg" v-on:click="gbtpcg"></div>
-                <div class="pop-wtdc-btn" v-on:click="ljqw"></div>
+                <div class="pop-ljqw-btn" v-on:click="ljqw"></div>
             </div>
         </div>
     </div>

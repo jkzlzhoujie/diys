@@ -130,6 +130,10 @@
                 classpath*:/spring-xml/spring-client-newapi-defined.xml
             </param-value>
         </init-param>
+        <init-param>
+          <param-name>default_encoding</param-name>
+          <param-value>UTF-8</param-value>
+        </init-param>
         <load-on-startup>6</load-on-startup>
     </servlet>
 

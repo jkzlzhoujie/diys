@@ -423,6 +423,9 @@ ${head}
 		        <#if privilege?? &&"${privilege}"?index_of("weixinNetRedUser_weixinUserInfo") != -1>
 		          	<li class="first"><a href="/diys/Bo/netRed/weixinUserInfoList">关注用户信息</a></li>
 		        </#if>
+		        <#if privilege?? &&"${privilege}"?index_of("weixinNetRedUser_gameBannerInfo") != -1>
+		          	<li class="first"><a href="/diys/Bo/netRedGameBanner/netRedGameBannerInfoList">大赛banner管理</a></li>
+		        </#if>
 	    	</ul>
 	    </#if>
 	    

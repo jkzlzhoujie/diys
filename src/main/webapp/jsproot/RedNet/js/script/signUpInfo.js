@@ -17,6 +17,7 @@
                 name: '',
                 city: '',
                 phone: '',
+                firstImage: '',
                 selfIntroduction: '',
               //  weichatUserId:GetQueryString("voteUserId")  
                 
@@ -56,6 +57,13 @@
                     });
                     return false; 
                 } 
+                if (this.isClick) {
+                    this.isClick = false;
+                    this.getTime();
+                }
+                if (!this.isClick) {
+                    return;
+                }
             	//获取验证码
                 $.ajax({
                     url: 'getCode',
@@ -71,10 +79,6 @@
                    	 }
                     }
                 });
-                if (this.isClick) {
-                    this.isClick = false;
-                    this.getTime();
-                }
             },
             getTime: function () {
                 this.codeBtnTxt = this.time + 's';
@@ -87,7 +91,7 @@
                 } 
             },
             sendInfo: function () {
-            	 var that = this;
+            	var that = this;
                 this.checkData();
                 if (this.code == '') {
                     toast.fail({
@@ -106,7 +110,8 @@
                 if (this.isTrue) {
                 	return;
                 }
-            	this.isTrue = true;
+                this.isTrue = true;
+                debugger
                //数据请求
                 $.ajax({
                     url: 'saveNetRedUser',
@@ -116,43 +121,51 @@
                     },
                     success: function (result) {
                     	that.isTrue = false;
-                   	 var obj = JSON.parse(result);
-                   	 if(obj.code == "00000"){
-//                   		 alert("报名成功");
-                   		$('#showTPSuc').show();
-                   		window.location.href = 'userShowPage?netRedUserId='+'';
-                   	 }else{
-                   		 alert("报名失败," +obj.desc);
-                   	 }
+	                   	 var obj = JSON.parse(result);
+	                   	 if(obj.code == "00000"){
+	                   		$('#showTPSuc').show();
+	                   	 }else{
+	                   		 alert(obj.desc);
+	                   	 }
                     }
                 });
             },
+            unImg: function () {
+                var file = window.event.target;
+                var vm = this;
+                if (file.files && file.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (evt) {
+                        vm.user.firstImage = evt.target.result;
+                    };
+                    reader.readAsDataURL(file.files[0]);
+                }
+            },
+            delImg: function () {
+                this.user['firstImage'] = '';
+            },
             checkData: function () {
                 var vm = this;
+                var isTrue = true;
                 _.each(vm.user, function (o, k) {
-                    var isTrue = true;
-                    switch (k) {
-                        case 'name':
-                            isTrue = false;
-                            vm.checkVal(o, '请输入姓名');
-                        break;
-                        case 'selfIntroduction':
-                            isTrue = false;
-                            vm.checkVal(o, '请输入自荐');
-                        break;
-                        case 'city':
-                            isTrue = false;
-                            vm.checkVal(o, '请输选择城市');
-                        break;
-                        case 'phone':
-                            isTrue = false;
-                            vm.checkVal(o, '请输入手机号');
-                        break;
-                    }
-                    if (!isTrue) {
-                        return false;
+                    if (isTrue) {
+                        switch (k) {
+                            case 'name':
+                                isTrue = vm.checkVal(o, '请输入姓名');
+                            break;
+                            // case 'selfIntroduction':
+                            //     isTrue = vm.checkVal(o, '请输入自荐');
+                            // break;
+                            case 'firstImage':
+                                isTrue = vm.checkVal(o, '请输上传形象图');
+                            break;
+                            case 'phone':
+                                isTrue = vm.checkVal(o, '请输入手机号');
+                            break;
+                        }
                     }
                 });
+                return isTrue;
             },
             checkVal: function (v, msg) {
                 if (v == '') {
@@ -160,13 +173,17 @@
                         title: msg,
                         duration: 2000
                     });
+                    return false;
                 }
+                return true;
             },
             gbtpcg: function () {
            		$('#showTPSuc').hide();
+           		window.location.href = 'userShowPage?netRedUserId='+'';
             },
             ljqw: function () {
-                window.location.href='';//跳转到报名成功页
+           		window.location.href = 'userShowPage?netRedUserId='+'';
+//                window.location.href='';//跳转到报名成功页
             }
         }
     }); 

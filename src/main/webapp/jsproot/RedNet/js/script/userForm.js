@@ -23,12 +23,12 @@
                         liveExperience: '1',
                         fansAmount: '1',
                         webSit: '',
+                        firstImage: '',//形象图片（1张）
+                        imagesArr: [],//其他形象图片（1张）
+                        lablesArr:[],
                         welcomeWord: '',
                         thanksWord: '',
-                        callTanksWord: '',
-                        firstImage: '',//形象图片（1张）
-                        lablesArr:[],
-                        imagesArr: []//其他形象图片（1张）
+                        callTanksWord: ''
                     },
                     checkList: {
                         cyVal: false,
@@ -91,7 +91,10 @@
                     },
                     sendInfo: function () {//提交数据
                     	delete this.user.createTime;
-                    	debugger
+						
+						if (!this.checkData()){
+							return;
+						}
                     	//数据请求
                         $.ajax({
                         	type : 'post',
@@ -127,46 +130,35 @@
                     },
                     checkData: function () {
                         var vm = this;
+                        var isTrue = true;
                         _.each(vm.user, function (o, k) {
-                            var isTrue = true;
-                            switch (k) {
-                                case 'name':
-                                    isTrue = false;
-                                    vm.checkVal(o, '请输入姓名');
-                                break;
-                                case 'selfIntroduction':
-                                    isTrue = false;
-                                    vm.checkVal(o, '请输入自荐');
-                                break;
-                                case 'webSit':
-                                    isTrue = false;
-                                    vm.checkVal(o, '请输入展示网址');
-                                break;
-                                case 'welcomeWord':
-                                    isTrue = false;
-                                    vm.checkVal(o, '请输入欢迎词');
-                                break;
-                                case 'tanksWord':
-                                    isTrue = false;
-                                    vm.checkVal(o, '请输入投票感谢词');
-                                break;
-                                case 'callTanksWord':
-                                    isTrue = false;
-                                    vm.checkVal(o, '请输入打CALL感谢词');
-                                break;
-                                case 'firstImage':
-                                    isTrue = false;
-                                    vm.checkLen(o, '请上传形象图片');
-                                break;
-                                case 'imagesArr':
-                                    isTrue = false;
-                                    vm.checkLen(o, '请上传形象图片');
-                                break;
-                            }
-                            if (!isTrue) {
-                                return false;
-                            }
+							if (isTrue) {
+								switch (k) {
+									case 'name':
+										isTrue = vm.checkVal(o, '请输入姓名');
+									break;
+									case 'selfIntroduction':
+										isTrue = vm.checkVal(o, '请输入自荐');
+									break;
+									case 'firstImage':
+										isTrue = vm.checkVal(o, '请上传形象图片');
+									break;
+									case 'imagesArr':
+										isTrue = vm.checkLen(o, '请上传形象图片');
+									break;
+									case 'welcomeWord':
+										isTrue = vm.checkVal(o, '请输入欢迎词');
+									break;
+									case 'thanksWord':
+										isTrue = vm.checkVal(o, '请输入投票感谢词');
+									break;
+									case 'callTanksWord':
+										isTrue = vm.checkVal(o, '请输入打CALL感谢词');
+									break;
+								}
+							}
                         });
+						return isTrue;
                     },
                     checkVal: function (v, msg) {
                         if (v == '') {
@@ -174,7 +166,9 @@
                                 title: msg,
                                 duration: 2000
                             });
+							return false;
                         }
+						return true;
                     },
                     checkLen: function (arr, msg) {
                         if (arr.length == 0) {
@@ -182,7 +176,9 @@
                                 title: msg,
                                 duration: 2000
                             });
+							return false;
                         }
+						return true;
                     }
                 },
                 

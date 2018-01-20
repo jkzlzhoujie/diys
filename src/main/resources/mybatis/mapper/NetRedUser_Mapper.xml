@@ -21,6 +21,7 @@
 		<result property="gameRounds" column="gameRounds" />
 		<result property="createTime" column="createTime" />
 		<result property="weichatUserId" column="weichatUserId" />
+		<result property="area" column="area" />
 		
 	</resultMap>
 	
@@ -34,8 +35,9 @@
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and cui.id = #{id}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(phone)">and cui.phone = #{phone}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(gameRounds)">and cui.gameRounds = #{gameRounds}</if>
-			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(weichatUserId)">and cui.weichatUserId = #{weichatUserId}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(netStatus)">and cui.gameRounds != #{netStatus}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(weichatUserId)">and cui.weichatUserId = #{weichatUserId}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(area)">and cui.area = #{area}</if>
 		</where>
 	</sql>
 	
@@ -79,9 +81,9 @@
 	
 	<insert id="insert" useGeneratedKeys="true" keyProperty="id">
 		insert into net_red_user(name,phone,province,city,town,selfIntroduction,liveExperience,fansAmount,webSit,
-		firstImage,welcomeWord,thanksWord,callTanksWord,createTime,weichatUserId) 
+		firstImage,welcomeWord,thanksWord,callTanksWord,createTime,weichatUserId,area) 
 		values(#{name},#{phone},#{province},#{city},#{town},#{selfIntroduction},#{liveExperience},#{fansAmount},#{webSit},
-		#{firstImage},#{welcomeWord},#{thanksWord},#{callTanksWord},NOW(),#{weichatUserId})
+		#{firstImage},#{welcomeWord},#{thanksWord},#{callTanksWord},NOW(),#{weichatUserId},#{area})
 	</insert>
 	<insert id = "insertImage" useGeneratedKeys="true" parameterType="list">
 		insert into net_red_image(userId,image)values
@@ -118,6 +120,7 @@
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(province)">province=#{province},</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(city)">city=#{city},</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(town)">town=#{town},</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(area)">area=#{area},</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(selfIntroduction)">selfIntroduction=#{selfIntroduction},</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(liveExperience)">liveExperience=#{liveExperience},</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(fansAmount)">fansAmount=#{fansAmount},</if>

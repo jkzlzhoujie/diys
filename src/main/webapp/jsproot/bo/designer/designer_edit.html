@@ -12,8 +12,7 @@
 		$(function(){
 						status = $("#status option:selected").val(); 
 			$('#designereditForm').validate({	 
-				submitHandler:function(form){
-						alert(status+"555");
+				submitHandler:function(form){					
 					$.post('/diys/Bo/designer/designerEditSave',$("#designereditForm").serialize(),function(data){
 						$("#designerForm").submit();
 					});
@@ -22,7 +21,6 @@
 				 failResion:{required:
 						function(){
 						status = $("#status").val(); 
-						alert(status+",666");
 							if(status=="666"){
 					   	 		return true;
 					  		}else{

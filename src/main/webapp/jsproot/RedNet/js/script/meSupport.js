@@ -69,11 +69,23 @@
                     	img: '',
                     	thanksWord: '',
                     	index: ''
-                    }
+                    },
+                    isShowMe: false
                 },
                 methods: {
                     getData: function () {
                     	var that = this;
+                    	$.ajax({
+                            url: 'isRegister',
+                            data: {
+                           	 //参数
+                            },
+                            success: function (result) {
+                            	if(result == 1){
+                            		that.isShowMe = true;
+                            	}
+                            }
+                        });
                         //数据请求
 //                         $.ajax({
 //                             url: 'iSupportNetRedUserList?pageNo='+page+'&pageSize='+size,
@@ -225,8 +237,12 @@
                         $('#showTPSuc').hide();
                         $('#showTPCallSuc').hide();
                     },
-                    wybm: function () {//我要报名
-                        window.location.href = 'signUpinfoPage';//跳转到报名页
+                    wybm: function (sta) {//我要报名
+                    	if (sta == true){
+	       	            	 window.location.href = '../../clientNew/weixin/userShowPage?netRedUserId='+'';
+	       	            } else {
+	       	            	window.location.href = 'signUpinfoPage';
+	       	            }
                     }
                 },
                 created: function () {

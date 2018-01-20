@@ -35,6 +35,7 @@
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(id)">and cui.id = #{id}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(phone)">and cui.phone = #{phone}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(gameRounds)">and cui.gameRounds = #{gameRounds}</if>
+			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(netStatus)">and cui.gameRounds != #{netStatus}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(weichatUserId)">and cui.weichatUserId = #{weichatUserId}</if>
 			<if test="@cn.temobi.core.util.StringUtil@isNotEmpty(area)">and cui.area = #{area}</if>
 		</where>

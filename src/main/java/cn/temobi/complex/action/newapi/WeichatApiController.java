@@ -72,8 +72,6 @@ public class WeichatApiController extends ClientApiBaseController{
 	 * 配置好  从预约界面开始，授权 同意完回调到预约界面
 	 * 第一步，起点
 	 * 微信前面三个菜单链接都要配
-	 * 
-	 * 
 	 * 跳转到 落地报名
 	 * @param request
 	 * @param model

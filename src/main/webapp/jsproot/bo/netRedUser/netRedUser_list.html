@@ -5,7 +5,7 @@
 	<script type="text/javascript">
 		
 			function selectInfo() {
-			$("#netRedUserInfoList").submit();
+				$("#netRedUserInfoList").submit();
 		  	}
 			function selectReset(){
 	    		$("#name").val("");
@@ -22,7 +22,20 @@
           <div>		
 				    <div style="display: inline">
 				  	 名称：<input id="name" name="name" type="text" value="${name!''}" class="dginputstyle">
-           			
+           			 赛区：<select id="area" name="area" class="inputtext">
+	              		<option  value="">请选择类型</option>
+   						<option 
+   							<#if "1"=="${area!''}">selected="selected"</#if> value="1">厦门
+   						</option>
+   						<option 
+   							<#if "2"=="${area!''}">selected="selected"</#if> value="2">福州
+   						</option>
+   						<option 
+   							<#if "3"=="${area!''}">selected="selected"</#if> value="3">泉州
+   						</option>
+   						<option 
+   							<#if "4"=="${area!''}">selected="selected"</#if> value="4">漳州
+   						</option>
 				  </div>
           		  <div style="display: inline;float: right">
           		  	<input type="button" id="btn1" value="查询"  class="btn-submit" onclick="selectInfo()"/>
@@ -50,7 +63,8 @@
               <td>${((entity.fansAmount)!'')}</td>
               <td>${((entity.selfIntroduction)!'')}</td>
               <td>
-              	<a class="btn btn-look"  href="javascript:;" onclick="edit('netRed/netRedUserEdit','#{(entity.id)!0}')">编辑</a>
+              	<a class="btn btn-look"  href="javascript:;" onclick="edit('netRed/netRedUserEdit','#{(entity.id)!0}')">审核</a>
+              	<a class="btn btn-delete" onclick="del_('netRed/netRedUserDelete','#{(entity.id)!0}')">删除</a>
               </td>
             </tr>
             </#list>

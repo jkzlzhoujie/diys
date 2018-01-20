@@ -76,13 +76,14 @@
                     ggImg: [],
                     ggDiv: '',
                     showtext: '我要报名',
-                    sta: ''
+                    sta: '',
+                    isShowMe: false
                     
                 },
                 methods: {
                 	getData: function () {
                     	var that = this;
-                    	
+
                     	$.ajax({
                             url: 'isRegister',
                             data: {
@@ -92,6 +93,7 @@
                             	if(result == 1){
                             		that.showtext = '我的信息';
                             		that.sta = '1';
+                            		that.isShowMe = true;
                             	}
                             }
                         });
@@ -152,7 +154,6 @@
                         
                     },
                     sendFab: function (id,name, img, thanksWord) {
-                    	debugger
                     	this.type = 1;
                         this.hImg = imgs.hImg[0];
                         this.xImg = imgs.xImg[0];
@@ -335,7 +336,7 @@
                         $('#showTPCallSuc').hide();
                     },
                     wybm: function (sta) {//我要报名
-                    	if (sta === '1'){
+                    	if (sta == true){
 	       	            	 window.location.href = '../../clientNew/weixin/userShowPage?netRedUserId='+'';
 	       	            } else {
 	       	            	window.location.href = 'signUpinfoPage';

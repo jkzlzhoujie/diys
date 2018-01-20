@@ -99,7 +99,7 @@
 	
 	<!-- 我支持的  -->
 	<select id="getISupportNetRedVoteRecordPage" parameterType="map" resultType="cn.temobi.complex.entity.VoteRecord" useCache="false">
-		SELECT sum(count) as count,vr.netRedUserId,nru.name as netRedUserName,nru.firstImage from vote_record vr 
+		SELECT sum(count) as count,vr.netRedUserId,nru.name as netRedUserName,nru.firstImage,nru.thanksWord from vote_record vr 
 		LEFT JOIN net_red_user nru on vr.netRedUserId = nru.id
 		<include refid="sql_where"/>
 		GROUP BY vr.netRedUserId
