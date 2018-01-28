@@ -174,17 +174,22 @@ function init(opt) {
                     },
                     goCanvassing: function () {
                         console.log('goCanvassing');
+                    },
+                    setBG: function (url) {
+                        return {
+                            backgroundImage: 'url(' + url + ')'
+                        }
                     }
                 },
                 
-//                created: function () {
+                created: function () {
 //                    //弹幕：执行一次弹出一个消息
 //                    init({
 //                        img: './images/null.png',
 //                        msg: '喵网红'
 //                    });
-//                    this.getData();
-//                } 
+                    this.getData();
+                } 
             });
         },
         initDropDown: function () {

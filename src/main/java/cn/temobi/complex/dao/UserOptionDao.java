@@ -6,6 +6,7 @@ import java.util.Map;
 import cn.temobi.complex.entity.NetRedUser;
 import cn.temobi.complex.entity.NetRedUserLabImg;
 import cn.temobi.complex.entity.VoteRecord;
+import cn.temobi.core.common.Page;
 import cn.temobi.core.dao.SimpleDao;
 
 public interface UserOptionDao extends SimpleDao<NetRedUser, Long> {
@@ -23,4 +24,8 @@ public interface UserOptionDao extends SimpleDao<NetRedUser, Long> {
     public void deleteImage(Map<String,Long> map);
     
     public void deleteLable(Map<String,Long> map);
+    
+    public Page<NetRedUser> getGameIndex(Page<NetRedUser> page, Map<String, Object> parameter);
+    
+    
 }

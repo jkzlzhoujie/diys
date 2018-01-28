@@ -45,7 +45,7 @@ public class SmsMessageTest {
 //			 request.setTemplateParam("{\"name\":\"Tom\", \"code\":\"123\"}");
 			 
 			 //模板code：SMS_119260097
-			 request.setTemplateParam("{\"code\":\"123\"}");
+			 request.setTemplateParam("{\"code\":\"12553\"}");
 			 
 			 
 			 //可选-上行短信扩展码(扩展码字段控制在7位或以下，无特殊需求用户请忽略此字段)

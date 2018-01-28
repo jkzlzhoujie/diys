@@ -13,6 +13,10 @@ public interface WeixinVoteRecordDao extends SimpleDao<VoteRecord, Long> {
 	
 	public List<VoteRecord> getSumCountByType(Map<String, Object> map);
 	
+	public List<VoteRecord> getSumCountPiao(Map<String, Object> map);
+	
+	public List<VoteRecord> getSumCountCall(Map<String, Object> map);
+	
 	public Page<VoteRecord> getSupportMeVoteRecordPage(Page<VoteRecord> page, Map<String, Object> parameter);
 	
 	public Page<VoteRecord> getISupportNetRedVoteRecordPage(Page<VoteRecord> page, Map<String, Object> parameter);

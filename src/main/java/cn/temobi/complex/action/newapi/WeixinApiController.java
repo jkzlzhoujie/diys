@@ -397,10 +397,7 @@ public class WeixinApiController extends ClientApiBaseController{
 
   @RequestMapping(value={"/testRedirectPage"}, method={RequestMethod.GET, RequestMethod.POST})
   public void testIndexPage(HttpServletRequest request,HttpServletResponse response) throws IOException{
-	  HttpSession  session =  request.getSession();
-	  session.setAttribute(WEIXIN_userId, "8");
-	  session.setAttribute(GameArea, Xiamen);
-	  response.sendRedirect("/diys/clientNew/weixin/signUpinfoPage");
+	  response.sendRedirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx7a7bc6c16b83c47d&redirect_uri=http%3A%2F%2Fwww.hehuanginfo.com%2Fdiys%2FclientNew%2Fweixin%2FnetRedGame&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect");
   }
   
   @RequestMapping(value={"/testIndexPage"}, method={RequestMethod.GET, RequestMethod.POST})
@@ -427,7 +424,7 @@ public class WeixinApiController extends ClientApiBaseController{
   public String test(HttpServletRequest request){
 	  HttpSession  session =  request.getSession();
 	  session.setAttribute(WEIXIN_userId, "8");
-	  return "RedNet/meSupport";
+	  return "RedNet/test";
   }
   
   
@@ -540,6 +537,20 @@ public class WeixinApiController extends ClientApiBaseController{
 	        object.setDesc("手机号已注册");
 	        return object;
 	      }else{
+	    	  //增加形象图
+	    	  if (StringUtils.isNotBlank(user.getFirstImage()) &&  (user.getFirstImage().indexOf("data:image/") > -1)){
+	    	        String houzui = user.getFirstImage().substring(user.getFirstImage().indexOf("data:image/") + 11, user.getFirstImage().indexOf(";base64"));
+	    	        String homePath = PropertiesHelper.getProperty("properties/server_information.properties", "home_path_prefix");
+	    	        String resourcePath = PropertiesHelper.getProperty("properties/server_information.properties", "resource_path");
+	    	        String savePath = resourcePath + "designer/" + DateUtils.getCurrentDateTime("yyyyMM") + "/";
+	    	        String saveUrl = homePath + savePath;
+	    	        String fileName = UUID.randomUUID().toString().replaceAll("-", "") + "." + houzui;
+	    	        String generateImage = saveUrl + fileName;
+	    	        if (generateImage(user.getFirstImage().substring(user.getFirstImage().indexOf(";base64") + 8), generateImage, saveUrl)) {
+	    	          user.setFirstImage(savePath + fileName);
+	    	        }
+	    	    }
+	    	  
 	    	  CacheHelper.getInstance().remove(user.getPhone());
 	    	  user.setGameRounds(0);
 	    	  user.setWeichatUserId(Long.valueOf(userid));
@@ -601,12 +612,9 @@ public class WeixinApiController extends ClientApiBaseController{
       }
       if (StringUtils.isNotBlank(user.getFirstImage()) &&  (user.getFirstImage().indexOf("data:image/") > -1)){
         String houzui = user.getFirstImage().substring(user.getFirstImage().indexOf("data:image/") + 11, user.getFirstImage().indexOf(";base64"));
-        String homePath = PropertiesHelper.getProperty(
-          "properties/server_information.properties", "home_path_prefix");
-        String resourcePath = PropertiesHelper.getProperty(
-          "properties/server_information.properties", "resource_path");
-        String savePath = resourcePath + "designer/" + 
-          DateUtils.getCurrentDateTime("yyyyMM") + "/";
+        String homePath = PropertiesHelper.getProperty("properties/server_information.properties", "home_path_prefix");
+        String resourcePath = PropertiesHelper.getProperty("properties/server_information.properties", "resource_path");
+        String savePath = resourcePath + "designer/" + DateUtils.getCurrentDateTime("yyyyMM") + "/";
         String saveUrl = homePath + savePath;
         String fileName = UUID.randomUUID().toString().replaceAll("-", "") + "." + houzui;
         String generateImage = saveUrl + fileName;
@@ -721,39 +729,70 @@ public class WeixinApiController extends ClientApiBaseController{
    * @param request
    * @return
    */
-  @RequestMapping(value={"/netRedRankAndCount"}, method={RequestMethod.GET, RequestMethod.POST})
   @ResponseBody
+  @RequestMapping(value={"/netRedRankAndCount"}, method={RequestMethod.GET, RequestMethod.POST})
   public ResponseObject netRedRankAndCount(HttpServletRequest request){
     ResponseObject object = initResponseObject();
     object.setCode("10001");
     object.setDesc("参数错误");
     try{
+      NetRedUser netRedUser = new NetRedUser();
+      int count = 0;
+  	  int callCount = 0;
       Map<String, Object> param = new HashMap();
       String netRedUserId = (String)CacheHelper.getInstance().get(SHOW_nerRedUserId + getSeeionUserId(request));
       param.put("netRedUserId", netRedUserId);
-      List<VoteRecord> voteRecords = weixinVoteRecordService.getSumCountByType(param);
-      NetRedUser netRedUser = new NetRedUser();
-      if(voteRecords!= null && voteRecords.size() >0){
-    	  log.error("countss" + voteRecords.size());
-    	  Gson gson = new Gson();
-    	  log.error("voteRecords="+gson.toJson(voteRecords.get(0)));
-    	  netRedUser.setCount(voteRecords.get(0) != null ? ((VoteRecord)voteRecords.get(0)).getCount() : 0);
-    	  netRedUser.setCallCount(voteRecords.get(0) != null ? ((VoteRecord)voteRecords.get(0)).getCallCount() : 0);
-    	  param.clear();
-    	  param.put("count", Integer.valueOf(((VoteRecord)voteRecords.get(0)).getCount()));
-    	  List<AccessRecord> accessRecords = accessRecordService.findNetRank(param);
-    	  log.error("count="+Integer.valueOf(((VoteRecord)voteRecords.get(0)).getCount()));
-    	  log.error("accessRecords count="+accessRecords.size() + 1);
-    	  netRedUser.setRank(accessRecords.size() + 1);
-      }else{
-    	  netRedUser.setCount(0);
-    	  netRedUser.setCallCount(0);
-    	  param.clear();
-    	  param.put("count", 0);
-    	  List<AccessRecord> accessRecords = accessRecordService.findNetRank(param);
-    	  netRedUser.setRank(accessRecords.size() + 1);
+      List<VoteRecord> voteRecordsPiao = weixinVoteRecordService.getSumCountPiao(param);
+      if(voteRecordsPiao!= null && voteRecordsPiao.size() >0){
+    	  if(voteRecordsPiao.get(0) != null){
+    		  count = voteRecordsPiao.get(0).getCount();
+    	  }
       }
       
+      List<VoteRecord> voteRecordCall = weixinVoteRecordService.getSumCountCall(param);
+      if(voteRecordCall.get(0) != null){
+    	  if(voteRecordCall!= null && voteRecordCall.size() >0){
+    		  callCount = voteRecordCall.get(0).getCallCount();
+    	  }
+      }
+      netRedUser.setCount(count);
+	  netRedUser.setCallCount(callCount);
+      
+      
+//      List<VoteRecord> voteRecords = weixinVoteRecordService.getSumCountByType(param);
+//      if(voteRecords!= null && voteRecords.size() >0){
+//    	  log.error("countss" + voteRecords.size());
+//    	  for(VoteRecord record : voteRecords){
+//    		  if(record.getType() == 1){
+//    			  count = record.getCount();
+//    		  }
+//    		  if(record.getType() == 2){
+//    			  callCount = record.getCallCount();
+//    		  }
+//    	  }
+//    	  log.error("count="+count+"callCount"+callCount);
+//    	  
+//    	  netRedUser.setCount(count);
+//    	  netRedUser.setCallCount(callCount);
+//    	  param.clear();
+//    	  param.put("count", count + callCount);
+//    	  List<AccessRecord> accessRecords = accessRecordService.findNetRank(param);
+//    	  netRedUser.setRank(accessRecords.size() + 1);
+//      }else{
+//    	  netRedUser.setCount(0);
+//    	  netRedUser.setCallCount(0);
+//    	  param.clear();
+//    	  param.put("count", 0);
+//    	  List<AccessRecord> accessRecords = accessRecordService.findNetRank(param);
+//    	  netRedUser.setRank(accessRecords.size() + 1);
+//      }
+      
+      param.clear();
+	  param.put("count", count);
+	  List<AccessRecord> accessRecords = accessRecordService.findNetRank(param);
+	  netRedUser.setRank(accessRecords.size() + 1);
+      object.setDesc("成功");
+      object.setCode("00000");
       object.setResponse(netRedUser);
     } catch (Exception e){
       log.error(e.getMessage());
@@ -955,6 +994,40 @@ public class WeixinApiController extends ClientApiBaseController{
       object.setDesc("服务器有点忙");
     }
     return object;
+  }
+  
+  
+  /**
+   * 获取微信公众号签名
+   * @param request
+   * @return
+   */
+  @ResponseBody
+  @RequestMapping(value={"/getSignature"}, method={RequestMethod.GET, RequestMethod.POST})
+  public Map<String,Object>  getSignature(HttpServletRequest request,String url) {
+	
+	NetRedWeixinClientUtil netRedWeixinClientUtil = new NetRedWeixinClientUtil();
+//    String requestUrl = request.getRequestURL().toString();
+    String access_token = "";
+    String jsapi_ticket = "";
+    access_token = getToken();
+    jsapi_ticket = getJsapiTicketFromDB(access_token);
+    Map<String,Object> map = new HashMap<String, Object>();
+    Map<String, Object> configMap = netRedWeixinClientUtil.getWxConfigNew(request, url, access_token, jsapi_ticket);
+    if ((configMap != null) && (configMap.size() > 0)){
+      if (configMap.get("new_access_token") != null) {
+        updateTokenToDB(configMap.get("new_access_token").toString());
+      }
+      if (configMap.get("new_jsapi_ticket") != null) {
+        updateJsapiTicketDB(configMap.get("new_jsapi_ticket").toString());
+      }
+      map.put("appId", configMap.get("appId"));
+      map.put("configTimestamp", configMap.get("timestamp"));
+      map.put("configNonceStr", configMap.get("nonceStr"));
+      map.put("signature", configMap.get("signature"));
+      map.put("userId", request.getParameter("userId"));
+    }
+    return map;
   }
   
   /**
@@ -1479,23 +1552,27 @@ public class WeixinApiController extends ClientApiBaseController{
     searchMap.put("area", session.getAttribute(GameArea));
     
     if (StringUtil.isNotEmpty(content)) {
-    	searchMap.put("name", content);
+    	searchMap.put("content", content);
     }
     List<NetRedUser> list = new ArrayList();
     
-    Page<NetRedUser> result = userOptionService.findByPage(page, searchMap);
+//    Page<NetRedUser> result = userOptionService.findByPage(page, searchMap);
+    
+    Page<NetRedUser> result = userOptionService.getGameIndex(page, searchMap);
+    
+    
     list = result.getResult();
     for (NetRedUser user : list){
-      Map<String, Object> param = new HashMap();
-      param.put("netRedUserId", user.getId());
-      param.put("type", Integer.valueOf(1));
-      int count = recordService.getCount(param).intValue();
-      param.put("netRedUserId", user.getId());
-      param.put("type", Integer.valueOf(2));
+//      Map<String, Object> param = new HashMap();
+//      param.put("netRedUserId", user.getId());
+//      param.put("type", Integer.valueOf(1));
+//      int count = recordService.getCount(param).intValue();
+//      param.put("netRedUserId", user.getId());
+//      param.put("type", Integer.valueOf(2));
+//      int callCount = recordService.getCount(param).intValue();
+//      user.setCount(count + callCount);
       
       user.setFirstImage(user.getFirstImage());
-      int callCount = recordService.getCount(param).intValue();
-      user.setCount(count + callCount * 10);
     }
     map.put("list", list);
     return map;

@@ -60,8 +60,7 @@
                 if (this.isClick) {
                     this.isClick = false;
                     this.getTime();
-                }
-                if (!this.isClick) {
+                }else{
                     return;
                 }
             	//获取验证码
@@ -115,6 +114,7 @@
                //数据请求
                 $.ajax({
                     url: 'saveNetRedUser',
+                    type:'POST',
                     data: {
                    	    userStr: JSON.stringify( this.user),
                         code: this.code

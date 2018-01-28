@@ -138,7 +138,7 @@
             </div>
             <!-- title -->
             <div class="us-tit">
-                <span>其他形象图（最多9张）<i class="uf-req">*</i></span> 
+                <span>其他形象图（最多5张）<i class="uf-req">*</i></span> 
             </div>
             <div class="us-img-one">
                 <div class="weui_uploader_bd">
@@ -151,7 +151,7 @@
                         </li>
                     </ul>
                     <div class="weui_uploader_input_wrp" 
-                        v-if="user.imagesArr.length < 9">
+                        v-if="user.imagesArr.length < 5">
                         <input class="weui_uploader_input" type="file" accept="image/*" v-on:change="unImg('imagesArr', this)" multiple />
                     </div>
                 </div>

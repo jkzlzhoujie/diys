@@ -17,7 +17,7 @@
         <div class="i-top">
             <div class="swiper-container">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide" v-for="item in ggImg"><img v-bind:src="item" alt=""></div>
+                    <div class="swiper-slide" v-for="item in ggImg" v-bind:style="setBG(item)"></div>
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
@@ -51,7 +51,8 @@
         <div class="i-sm">
             <div class="sm-item" v-for="item in supporter" >
                 <div class="sm-num" v-text="item.id"></div>
-                <img class="sm-img" v-bind:src="item.firstImage" alt="" v-on:click="showInfo(item.id)">
+                <div class="sm-img" v-bind:style="setBG(item.firstImage)" v-on:click="showInfo(item.id)"></div>
+                <!-- <img class="sm-img" v-bind:src="item.firstImage" alt="" v-on:click="showInfo(item.id)"> -->
                 <div class="sm-con">
                     <div class="sm-name" v-text="item.name"></div>
                     <div class="sm-count"><span class="sm-count-num" v-text="item.count"></span><span class="sm-piao">票</span></div>
@@ -114,7 +115,8 @@
                 <ul style="padding:0 10px">
                     <li class="sm-item" v-for="item in searchArr" >
                         <div class="sm-num" v-text="item.id"></div>
-                        <img class="sm-img" v-bind:src="item.img" alt=""  v-on:click="showInfo(item.id)">
+                        <div class="sm-img" v-bind:style="setBG(item.img)" v-on:click="showInfo(item.id)"></div>
+                        <!-- <img class="sm-img" v-bind:src="item.img" alt=""  v-on:click="showInfo(item.id)"> -->
                         <div class="sm-con">
                             <div class="sm-name" v-text="item.name"></div>
                             <div class="sm-count"><span class="sm-count-num" v-text="item.count"></span><span class="sm-piao">票</span></div>
@@ -186,7 +188,6 @@
     <script type="text/javascript">  
 	    //参数是后台传过来的，签名加密，随机数，时间戳等全部后台处理好  
 	    function onBridgeReady(price, cb){ 
-	    price = 0.01; 
            $.post('/diys/clientNew/weixin/payRecharge?price='+price,function(data){
 				if(data != null){
 		            

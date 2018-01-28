@@ -11,6 +11,7 @@ import cn.temobi.complex.entity.BackgroundPic;
 import cn.temobi.complex.entity.NetRedUser;
 import cn.temobi.complex.entity.NetRedUserLabImg;
 import cn.temobi.complex.entity.VoteRecord;
+import cn.temobi.core.common.Page;
 import cn.temobi.core.common.SimpleMybatisSupport;
 import cn.temobi.core.dao.SimpleDao;
 @Component
@@ -61,4 +62,15 @@ public class UserOptionDaoImpl extends SimpleMybatisSupport<NetRedUser, Long> im
     public List<NetRedUserLabImg> selLables(Map<String, Long> map) {
         return this.getSqlSession().selectList(toMybatisStatement("selLables"), map);
     }
+    
+    
+    @Override
+	public Page<NetRedUser> getGameIndex(Page<NetRedUser> page,Map<String, Object> parameter) {
+        List list = getSqlSession().selectList(toMybatisStatement("getGameIndex"), toParameterMap(parameter, page));
+        page.setResult(list);
+        return page;
+	}
+    
+    
+    
 }

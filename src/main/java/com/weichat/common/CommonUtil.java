@@ -20,6 +20,8 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cn.temobi.core.util.StringUtil;
+
 import com.tencent.common.WeixinConfigure;
 
 
@@ -297,7 +299,10 @@ public class CommonUtil {
     	JSONObject json = httpsRequest(url, "GET", null);
     	String jsapi_ticket = "";
     	if (json != null) {  
-    		jsapi_ticket = json.getString("ticket");  
+    		log.error("ticket返回 ：" + json);
+    		if(json.containsKey("ticket") && StringUtil.isNotEmpty(json.getString("ticket"))){
+    			jsapi_ticket = json.getString("ticket");  
+    		}
     	}  
     	return jsapi_ticket ;
     }

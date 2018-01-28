@@ -23,7 +23,8 @@
      <div id="smApp" class="sm-body">
          <div class="sm-item" v-for="(item,$index) in supporter">
              <div class="sm-num" v-text="item.netRedUserId"></div>
-             <img class="sm-img" v-bind:src="item.firstImage" alt="">
+             <div class="sm-img" v-bind:style="setBG(item.firstImage)"></div>
+             <!-- <img class="sm-img" v-bind:src="item.firstImage" alt=""> -->
              <div class="sm-con">
                  <div class="sm-name" v-text="item.netRedUserName"></div>
                  <div class="sm-count"><span class="sm-count-num" v-text="item.count"></span><span class="sm-piao">票</span></div>
@@ -123,10 +124,10 @@
     <script src="../../jsproot/RedNet/js/plugins/dropload.min.js"></script>
     <script src="../../jsproot/RedNet/js/script/meSupport.js"></script>
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>  
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" ></script>
     <script type="text/javascript">  
 	    //参数是后台传过来的，签名加密，随机数，时间戳等全部后台处理好  
 	    function onBridgeReady(price, cb){ 
-	    price = 0.01; 
            $.post('/diys/clientNew/weixin/payRecharge?price='+price,function(data){
 				if(data != null){
 		            

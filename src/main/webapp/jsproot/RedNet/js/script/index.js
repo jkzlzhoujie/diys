@@ -169,6 +169,11 @@
                         	}
                         })();
                         this.showTP();
+                    }, 
+                    setBG: function (url) {
+                        return {
+                            backgroundImage: 'url(' + url + ')'
+                        }
                     },
                     selLw: function (n) {
                         if (n == 1) {

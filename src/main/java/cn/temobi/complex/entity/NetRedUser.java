@@ -19,7 +19,7 @@ public class NetRedUser extends IdEntity{
 	private String welcomeWord;//欢迎词
 	private String thanksWord;//感谢词
 	private String callTanksWord;//答谢感谢词
-	private Integer gameRounds;//第几轮
+	private Integer gameRounds;//第几轮 0 待审核  1 审核通过  -1审核不通过
 	private Date createTime;//报名时间
 	private Long weichatUserId;//公众号关注用户
 	private String[] lablesArr;

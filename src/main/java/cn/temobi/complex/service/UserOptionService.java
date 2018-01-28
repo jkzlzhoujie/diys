@@ -41,6 +41,10 @@ public class UserOptionService extends ServiceBase{
             return dao.update(entity);
 	}
 	
+	public Page<NetRedUser> getGameIndex(Page page,Map<String, Object> map){
+		return dao.getGameIndex(page, map);
+	}
+	
 	public Page<NetRedUser> findByPage(Page page,Object map){
 		return dao.findByPage(page, map);
 	}

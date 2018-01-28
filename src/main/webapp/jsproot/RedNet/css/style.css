@@ -259,6 +259,9 @@ input.code-inp{
 .sm-img{
     width: 100%;
     height: 9.5rem;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 .sm-name{
     margin: 0 0 5px 0;
@@ -387,6 +390,9 @@ input.code-inp{
 .us-top{
     height: 13rem;
     overflow:hidden;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 .us-user-info{
     background: #fff;
@@ -1286,9 +1292,12 @@ border-radius: 20px;
         width: 100%;
         height: 210px;
     }
-	.swiper-slide img{
-		width: 100%;
-		height: 100%
+	.swiper-slide{
+        width: 100%;
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
 	}
 	
     .i-float-btn{

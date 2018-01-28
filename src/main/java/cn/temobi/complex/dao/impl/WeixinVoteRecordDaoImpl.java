@@ -28,6 +28,18 @@ public class WeixinVoteRecordDaoImpl extends SimpleMybatisSupport<VoteRecord, Lo
 		List<VoteRecord> voteRecords =  getSqlSession().selectList(toMybatisStatement("getSumCountByType"), parameter);
 		return voteRecords;
 	}
+	
+	@Override
+	public List<VoteRecord> getSumCountPiao(Map<String, Object> parameter) {
+		List<VoteRecord> voteRecords =  getSqlSession().selectList(toMybatisStatement("getSumCountPiao"), parameter);
+		return voteRecords;
+	}
+	
+	@Override
+	public List<VoteRecord> getSumCountCall(Map<String, Object> parameter) {
+		List<VoteRecord> voteRecords =  getSqlSession().selectList(toMybatisStatement("getSumCountCall"), parameter);
+		return voteRecords;
+	}
 
 	@Override
 	public Page<VoteRecord> getSupportMeVoteRecordPage(Page<VoteRecord> page,Map<String, Object> parameter) {

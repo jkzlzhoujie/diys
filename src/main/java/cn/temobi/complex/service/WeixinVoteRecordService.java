@@ -62,6 +62,14 @@ public class WeixinVoteRecordService extends ServiceBase{
 		return WeixinVoteRecordDao.getSumCountByType(param);
 	}
 	
+	public List<VoteRecord> getSumCountPiao(Map<String, Object> param){
+		return WeixinVoteRecordDao.getSumCountPiao(param);
+	}
+
+	public List<VoteRecord> getSumCountCall(Map<String, Object> param){
+		return WeixinVoteRecordDao.getSumCountCall(param);
+	}
+	
 	public Page<VoteRecord> getSupportMeVoteRecordPage(Page<VoteRecord> page,Map<String, Object> param){
 		return WeixinVoteRecordDao.getSupportMeVoteRecordPage(page, param);
 	}

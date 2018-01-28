@@ -26,9 +26,9 @@
                         firstImage: '',//形象图片（1张）
                         imagesArr: [],//其他形象图片（1张）
                         lablesArr:[],
-                        welcomeWord: '',
-                        thanksWord: '',
-                        callTanksWord: ''
+                        welcomeWord: '亲，我正在参加喵女郎大赛，期待你的支援噢~',
+                        thanksWord: '感谢亲的支持！',
+                        callTanksWord: '感谢亲的大力支持，祝你每天美美哒~'
                     },
                     checkList: {
                         cyVal: false,
@@ -39,7 +39,8 @@
                         msVal: false,
                         yxVal: false,
                         qtVal: false
-                    }
+                    },
+                    isSend: false
                 },
                 methods: {
                 	
@@ -57,6 +58,10 @@
                             	 if(data != null){
                             		 that.user = data;
                             		 that.user.firstImage = data.firstImage == null ? '' : data.firstImage;
+									 
+									that.user.welcomeWord == '' ? '亲，我正在参加喵女郎大赛，期待你的支援噢~' : that.user.welcomeWord;
+									that.user.thanksWord == '' ? '感谢亲的支持！' : that.user.thanksWord;
+									that.user.callTanksWord == '' ? '感谢亲的大力支持，祝你每天美美哒~' : that.user.callTanksWord;
                             		 $.each(that.user.lablesArr, function(k,o) {
                             			 that.checkList[o] = true;
                             		 });
@@ -90,11 +95,20 @@
                         }
                     },
                     sendInfo: function () {//提交数据
-                    	delete this.user.createTime;
+                    	var that = this;
+                    	delete that.user.createTime;
 						
 						if (!this.checkData()){
 							return;
 						}
+						if (that.isSend) {
+							return;
+						}
+						that.isSend = true;
+		                toast.loading({
+		                    title:"正在提交中...",
+		                    duration:2000
+		                });
                     	//数据请求
                         $.ajax({
                         	type : 'post',
@@ -103,6 +117,8 @@
                            	 userStr: JSON.stringify( this.user)
                             },
                             success: function (result) {
+                        	toast.hide();
+                        	that.isSend = false;
                            	 var obj = JSON.parse(result);
                            	 if(obj.code == "00000"){
                            		 alert("修改成功");
@@ -117,15 +133,19 @@
                     ysImg: function (v, file) {//上传图片
                         var vm = this;
                         if (file.files && file.files[0]) {
-                            var reader = new FileReader();
-                            reader.onload = function (evt) {
-                            	if (v == 'firstImage') {
-                            		vm.user.firstImage = evt.target.result;
-                            	} else {
-                                    vm.user[v].push(evt.target.result);
-                            	}
-                            };
-                            reader.readAsDataURL(file.files[0]);
+                        	for (var i = 0; i < file.files.length; i++) {
+                                var reader = new FileReader();
+                                (function (r, f, v) {
+                                    r.onload = function (evt) {
+                                    	if (v == 'firstImage') {
+                                    		vm.user.firstImage = evt.target.result;
+                                    	} else {
+                                            vm.user[v].push(evt.target.result);
+                                    	}
+                                    };
+                                    r.readAsDataURL(f);
+                                })(reader, file.files[i], v)
+                        	}
                         }
                     },
                     checkData: function () {

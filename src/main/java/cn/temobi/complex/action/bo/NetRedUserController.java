@@ -25,6 +25,7 @@ import cn.temobi.complex.entity.CmDesignerInfo;
 import cn.temobi.complex.entity.CmUserInfo;
 import cn.temobi.complex.entity.NetRedUser;
 import cn.temobi.complex.entity.NetRedUserLabImg;
+import cn.temobi.complex.entity.SystemUser;
 import cn.temobi.complex.entity.WeixinUserInfo;
 import cn.temobi.complex.service.CmUserInfoService;
 import cn.temobi.complex.service.UserOptionService;
@@ -64,7 +65,7 @@ public class NetRedUserController extends BoBaseController{
 	                Integer.parseInt(pageSize));
 	        Map<String, Object> searchMap = new HashMap<String, Object>();
 	        searchMap.put("id", id);
-	        searchMap.put("name", name);
+	        searchMap.put("content", name);
 	        searchMap.put("area", area);
 	        searchMap.put("limit", page.getPageSize());
 	        searchMap.put("offset", page.getOffset());
@@ -167,6 +168,24 @@ public class NetRedUserController extends BoBaseController{
 			service.delete(Long.parseLong(id));
 		}
 		return "";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/netRedUserBatchDelete",method={RequestMethod.GET,RequestMethod.POST})
+	public int netRedUserBatchDelete(HttpServletRequest request, ModelMap model) throws Exception{
+		try {
+			String idStr = request.getParameter("arr");
+			if(StringUtil.isNotEmpty(idStr)){
+				String [] ids = idStr.split(","); 
+				for(int i = 0; i < ids.length ; i++){
+					service.delete(Long.parseLong(ids[i]));
+				}
+			}
+		}catch (Exception e) {
+			log.error(e.getMessage());
+			return 0;
+		}
+		return 1;
 	}
 	
 	

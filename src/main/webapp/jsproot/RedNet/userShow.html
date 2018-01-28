@@ -12,8 +12,8 @@
 <body style="background:#fbf0ef">
     <div id="usApp">
         <!-- fffaf9 -->
-        <div class="us-top" id="usTop">
-            <img v-bind:src="user.firstImage" alt="" style="width: 100%;height: 100%">
+        <div class="us-top" id="usTop" v-bind:style="setBG(user.firstImage)">
+            <!-- <img v-bind:src="user.firstImage" alt="" style="width: 100%;height: 100%"> -->
         </div>
         <div class="us-user-info">
             <p class="us-name" v-text="user.name"></p>

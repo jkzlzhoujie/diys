@@ -139,6 +139,11 @@
                     },
                     goCanvassing: function () {
                         console.log('goCanvassing');
+                    },
+                    setBG: function (url) {
+                        return {
+                            backgroundImage: 'url(' + url + ')'
+                        }
                     }
                 },
                 
@@ -164,6 +169,13 @@
                                  that.usVue.supportUser = that.usVue.supportUser.concat(obj.response);
                              // 如果没有数据
                              }else{
+								 
+                             	var h1 = $('.aui-media-list').height() + 50;
+                             	if (h1 < 420) {
+                             		$('.us-p-list').css({
+                             			height: h1 + 'px'
+                             		});
+                             	}
                             	  // 锁定
                                  me.lock();
                                  // 无数据

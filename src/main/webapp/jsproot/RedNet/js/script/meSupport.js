@@ -243,6 +243,11 @@
 	       	            } else {
 	       	            	window.location.href = 'signUpinfoPage';
 	       	            }
+                    },
+                    setBG: function (url) {
+                        return {
+                            backgroundImage: 'url(' + url + ')'
+                        }
                     }
                 },
                 created: function () {
