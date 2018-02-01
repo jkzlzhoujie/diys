@@ -99,7 +99,7 @@ public class WeixinVoteRecordService extends ServiceBase{
 			//判断今天是否已经投了五次
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("voteUserId", voteUserId);
-			param.put("netRedUserId", netRedUserId);
+//			param.put("netRedUserId", netRedUserId);
 			param.put("createTime", "yes");
 			List<VoteRecord> voteRecords = WeixinVoteRecordDao.findByMap(param);
 			if(voteRecords !=null && voteRecords.size()>=5){
